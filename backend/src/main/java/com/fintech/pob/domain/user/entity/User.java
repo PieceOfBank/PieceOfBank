@@ -1,14 +1,21 @@
+package com.fintech.pob.domain.user.entity;
+
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "user")
+@Data
+@NoArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_key", unique = true, nullable = false, updatable = false)
-    private UUID userKey;
+    private String userKey;
 
     @Column(name = "user_name", nullable = false, length = 50)
     private String userName;
