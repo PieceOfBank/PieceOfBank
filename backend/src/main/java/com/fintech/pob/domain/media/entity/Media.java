@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter
-@Setter
+@Data
 
-
+@Table(name = "media")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Media {
@@ -15,6 +14,7 @@ public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "media_id")
     private Long mediaId;
+
 
 
     private Long transactionUniqueNo;
