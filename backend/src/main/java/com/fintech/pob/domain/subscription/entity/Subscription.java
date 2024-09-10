@@ -1,6 +1,13 @@
-import jakarta.persistence.*;
+package com.fintech.pob.domain.subscription.entity;
 
-@Entity
+import com.fintech.pob.domain.user.entity.User;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Table(name = "subscription")
+@Data
+@NoArgsConstructor
 public class Subscription {
 
     @Id
