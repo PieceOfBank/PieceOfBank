@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "pending_history")
 @Data
 @NoArgsConstructor
-public class Pending_history {
+public class PendingHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pendingHistoryId")
