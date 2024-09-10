@@ -1,5 +1,6 @@
 package com.fintech.pob.domain.directory.entity;
 
+import com.fintech.pob.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,17 +14,17 @@ import java.time.LocalDateTime;
 public class Directory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "directoryId")
+    @Column(name = "directory_id")
     private Integer directoryId;
 
     @ManyToOne
-    @JoinColumn(name = "userKey", nullable = false)
-    private User user; // User Entity 연결 필요
+    @JoinColumn(name = "protect_key", referencedColumnName = "user_key", nullable = false)
+    private User user;
 
-    @Column(name = "accountNo", nullable = false)
+    @Column(name = "account_no", nullable = false)
     private String accountNo;
 
-    @Column(name = "institutionCode", nullable = false)
+    @Column(name = "institution_code", nullable = false)
     private Integer institutionCode;
 
     @Column(name = "name", nullable = false, length = 50)
