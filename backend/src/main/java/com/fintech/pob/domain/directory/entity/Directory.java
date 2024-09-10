@@ -26,13 +26,13 @@ public class Directory {
     @Column(name = "institutionCode", nullable = false)
     private Integer institutionCode;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created", nullable = false, updatable = false)
     private LocalDateTime created;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated", nullable = false)
     private LocalDateTime updated;
 
     @PrePersist
