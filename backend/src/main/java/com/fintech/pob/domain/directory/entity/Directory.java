@@ -15,10 +15,10 @@ public class Directory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "directory_id")
-    private Integer directoryId;
+    private Long directoryId;
 
     @ManyToOne
-    @JoinColumn(name = "protect_key", referencedColumnName = "user_key", nullable = false)
+    @JoinColumn(name = "user_key", referencedColumnName = "user_key", nullable = false)
     private User user;
 
     @Column(name = "account_no", nullable = false)
