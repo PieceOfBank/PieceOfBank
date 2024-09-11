@@ -1,6 +1,7 @@
 import { View, Text, Button, ImageBackground, TextInput, SafeAreaView, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
+import Checkbox from 'expo-checkbox';
 
 export default function page1(){
   const router = useRouter();
@@ -9,6 +10,7 @@ export default function page1(){
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [relation, setRelation] = useState('');
+  const [isChecked, setChecked] = useState(false);
 
 
   return (
@@ -33,11 +35,22 @@ export default function page1(){
       <Text>관계</Text>
       <View style={{height:5}}></View>
       <View style={{flexDirection:'row', justifyContent:'space-between', width:250}}>
-        <TouchableOpacity style={{width:120, borderRadius:40, backgroundColor:'white'}}><Text>부모</Text></TouchableOpacity>
-        <View style={{width:120, borderRadius:20}}><Button title="자녀" onPress={() => setRelation('자녀')}></Button></View>
+        <TouchableOpacity style={{width:120, height:30, borderRadius:40, justifyContent:'center',  
+          backgroundColor:relation=='부모'? 'blue' :'white'}} onPress={() => setRelation('부모')}>
+          <Text style={{borderRadius:40, textAlign:'center',
+            color:relation=='부모'? 'white' : 'black',}}>부모</Text></TouchableOpacity>
+        <TouchableOpacity style={{width:120, height:30, borderRadius:40, justifyContent:'center',  
+          backgroundColor:relation=='자녀'? 'blue' :'white'}} onPress={() => setRelation('자녀')}>
+          <Text style={{borderRadius:40, textAlign:'center',
+            color:relation=='자녀'? 'white' : 'black',}}>자녀</Text></TouchableOpacity>    
+        {/* <View style={{width:120, borderRadius:20}}><Button title="자녀" onPress={() => setRelation('자녀')}></Button></View> */}
       </View>
       <View style={{height:10}}></View>
-      <Text>개인정보 수집 및 이용에 동의합니다.</Text>
+      <View style={{flexDirection:'row', justifyContent:'space-between', width:250}}>
+        <Checkbox value={isChecked} onValueChange={setChecked} color={isChecked ? 'blue' : 'white'}/>
+        <Text>개인정보 수집 및 이용에 동의합니다.</Text>
+      </View>
+
       <View style={{height:30}}></View>
       </SafeAreaView>
 
