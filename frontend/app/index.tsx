@@ -1,6 +1,7 @@
 import { Link } from "expo-router";
 import { View, Text, ImageBackground, TextInput, SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
+import { styled } from 'nativewind';
 // MainPage
 
 export default function LoginScreen() {
@@ -9,7 +10,10 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
 
   return (
-    <ImageBackground source={require('../src/assets/POBbackGround.png')} style={{ flex: 1 }}>
+    <ImageBackground source={require('../src/assets/POBbackGround.png')}
+      className="w-full h-full"
+      resizeMode="contain"
+    >
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
     <Text style={{fontSize:20}}>POB</Text>
     <View style={{height:5}}></View>
