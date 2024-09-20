@@ -11,8 +11,7 @@ export default function LoginScreen() {
 
   return (
     <ImageBackground source={require('../src/assets/POBbackGround.png')}
-      className="w-full h-full"
-      resizeMode="contain"
+      className="flex-1"
     >
       <View className='flex-1 justify-center items-center'>
         <Text className='text-2xl m-2'>POB</Text>

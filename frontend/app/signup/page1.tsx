@@ -14,7 +14,9 @@ export default function page1(){
 
 
   return (
-    <ImageBackground source={require('../../src/assets/POBbackGround.png')} className='flex-1'>
+    <ImageBackground source={require('../../src/assets/POBbackGround.png')}
+      className="flex-1"
+    >
       {/* 컴포넌트 nativewind 적용이 안 됨 - 수정 후 변경하기*/}
       {/* <SignupForm /> */}
       <View className='flex-1 justify-center items-center'>
