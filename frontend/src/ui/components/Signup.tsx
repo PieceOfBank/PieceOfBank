@@ -11,7 +11,22 @@ const SignupForm = () => {
     const [name, setName] = useState('');
     const [relation, setRelation] = useState('');
     const [isChecked, setChecked] = useState(false);
-  
+
+    // 회원가입 조건 체크
+    const [idCheck, setIdCheck] = useState(false);
+    const [nameCheck, setNameCheck] = useState(false);
+    const [relationCheck, setRelationCheck] = useState(false);
+    const [boxCheck, setBoxCheck] = useState(false);
+
+    const [disabled, setDisabled] = useState(false);
+
+    // 이메일 인증
+    const emailCheck = () => {
+        Alert.alert('이메일 등록이 완료되었습니다')
+        setIdCheck(true)
+        setDisabled(true)
+    }
+      
     return (
       <View className='flex-1 justify-center items-center'>
       <Text className='text-xl my-2'>회원가입 양식</Text>
@@ -19,7 +34,8 @@ const SignupForm = () => {
         <Text className='my-2'>이메일 아이디</Text>
         <View className='flex-row justify-between w-64'>
           <TextInput className='bg-white w-44 rounded-lg px-2' onChangeText={(id) => setId(id)}></TextInput>
-          <TouchableOpacity className='w-16 h-8 rounded justify-center bg-sky-500'>
+          <TouchableOpacity className='w-16 h-8 rounded justify-center bg-sky-500'
+            onPress={emailCheck} disabled={disabled}>
           <Text className='text-white text-center font-bold'>인증하기</Text></TouchableOpacity>
         </View>
         <Text className='my-2'>이름</Text>
