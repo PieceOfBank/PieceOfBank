@@ -14,31 +14,24 @@ export default function LoginScreen() {
       className="w-full h-full"
       resizeMode="contain"
     >
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text style={{fontSize:20}}>POB</Text>
-    <View style={{height:5}}></View>
-    <Text style={{fontSize:20}}>로그인</Text>
-      <SafeAreaView>
-      <View style={{height:10}}></View>
-      <Text>아이디</Text>
-      <View style={{height:5}}></View>
-      <TextInput style={{backgroundColor:'white', width:250,}} 
-        onChangeText={(id) => setId(id)}>
-      </TextInput>
-      <View style={{height:10}}></View>
-      <Text>비밀번호</Text>
-      <View style={{height:5}}></View>
-      <TextInput style={{backgroundColor:'white', width:250,}}
-        secureTextEntry={true} 
-        onChangeText={(password) => setPassword(password)}>
-      </TextInput>
-      </SafeAreaView>
-      <View style={{height:10}}></View>
-      <Link href={'/mainpage'}>로그인</Link>
-      <View style={{height:10}}></View>
-      <Link href={'/signup/page1'}>회원가입</Link>
-      
+      <View className='flex-1 justify-center items-center'>
+        <Text className='text-2xl m-2'>POB</Text>
+        <Text className='text-xl'>로그인</Text>
+        <SafeAreaView>
+          <Text className='my-2'>아이디</Text>
+          <TextInput className='my-1 w-60 bg-white' 
+            onChangeText={(id) => setId(id)}>
+          </TextInput>
+          <Text className='my-2'>비밀번호</Text>
+          <TextInput className='my-1 w-60 bg-white' 
+            secureTextEntry={true} 
+            onChangeText={(password) => setPassword(password)}>
+          </TextInput>
+        </SafeAreaView>
+        <Link className='my-2' href={'/mainpage'}>로그인</Link>
+        <Link className='my-2' href={'/signup/page1'}>회원가입</Link>
+        <Link className='my-2' href={'/signup/page3'}>테스트중</Link>
       </View>
-      </ImageBackground>
+    </ImageBackground>
   );
 }
