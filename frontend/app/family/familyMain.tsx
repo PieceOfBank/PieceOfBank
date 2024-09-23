@@ -3,7 +3,7 @@ import { useState } from "react";
 import { View, Text, Image, Button } from "react-native";
 import { Header } from "react-native/Libraries/NewAppScreen";
 
-const familyMain = () => {
+const FamilyMain = () => {
 
     /* 내가 보호자인 경우, 피보호자를 가져온다. */
     const router = useRouter();
@@ -28,4 +28,4 @@ const familyMain = () => {
     );
 };
 
-export default familyMain;
+export default FamilyMain;

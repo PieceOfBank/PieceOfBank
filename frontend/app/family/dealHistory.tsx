@@ -1,6 +1,6 @@
 
-const dealHistory = () => {
+const DealHistory = () => {
 
 }
 
-export default dealHistory;
+export default DealHistory;

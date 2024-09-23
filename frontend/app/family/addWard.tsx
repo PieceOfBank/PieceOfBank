@@ -3,7 +3,7 @@ import { Link } from "expo-router";
 import { Header } from "react-native/Libraries/NewAppScreen";
 import { useState } from "react";
 
-const addWard = () => {
+const AddWard = () => {
   const [wardId, setWardId] = useState<string>("");
   const [relation, setRelation] = useState<string>("");
 
@@ -31,4 +31,4 @@ const addWard = () => {
   );
 };
 
-export default addWard;
+export default AddWard;

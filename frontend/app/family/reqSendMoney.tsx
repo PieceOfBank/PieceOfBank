@@ -1,6 +1,6 @@
 
-const reqSendMoney = () => {
+const ReqSendMoney = () => {
 
 }
 
-export default reqSendMoney;
+export default ReqSendMoney;
