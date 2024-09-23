@@ -1,7 +1,7 @@
 package com.fintech.pob.domain.media.entity;
 
-public enum MediaType {
+public enum MediaTypeENUM {
 
 
-    VIDEO,VOICE,PICTURE
+    VIDEO,VOICE,IMAGE
 }
