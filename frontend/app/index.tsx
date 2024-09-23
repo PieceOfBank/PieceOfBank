@@ -29,8 +29,8 @@ export default function LoginScreen() {
         </SafeAreaView>
         <Link className='my-2' href={'/mainpage'}>로그인</Link>
         <Link className='my-2' href={'/signup/page1'}>회원가입</Link>
-        <Link className='my-2' href={'/signup/page3'}>테스트중</Link>
-        <Link className='my-2' href={'/caregiver/main'}>보호자</Link>
+        {/* <Link className='my-2' href={'/signup/page3'}>테스트중</Link> */}
+        <Link className='my-2' href={'/ward/main'}>보호자</Link>
       </View>
     </ImageBackground>
   );
