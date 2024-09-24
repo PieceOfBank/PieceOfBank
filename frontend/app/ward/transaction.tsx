@@ -24,11 +24,11 @@ const careTransaction = () => {
 
     return (
         <View className='flex-1 justify-center items-center'>
-            <View className='h-32'></View>
           <Text className='text-2xl'>{name}의 거래내역</Text>
-          <Link className='w-80 h-8 rounded-3xl justify-center items-center bg-sky-200 m-4 text-center rounded-3xl font-bold text-2xl' 
+          <Link className='w-48 p-4 rounded-3xl justify-center items-center font-bold bg-sky-300 m-4 text-center text-2xl text-white' 
             href={{pathname:'/ward/transfer', params:{name:name}}}>송금하기</Link>
           <TransactionList />
+          <View className='h-8'></View>
         </View>
       );
 }
