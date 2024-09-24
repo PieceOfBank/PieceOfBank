@@ -28,7 +28,7 @@ public class MediaUploadService {
         if (contentType == null || !contentType.startsWith("image")) {
             throw new IllegalArgumentException("이미지 파일만 업로드할 수 있습니다.");
         }
-
+        Files.createDirectories(filePath.getParent());
         try {
             Files.write(filePath, file.getBytes());
         } catch (IOException e) {
@@ -36,7 +36,11 @@ public class MediaUploadService {
             System.err.println("파일 저장 중 오류가 발생했습니다: " + e.getMessage());
             throw new RuntimeException("파일 저장에 실패했습니다", e);
         }
-        Files.write(filePath, file.getBytes());
+
+
+
+        
+
         return uploadDir+"/" + fileName;
 
     }
