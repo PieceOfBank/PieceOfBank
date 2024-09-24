@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,6 +49,26 @@ public class MediaController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/findMedia")
+    public ResponseEntity<String> findMedia(
+                                              @RequestParam("transactionUniqueNo") Long transactionUniqueNo)
+    {
+
+        Optional<Media> media = mediaService.findMedia(transactionUniqueNo);
+
+        if (media.isPresent()) {
+            String url = media.get().getUrl();
+
+            return ResponseEntity.ok(url);
+
+        } else {
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("미디어 없음, 조회 실패");
+        }
+
+
     }
 
 

@@ -17,9 +17,9 @@ public class MediaUploadService {
     private final String uploadDir = "/app/uploads"; // 파일 저장 경로 설정
 
     public String uploadFile(MultipartFile file) throws IOException {
-        //String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
-        String fileName = file.getOriginalFilename();
+        //String fileName = file.getOriginalFilename();
         System.out.println("filename= "+fileName);
 
         Path filePath = Paths.get(uploadDir, fileName);
@@ -39,7 +39,7 @@ public class MediaUploadService {
 
 
 
-        
+
 
         return uploadDir+"/" + fileName;
 
