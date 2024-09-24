@@ -14,7 +14,7 @@ import java.util.UUID;
 @Service
 public class MediaUploadService {
 
-    private final String uploadDir = "/home/ubuntu/uploads"; // 파일 저장 경로 설정
+    private final String uploadDir = "/app/uploads"; // 파일 저장 경로 설정
 
     public String uploadFile(MultipartFile file) throws IOException {
         //String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
@@ -37,7 +37,7 @@ public class MediaUploadService {
             throw new RuntimeException("파일 저장에 실패했습니다", e);
         }
         Files.write(filePath, file.getBytes());
-        return "/home/ubuntu/uploads/" + fileName;
+        return uploadDir+"/" + fileName;
 
     }
 }
