@@ -22,7 +22,6 @@ public class MediaServiceImpl implements MediaService{
 
     @Override
     public void createMedia(Media media) {
-        System.out.println(media);
           mediaRepository.save(media);
     }
 

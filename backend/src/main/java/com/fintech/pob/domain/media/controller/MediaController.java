@@ -28,15 +28,11 @@ public class MediaController {
                                               @RequestParam("type") MediaTypeENUM type,
                                               @RequestParam("content") String content) {
         try {
-            // 파일을 서버에 업로드
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            String url = mediaUploadService.uploadFile(file);
 
-            System.out.println(url);
-            // Media 엔티티 생성 및 저장
+
+            String url = mediaUploadService.uploadFile(file);
             Media media = new Media();
             media.setTransactionUniqueNo(transactionUniqueNo);
-            System.out.println("type "+ type);
             media.setType(type);
 
             media.setUrl(url);
@@ -52,6 +48,10 @@ public class MediaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+    @G
+
+
+
 
 
 }
