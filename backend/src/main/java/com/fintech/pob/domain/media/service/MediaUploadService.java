@@ -17,9 +17,9 @@ public class MediaUploadService {
     private final String uploadDir = "/home/ubuntu/uploads"; // 파일 저장 경로 설정
 
     public String uploadFile(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        //String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
-
+        String fileName = file.getOriginalFilename();
         System.out.println("filename= "+fileName);
 
         Path filePath = Paths.get(uploadDir, fileName);
@@ -29,9 +29,15 @@ public class MediaUploadService {
             throw new IllegalArgumentException("이미지 파일만 업로드할 수 있습니다.");
         }
 
-         Files.createDirectories(filePath.getParent());
+        try {
+            Files.write(filePath, file.getBytes());
+        } catch (IOException e) {
+
+            System.err.println("파일 저장 중 오류가 발생했습니다: " + e.getMessage());
+            throw new RuntimeException("파일 저장에 실패했습니다", e);
+        }
         Files.write(filePath, file.getBytes());
-        return "/home/ubuntu/uploads" + fileName;
+        return "/home/ubuntu/uploads/" + fileName;
 
     }
 }
