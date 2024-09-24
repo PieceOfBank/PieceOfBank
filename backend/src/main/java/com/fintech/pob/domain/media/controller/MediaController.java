@@ -31,6 +31,7 @@ public class MediaController {
 
 
             String url = mediaUploadService.uploadFile(file);
+            System.out.println(url);
             Media media = new Media();
             media.setTransactionUniqueNo(transactionUniqueNo);
             media.setType(type);
