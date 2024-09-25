@@ -77,13 +77,11 @@ public class MediaController {
                 Resource        resource = (Resource) new UrlResource(filePath.toUri());
                if (resource.exists() || resource.isReadable()) {
 
-                    // 파일의 MIME 타입을 결정합니다.
                     String contentType = Files.probeContentType(filePath);
                     if (contentType == null) {
                         contentType = "application/octet-stream"; // 기본 MIME 타입 설정
                     }
 
-                    // 응답 헤더 설정 및 파일 전송
                     return ResponseEntity.ok()
                             .contentType(MediaType.parseMediaType(contentType))
                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
