@@ -6,12 +6,20 @@ import com.fintech.pob.domain.media.entity.MediaTypeENUM;
 import com.fintech.pob.domain.media.service.MediaService;
 import com.fintech.pob.domain.media.service.MediaUploadService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 @RestController
@@ -52,20 +60,44 @@ public class MediaController {
     }
 
     @GetMapping("/findMedia")
-    public ResponseEntity<String> findMedia(
+    public ResponseEntity<Resource> findMedia(
                                               @RequestParam("transactionUniqueNo") Long transactionUniqueNo)
     {
 
         Optional<Media> media = mediaService.findMedia(transactionUniqueNo);
 
         if (media.isPresent()) {
-            String url = media.get().getUrl();
+            try {
+                // 미디어 경로를 가져옵니다.
+                String mediaUrl = media.get().getUrl();
+                Path filePath = Paths.get(mediaUrl);
 
-            return ResponseEntity.ok(url);
 
+
+                Resource        resource = (Resource) new UrlResource(filePath.toUri());
+               if (resource.exists() || resource.isReadable()) {
+
+                    // 파일의 MIME 타입을 결정합니다.
+                    String contentType = Files.probeContentType(filePath);
+                    if (contentType == null) {
+                        contentType = "application/octet-stream"; // 기본 MIME 타입 설정
+                    }
+
+                    // 응답 헤더 설정 및 파일 전송
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.parseMediaType(contentType))
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                            .body(resource);
+
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                }
+
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
         } else {
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("미디어 없음, 조회 실패");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
 
