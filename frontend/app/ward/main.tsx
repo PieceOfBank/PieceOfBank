@@ -3,6 +3,7 @@ import { View, Text, ImageBackground, TextInput, SafeAreaView, TouchableOpacity,
 import React, { useState, useEffect } from 'react';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import WardListForm from "../../src/ui/components/WardList";
+import NowAccount from "../../src/ui/components/NowAccount";
 
 
 interface CareItem {
@@ -26,6 +27,7 @@ const caregiver = () => {
    return(
     <View className='flex-1 justify-center items-center mx-4'>
         <Text>보호자 메인</Text>
+        <NowAccount />
         <WardListForm />
     </View>
    )

@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View, Text, Image, Button, ImageBackground } from "react-native";
-import Header from "../../src/ui/components/Header";
+import Header from "../../src/ui/components/header";
 
 const FamilyMain = () => {
   const router = useRouter();

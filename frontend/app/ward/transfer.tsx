@@ -5,6 +5,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import TransferObject from "../../src/ui/components/TransferObject";
 import TransferCheck from "../../src/ui/components/TransferCheck";
 import PinConfirm from "../../src/ui/components/PinConfirm";
+import TransferOk from "../../src/ui/components/TransferOk";
 
 const careTransfer = () => {
 
@@ -27,7 +28,7 @@ const careTransfer = () => {
 
     const [bank, setBank] = useState<string>(''); // 은행  
 
-    const [account, setAccount] = useState<string>(); // 금액
+    const [account, setAccount] = useState<string>(''); // 금액
 
     const [inputPin, setInputPin] = useState<string>(''); // 핀번호    
 
@@ -63,7 +64,7 @@ const careTransfer = () => {
       return (
         <View className='flex-1 justify-center items-center'>
           <View className='flex-1 flex-row justify-center items-center'>
-            <TransferCheck onChange={secondChange} />
+            <TransferCheck onChange={secondChange} account={account} />
           </View>
         </View>
       );
@@ -86,8 +87,7 @@ const careTransfer = () => {
         <View>
           <View className='flex-1 justify-center items-center'>
             <View className='flex-1 flex-row justify-center items-center'>
-            <Text className='text-2xl'>송금이 완료되었습니다</Text>
-            <Link className='my-2' href={'/ward/main'}>메인으로</Link>
+              <TransferOk />
             </View>
           </View>
         </View>

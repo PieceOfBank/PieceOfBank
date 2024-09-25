@@ -16,9 +16,14 @@ const careAccountList = () => {
         }
         },[]);
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>거래내역</Text>
+        <View className='flex-1 justify-center items-center'>
+        <Text className='text-3xl my-1'>전체 계좌</Text>
+        <View className='w-80 h-10 p-2 flex-row bg-sky-300'>
+            <Text>국민은행</Text>
+            <Text>123-456-7890</Text>
+          
         </View>
+      </View>
       );
 }
 

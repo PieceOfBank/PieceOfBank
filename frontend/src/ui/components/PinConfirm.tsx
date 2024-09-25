@@ -58,9 +58,9 @@ const PinConfirm = ({ onChange }: {onChange:(value:string) => void}) => {
                 </View>
             </View>
 
-            <View className='flex-1 justfiy-center items-center basis-2/5 m-2 p-2 bg-gray-300 h-72'>
+            <View className='flex-1 justfiy-center items-center basis-2/5 m-2 h-72'>
 
-            <View className='m-2'>
+            <View>
                 {touchNumber.map((list, index) => 
                 <View className='flex-row' key={index}>
                     {list.map((number, indexs)=> 

@@ -1,4 +1,4 @@
-import { View, Text, Button, ImageBackground, Alert, TextInput, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, Button, ImageBackground, Alert, TextInput, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView, KeyboardAvoidingView } from 'react-native';
 import { useRouter, Link } from 'expo-router';
 import React, { useState } from 'react';
 
@@ -20,7 +20,7 @@ const TransferObject = ({ onChange } : firstInfo) => {
     }
 
      return(
-        <View className='flex-1 flex-row h-5/6'>
+        <KeyboardAvoidingView className='flex-1 flex-row h-5/6'>
         <View className='flex-1 justfiy-center items-center basis-2/5 m-2 p-2 bg-gray-300'>
             <Text className='text-2xl m-2 text-center mt-4'>보낼사람</Text>
             <SafeAreaView>
@@ -45,7 +45,7 @@ const TransferObject = ({ onChange } : firstInfo) => {
             </SafeAreaView>
             <Button title="확인" onPress={firstCheck}></Button>
         </View>
-        </View>
+        </KeyboardAvoidingView>
 
     )
 
