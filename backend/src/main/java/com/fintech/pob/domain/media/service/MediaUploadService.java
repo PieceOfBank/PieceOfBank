@@ -25,8 +25,8 @@ public class MediaUploadService {
         Path filePath = Paths.get(uploadDir, fileName);
         System.out.println("file path= "+filePath);
         String contentType = Files.probeContentType(filePath);
-        if (contentType == null || !contentType.startsWith("image")) {
-            throw new IllegalArgumentException("이미지 파일만 업로드할 수 있습니다.");
+        if (contentType == null || !(contentType.startsWith("image") || contentType.startsWith("video") || contentType.startsWith("audio"))) {
+            throw new IllegalArgumentException("이미지, 동영상 또는 음성 파일만 업로드할 수 있습니다.");
         }
         Files.createDirectories(filePath.getParent());
         try {
