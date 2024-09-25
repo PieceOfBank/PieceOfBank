@@ -59,7 +59,7 @@ public class MediaController {
         }
     }
 
-    @GetMapping("/findMedia")
+    @GetMapping("/find")
     public ResponseEntity<Resource> findMedia(
                                               @RequestParam("transactionUniqueNo") Long transactionUniqueNo)
     {
