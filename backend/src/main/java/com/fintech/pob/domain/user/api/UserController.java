@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -39,7 +41,7 @@ public class UserController {
     public ResponseEntity<String> registUser(@RequestParam String userName, @RequestParam String userPassword,
                                              @RequestParam int userSubscriptionType, HttpSession session) {
 //        String userKey = (String) session.getAttribute("1cf012ec-c2bc-4d96-96c8-f311c883a3e7");
-        String userKey = "1cf012ec-c2bc-4d96-96c8-f311c883a3e7";
+        UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
 
         if (userKey == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효한 세션이 아닙니다.");
