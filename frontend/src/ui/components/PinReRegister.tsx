@@ -28,6 +28,14 @@ const PinReRegister = ({firstPin} : {firstPin:string}) => {
         }
     }
 
+
+  // 핀번호 등록
+  // ★ 나중에 등록 요청 보내는 내용 추가하기
+  const pinSignup = () => {
+    router.push("signup/page3")
+  }
+
+
   // 2차 핀번호 점검
   const secondPinCheck = () => {
     if (numCheck != 6) {
@@ -40,7 +48,7 @@ const PinReRegister = ({firstPin} : {firstPin:string}) => {
           Alert.alert('확인', '핀번호 등록이 완료되었습니다',[
             {
               text:"다음",
-              onPress:() => router.push("signup/page3")
+              onPress:pinSignup
             }
           ])
       }

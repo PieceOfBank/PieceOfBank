@@ -18,41 +18,101 @@ const SignupForm = () => {
     const [relationCheck, setRelationCheck] = useState(false);
     const [boxCheck, setBoxCheck] = useState(false);
 
+    // 이메일 인증 버튼 (클릭시 비활성화)
     const [disabled, setDisabled] = useState(false);
 
-    // 이메일 인증
+    // 이메일 인증 반영 
+    // ★ 나중에 등록 요청 보내는 내용 추가하기
     const emailCheck = () => {
         Alert.alert('이메일 등록이 완료되었습니다')
         setIdCheck(true)
         setDisabled(true)
     }
-      
+
+    // 피보호자 관계 선택 반영
+    const wardCheck = () => {
+      setRelation('피보호자')
+      setRelationCheck(true)
+    }
+
+    // 보호자 관계 선택 반영
+    const familyCheck = () => {
+      setRelation('보호자')
+      setRelationCheck(true)
+    }
+
+    // 개인정보 동의 체크 반영
+    const consentCheck = () => {
+      setChecked(!isChecked)
+      setBoxCheck(!boxCheck)
+    }
+
+    // 이름 입력 반영: 두 글자 이상일 때만
+    const nameConfirm = (value:string) => {
+      if (value.length >= 2) {
+        setName(value)
+        setNameCheck(true)
+      }
+      else{
+        setNameCheck(false)
+      }
+    }
+
+    // 테스트
+    const checkPrint = () => {
+      console.log(idCheck)
+      console.log(nameCheck)
+      console.log(relationCheck)
+      console.log(boxCheck)
+      console.log(name)
+
+    }
+
+    // 회원가입 검증
+    // ★ 나중에 등록 요청 보내는 내용 추가하기
+    const signupCheck = () => {
+      if (idCheck && nameCheck && relationCheck && boxCheck) {
+        Alert.alert('회원 정보가 등록되었습니다')
+        router.push('signup/page2')
+      }
+      else {
+        Alert.alert('입력 정보를 다시 확인해주세요')
+      }
+    }
+    
+
     return (
-      <View className='flex-1 justify-center items-center'>
+    <View className='flex-1 justify-center items-center'>
       <Text className='text-xl my-2'>회원가입 양식</Text>
       <SafeAreaView>
         <Text className='my-2'>이메일 아이디</Text>
         <View className='flex-row justify-between w-64'>
           <TextInput className='bg-white w-44 rounded-lg px-2' onChangeText={(id) => setId(id)}></TextInput>
-          <TouchableOpacity className='w-16 h-8 rounded justify-center bg-sky-500'
+          <TouchableOpacity 
+            className={`${!disabled ? 'bg-sky-500' : 'bg-gray-500'} w-16 h-8 rounded justify-center`}
+            // className='w-16 h-8 rounded justify-center bg-sky-500'
             onPress={emailCheck} disabled={disabled}>
           <Text className='text-white text-center font-bold'>인증하기</Text></TouchableOpacity>
         </View>
         <Text className='my-2'>이름</Text>
-        <TextInput className='bg-white w-64 rounded-lg px-2' onChangeText={(name) => setName(name)}></TextInput>
+          <TextInput className='bg-white w-64 rounded-lg px-2' onChangeText={(name) => nameConfirm(name)}></TextInput>
         <Text className='my-2'>관계</Text>
         <View className='flex-row justify-between w-64'>
-          <TouchableOpacity className={`${relation=='부모' ? 'bg-sky-500' : 'bg-white'} w-28 h-8 rounded-3xl justify-center`} onPress={() => setRelation('부모')}>
-            <Text className={`${relation=='부모' ? 'text-white' : 'text-black'} text-center rounded-3xl`}>부모</Text></TouchableOpacity>
-          <TouchableOpacity className={`${relation=='자녀' ? 'bg-sky-500' : 'bg-white'} w-28 h-8 rounded-3xl justify-center`} onPress={() => setRelation('자녀')}>
-            <Text className={`${relation=='자녀' ? 'text-white': 'text-black'} text-center rounded-3xl`}>자녀</Text></TouchableOpacity>    
+          <TouchableOpacity className={`${relation=='피보호자' ? 'bg-sky-500' : 'bg-white'} w-28 h-8 rounded-3xl justify-center`} 
+            onPress={wardCheck}>
+            <Text className={`${relation=='피보호자' ? 'text-white' : 'text-black'} text-center rounded-3xl`}>피보호자</Text></TouchableOpacity>
+          <TouchableOpacity className={`${relation=='보호자' ? 'bg-sky-500' : 'bg-white'} w-28 h-8 rounded-3xl justify-center`} 
+            onPress={familyCheck}>
+            <Text className={`${relation=='보호자' ? 'text-white': 'text-black'} text-center rounded-3xl`}>보호자</Text></TouchableOpacity>    
         </View>
         <View className='flex-row justify-between w-64 my-5'>
-          <Checkbox value={isChecked} onValueChange={setChecked} className={`${isChecked ? '' : 'bg-white border-transparent'}`} />
+          <Checkbox value={isChecked} onValueChange={consentCheck} className={`${isChecked ? '' : 'bg-white border-transparent'}`} />
           <Text>개인정보 수집 및 이용에 동의합니다.</Text>
         </View>
       </SafeAreaView>
-      <Button title="다음" onPress={() => router.push('signup/page2')}></Button>
+      <Button 
+        title="다음" 
+        onPress={signupCheck}></Button>
     </View>
     );
 }

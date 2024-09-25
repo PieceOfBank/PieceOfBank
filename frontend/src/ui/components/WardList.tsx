@@ -1,5 +1,5 @@
 import { Link } from "expo-router";
-import { View, Text, ImageBackground, TextInput, SafeAreaView, TouchableOpacity, Image, FlatList } from 'react-native';
+import { View, Text, ImageBackground, TextInput, SafeAreaView, TouchableOpacity, Image, FlatList, StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -32,6 +32,9 @@ const WardListForm = () => {
              setNowPage(nowPage-1)
          }
      }
+
+     // 피보호자 연결 전인지 확인 - 1이면 연결 전 2이면 연결 후
+     const connect:number = 2;
  
      // 임시 리스트 (전체 연락처)
      const careList: CareItem [] = [{id:'1', name:'딸'}, {id:'2', name:'아들'}, {id:'3', name:'미숙'}, {id:'4', name:'영숙'}, {id:'5', name:'정숙'}]
@@ -39,8 +42,13 @@ const WardListForm = () => {
      // 임시 리스트 (고정 카드: 전체 기록 카드)
      const addList: CareItem = {id:'99', name:'전체 기록'}
  
+    //  const beforeList : CareItem [] = [{id:'00', name:'피보호자 연결'}]
+
      // 임시 리스트 (전체 연락처 + 고정)
-     const allList : CareItem [] = [...careList, addList]
+     const allList : CareItem [] = (connect==2) ? [...careList, addList] : [{id:'00', name:'연결하기'}]
+
+     // 버튼 클릭시 이동 - 1이면 관계 등록 페이지 2이면 거래 내역 확인 페이지
+     const connectAdd = connect == 2 ? '/ward/transaction' : '/ward/addFamily'
  
  
      // 카드 출력
@@ -51,14 +59,15 @@ const WardListForm = () => {
                 className='w-20 h-6 rounded-3xl justify-center bg-sky-200 m-4' 
                 onPress={() => router.push({pathname:'/ward/transaction', params:{props:item.title}})}>
              <Text className='text-center rounded-3xl font-bold'>{item.title}</Text></TouchableOpacity>    */}
-             <Link className='w-20 h-6 rounded-3xl justify-center bg-sky-200 m-4 text-center rounded-3xl font-bold' href={
-                {pathname:'/ward/transaction', params:{name:item.name}}
+             <Link className='w-20 h-6 rounded-3xl justify-center bg-sky-200 m-4 text-center rounded-3xl font-bold' 
+             href={
+                {pathname:connectAdd, params:{name:item.name}}
                 }>{item.name}</Link>
          </View>)
  
      // 한 페이지에 보여 줄 카드 리스트 잘라서 보여주기
      const pageList = allList.slice(nowPage * pageNum, (nowPage+1) * pageNum);
- 
+
      return (
 
            <View className='flex-row'>
@@ -78,7 +87,7 @@ const WardListForm = () => {
              renderItem={careView}
              keyExtractor={item => item.id}
              horizontal={true}
-             className="m-8"
+             className="m-8 bg-sky-300"
              />
 
              {/* 화살표 다음(>) 버튼 */}

@@ -82,6 +82,8 @@ const careTransfer = () => {
       )
     }
 
+    // 금액 한도 초과일 경우 보호자에게 알림
+    // 금액 이하일 경우 송금 완료 
     else if (step=='4'){
       return(
         <View>

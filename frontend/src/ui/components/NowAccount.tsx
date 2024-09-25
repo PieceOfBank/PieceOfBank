@@ -14,7 +14,7 @@ const NowAccount = () => {
     
      return(
         <View>
-            <Link className='text-xl p-2' href={'/ward/accountList'}>{nowBank.bank} {nowBank.accountNo}</Link>
+            <Link className='text-xl' href={'/ward/accountList'}>{nowBank.bank} {nowBank.accountNo}</Link>
         </View>
     )
 

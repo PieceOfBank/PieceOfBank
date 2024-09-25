@@ -1,7 +1,8 @@
 import { Link } from "expo-router";
-import { View, Text, ImageBackground, TextInput, SafeAreaView } from 'react-native';
+import { View, Text, ImageBackground, TextInput, SafeAreaView, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import WardAllAccount from "../../src/ui/components/WardAllAccount";
 
 const careAccountList = () => {
 
@@ -17,13 +18,9 @@ const careAccountList = () => {
         },[]);
     return (
         <View className='flex-1 justify-center items-center'>
-        <Text className='text-3xl my-1'>전체 계좌</Text>
-        <View className='w-80 h-10 p-2 flex-row bg-sky-300'>
-            <Text>국민은행</Text>
-            <Text>123-456-7890</Text>
-          
+            <Text className='text-3xl my-1'>전체 계좌</Text>
+            <WardAllAccount />
         </View>
-      </View>
       );
 }
 
