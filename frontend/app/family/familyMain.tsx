@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View, Text, Image, Button, ImageBackground } from "react-native";
 import Header from "../../src/ui/components/Header";
+import LinkToAddWard from "../../src/ui/components/LinkToAddWard";
 
 const FamilyMain = () => {
   const router = useRouter();
@@ -23,15 +24,13 @@ const FamilyMain = () => {
           <View>
             <Text>보호자 카드는 여기에..</Text>
           </View>
-
-          <Button title="금액 한도 설정"></Button>
-          <Button title="부모 대상 송금 관리"></Button>
         </View>
       ) : (
-        <View>
-          <Text>보호자가 없습니다.</Text>
-        </View>
-      )}
+        <LinkToAddWard />
+          )}
+          
+          <Button title="금액 한도 설정"></Button>
+          <Button title="부모 대상 송금 관리"></Button>
     </View>
   );
 };
