@@ -3,7 +3,12 @@ package com.fintech.pob.domain.user.dao;
 import com.fintech.pob.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 public interface UserRepository extends JpaRepository<User, String> {
+    Optional<User> findByUserKey(UUID userKey);
+
     User findByUserNameAndUserPassword(String userName, String userPassword);
 }
 
