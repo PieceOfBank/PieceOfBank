@@ -18,6 +18,6 @@ public class HeaderConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(headerInterceptor).addPathPatterns("/api/**/client/**");
+        registry.addInterceptor(headerInterceptor).addPathPatterns("/**/client/**");
     }
 }

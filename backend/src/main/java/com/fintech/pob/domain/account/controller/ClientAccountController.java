@@ -12,16 +12,15 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/account/client")
+@RequestMapping("/account/client")
 public class ClientAccountController {
 
     private final AccountService accountService;
 
     @PostMapping("/createDemandDepositAccount")
     public Mono<ResponseEntity<ClientAccountCreationResponseDTO>> createClientAccount(
-            @RequestParam String userKey,
             @RequestParam String accountTypeUniqueNo) {
-        return accountService.createAccount(userKey, accountTypeUniqueNo)
+        return accountService.createAccount(accountTypeUniqueNo)
                 .map(ResponseEntity::ok);
     }
 }
