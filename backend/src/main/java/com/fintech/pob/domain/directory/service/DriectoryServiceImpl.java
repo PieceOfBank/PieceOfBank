@@ -3,17 +3,15 @@ package com.fintech.pob.domain.directory.service;
 import com.fintech.pob.domain.directory.entity.Directory;
 import com.fintech.pob.domain.directory.entity.DirectoryRequestDto;
 import com.fintech.pob.domain.directory.repository.DirectoryRepository;
-import com.fintech.pob.domain.user.application.UserService;
-import com.fintech.pob.domain.user.dao.UserRepository;
+import com.fintech.pob.domain.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class DriectoryServiceImpl implements DirectoryService{
+public class DriectoryServiceImpl implements  DirectoryService{
 
 
     private final DirectoryRepository directoryRepository;

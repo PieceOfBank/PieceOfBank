@@ -1,7 +1,7 @@
-package com.fintech.pob.domain.user.application;
+package com.fintech.pob.domain.user.service;
 
-import com.fintech.pob.domain.user.dao.UserRepository;
 import com.fintech.pob.domain.user.entity.User;
+import com.fintech.pob.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,14 +11,14 @@ import java.util.UUID;
 
 @Service
 @Transactional
-public class LocalUserService {
+public class LocalUserServiceImpl implements LocalUserService {
 
     @Autowired
     private UserRepository userRepository;
 
     public void saveUser(UUID userKey, String userName, String userPassword, int userSubscriptionType) {
         User user = new User();
-        if (userKey == null ) {
+        if (userKey == null) {
             throw new IllegalArgumentException("userKey는 null이거나 비어 있을 수 없습니다.");
         }
         user.setUserKey(userKey);
