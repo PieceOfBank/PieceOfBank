@@ -1,4 +1,4 @@
-package com.fintech.pob.domain.user.dao;
+package com.fintech.pob.domain.user.repository;
 
 import com.fintech.pob.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
