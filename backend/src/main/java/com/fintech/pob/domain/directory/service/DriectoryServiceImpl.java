@@ -6,10 +6,7 @@ import com.fintech.pob.domain.directory.repository.DirectoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,11 +27,12 @@ public class DriectoryServiceImpl implements DirectoryService{
     }
 
     @Override
-    public List<DirectoryRequestDto> getDirectoryById(String userKey) {
+    public List<DirectoryRequestDto> getDirectoryById(UUID userKey) {
         List<Directory> directories = directoryRepository.findByUser_UserKey(userKey);
         List<DirectoryRequestDto> directoryDtos = new ArrayList<>();
         for (Directory directory : directories) {
             DirectoryRequestDto dto = new DirectoryRequestDto();
+
 
             dto.setDirectoryId(directory.getDirectoryId());
             dto.setAccountNo(directory.getAccountNo());

@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/directory")
 @AllArgsConstructor
@@ -23,7 +26,8 @@ public class DirectoryController {
             HttpServletRequest request // HttpServletRequest를 통해 JWT 추출
     ) {
        // String userKey = extractUserKeyFromRequest(request);
-        String userKey="";
+        UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
+
         directoryDTO.setUserKey(userKey);
         DirectoryRequestDto createdDirectory = directoryService.createDirectory(directoryDTO);
         return ResponseEntity.ok(createdDirectory);
@@ -31,9 +35,9 @@ public class DirectoryController {
 
 
     @GetMapping("/find")
-    public ResponseEntity<DirectoryRequestDto> getDirectoryById(HttpServletRequest request) {
-        String userKey="";
-        DirectoryRequestDto directoryDTO = directoryService
+    public ResponseEntity<List<DirectoryRequestDto>> getDirectoryById(HttpServletRequest request) {
+        UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
+       List< DirectoryRequestDto> directoryDTO = directoryService.getDirectoryById(userKey);
 
         return ResponseEntity.ok(directoryDTO);
     }
@@ -45,7 +49,8 @@ public class DirectoryController {
             HttpServletRequest request
     ) {
         //String userKey = extractUserKeyFromRequest(request);
-        String userKey="";
+        UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
+
         directoryDTO.setUserKey(userKey);
 
         DirectoryRequestDto updatedDirectory = directoryService.updateDirectory(id, directoryDTO);
