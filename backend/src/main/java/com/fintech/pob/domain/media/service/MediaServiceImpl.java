@@ -5,13 +5,8 @@ import com.fintech.pob.domain.media.repository.MediaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -22,14 +17,20 @@ public class MediaServiceImpl implements MediaService{
 
     @Override
     public void createMedia(Media media) {
-        System.out.println(media);
           mediaRepository.save(media);
     }
 
     @Override
-    public void findMedia(Media media) {
+    public Optional<Media> findMedia(Long number) {
 
+
+        Optional<Media> find = mediaRepository.findByTransactionUniqueNo(number);
+
+        System.out.println(find);
+        return find;
     }
+
+
 
 
 }

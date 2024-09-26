@@ -14,7 +14,6 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue
     @Column(name = "user_key", unique = true, nullable = false, updatable = false)
     private UUID userKey;
 
@@ -22,7 +21,7 @@ public class User {
     private String userName;
 
     @Column(name = "user_password", nullable = false)
-    private String userPassword;  // 6자리 PIN 암호화하여 저장
+    private String userPassword;
 
     @Column(name = "created", nullable = false, updatable = false)
     private LocalDateTime created;
@@ -31,16 +30,16 @@ public class User {
     private LocalDateTime updated;
 
     @Column(name = "subscription_type", nullable = false)
-    private int subscriptionType; // 0: Default, 1: 보호자, 2: 피보호자
+    private int subscriptionType;
 
     @PrePersist
     protected void onCreate() {
         this.created = LocalDateTime.now();
-        this.updated = LocalDateTime.now();
+        this.updated = LocalDateTime.now(); // 최초 생성 시 updated 설정
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updated = LocalDateTime.now();
+        this.updated = LocalDateTime.now(); // 수정 시 updated 설정
     }
 }
