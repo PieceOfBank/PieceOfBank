@@ -3,6 +3,7 @@ package com.fintech.pob.domain.account.service;
 import com.fintech.pob.domain.account.dto.client.ClientAccountCreationRequestDTO;
 import com.fintech.pob.domain.account.dto.client.ClientAccountCreationResponseDTO;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
+import com.fintech.pob.global.header.service.HeaderService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -17,7 +18,7 @@ public class AccountService {
     private final WebClient webClient;
     private final HttpServletRequest request;
 
-    public Mono<ClientAccountCreationResponseDTO> createAccount(String userKey, String accountTypeUniqueNo) {
+    public Mono<ClientAccountCreationResponseDTO> createAccount(String accountTypeUniqueNo) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
 
         ClientAccountCreationRequestDTO requestDTO = new ClientAccountCreationRequestDTO();
