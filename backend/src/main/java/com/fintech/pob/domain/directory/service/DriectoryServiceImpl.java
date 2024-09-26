@@ -3,6 +3,8 @@ package com.fintech.pob.domain.directory.service;
 import com.fintech.pob.domain.directory.entity.Directory;
 import com.fintech.pob.domain.directory.entity.DirectoryRequestDto;
 import com.fintech.pob.domain.directory.repository.DirectoryRepository;
+import com.fintech.pob.domain.user.application.UserService;
+import com.fintech.pob.domain.user.dao.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +17,15 @@ public class DriectoryServiceImpl implements DirectoryService{
 
 
     private final DirectoryRepository directoryRepository;
+    private final UserRepository userRepository;
     @Override
-    public DirectoryRequestDto createDirectory(DirectoryRequestDto directoryDTO) {
+    public DirectoryRequestDto createDirectory(DirectoryRequestDto directoryDTO,UUID userKey) {
+
         Directory directory = new Directory();
         directory.setAccountNo(directoryDTO.getAccountNo());
         directory.setInstitutionCode(directoryDTO.getInstitutionCode());
         directory.setName(directoryDTO.getName());
+        directory.setUser(userRepository.findByUserKey(userKey).orElse(null));
 
         Directory savedDirectory = directoryRepository.save(directory);
         return directoryDTO;
