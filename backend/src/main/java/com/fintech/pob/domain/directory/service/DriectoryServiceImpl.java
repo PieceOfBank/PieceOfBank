@@ -11,7 +11,7 @@ import java.util.*;
 
 @Service
 @AllArgsConstructor
-public class DriectoryServiceImpl implements DirectoryService{
+public class DriectoryServiceImpl implements  DirectoryService{
 
 
     private final DirectoryRepository directoryRepository;
