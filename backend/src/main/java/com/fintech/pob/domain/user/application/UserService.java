@@ -10,7 +10,7 @@ public class UserService {
 
     private static final String API_URL = "https://finopenapi.ssafy.io/ssafy/api/v1/member/";
 
-    private static final String FIXED_API_KEY = "35e455cd046e44b09bfbe09726ff947a";
+    private static final String FIXED_API_KEY = "3b72bfbbcc2c47d7856f633bec227cdb";
 
     public String createUserAccount(String email) {
 
