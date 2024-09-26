@@ -12,4 +12,9 @@ public class NotificationType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long notificationTypeId;
     private String typeName;
+
+    public NotificationType(Long notificationTypeId, String typeName) {
+        this.notificationTypeId = notificationTypeId;
+        this.typeName = typeName;
+    }
 }
