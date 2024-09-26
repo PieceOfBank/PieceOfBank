@@ -4,20 +4,22 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter
-@Setter
-
+@Data
+@Table(name = "media")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Media {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "media_id")
     private Long mediaId;
-
-
     private Long transactionUniqueNo;
-    private Enum type;
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private MediaTypeENUM type;
+
     private String url;
+    private String content;
 
 }
