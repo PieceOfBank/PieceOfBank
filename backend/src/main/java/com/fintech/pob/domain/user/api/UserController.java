@@ -3,21 +3,23 @@ package com.fintech.pob.domain.user.api;
 import com.fintech.pob.domain.user.application.LocalUserService;
 import com.fintech.pob.domain.user.application.UserService;
 import jakarta.servlet.http.HttpSession;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
+    private final UserService  userService;
     private final LocalUserService localUserService;
 
     @Autowired
@@ -27,9 +29,9 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createUser(@RequestParam String email, HttpSession session) {
+    public ResponseEntity<String> createUser(@RequestBody CreateUserRequest request, HttpSession session) {
         try {
-            String userKey = userService.createUserAccount(email);
+            String userKey = userService.createUserAccount(request.getEmail());
             session.setAttribute("userKey", userKey);
             return ResponseEntity.ok("사용자 계정 생성 성공: " + userKey);
         } catch (Exception e) {
@@ -37,20 +39,34 @@ public class UserController {
         }
     }
 
-    @PostMapping("/regist")
-    public ResponseEntity<String> registUser(@RequestParam String userName, @RequestParam String userPassword,
-                                             @RequestParam int userSubscriptionType, HttpSession session) {
-//        String userKey = (String) session.getAttribute("1cf012ec-c2bc-4d96-96c8-f311c883a3e7");
-        UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
+    @Getter
+    @Setter
+    public static class CreateUserRequest {
+        private String email;
+    }
 
-        if (userKey == null) {
+
+    @PostMapping("/regist")
+    public ResponseEntity<String> registUser(@RequestBody UserRequest userReqeust, HttpSession session) {
+        String userKeyString = (String) session.getAttribute("userKey");
+
+        if (userKeyString == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효한 세션이 아닙니다.");
         }
         try {
-            localUserService.saveUser(userKey, userName, userPassword, userSubscriptionType);
+            UUID userkey = UUID.fromString(userKeyString);
+            localUserService.saveUser(userkey, userReqeust.getUserName(), userReqeust.getUserPassword(), userReqeust.getUserSubscriptionType());
             return ResponseEntity.ok("사용자 정보 저장 성공");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("사용자 정보 저장 실패");
         }
+    }
+
+    @Getter
+    @Setter
+    public static class UserRequest {
+        private String userName;
+        private String userPassword;
+        private int userSubscriptionType;
     }
 }
