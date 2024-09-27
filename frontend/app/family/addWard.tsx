@@ -1,11 +1,21 @@
-import { View, Text, SafeAreaView, TextInput } from "react-native";
+import { View, Text, SafeAreaView, TextInput, Button } from "react-native";
 import { Link } from "expo-router";
 import { Header } from "react-native/Libraries/NewAppScreen";
 import { useState } from "react";
+import Toast from 'react-native-toast-message';
 
 const AddWard = () => {
   const [wardId, setWardId] = useState<string>("");
   const [relation, setRelation] = useState<string>("");
+
+  /* 알림팝업 Logic */
+  const handleBtn = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Hello',
+      text2: 'This is some something 👋'
+    })
+  }
 
   return (
     <View>
@@ -23,6 +33,7 @@ const AddWard = () => {
             onChangeText={(password) => setRelation(password)}
           ></TextInput>
         </SafeAreaView>
+        <Button title="press Me" onPress={handleBtn} />
         <Link className="my-2" href={""}>
           요청 보내기
         </Link>

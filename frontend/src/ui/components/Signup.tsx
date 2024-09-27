@@ -2,12 +2,14 @@ import { View, Text, Button, ImageBackground, TextInput, SafeAreaView, Alert, To
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import Checkbox from 'expo-checkbox';
+import Toast from "react-native-toast-message";
+import { createUser } from "../../services/api";
 
 const SignupForm = () => {
     const router = useRouter();
 
     // 회원가입 변수 저장
-    const [id, setId] = useState('');
+    const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [relation, setRelation] = useState('');
     const [isChecked, setChecked] = useState(false);
@@ -21,12 +23,38 @@ const SignupForm = () => {
     // 이메일 인증 버튼 (클릭시 비활성화)
     const [disabled, setDisabled] = useState(false);
 
-    // 이메일 인증 반영 
-    // ★ 나중에 등록 요청 보내는 내용 추가하기
-    const emailCheck = () => {
-        Alert.alert('이메일 등록이 완료되었습니다')
-        setIdCheck(true)
-        setDisabled(true)
+  // 이메일 인증 반영 
+  // axios
+  // ★ 나중에 등록 요청 보내는 내용 추가하기
+  const emailCheck = async () => {
+    try {
+
+      const JsonData = {
+        email : email,
+      }
+      
+      const response = await createUser(JsonData);
+      console.log(response)
+      
+      Toast.show({
+        type: 'success',
+        text1: '이메일 인증에 성공했습니다',
+        text2: ':happy:'
+      })
+
+      setIdCheck(true)
+      setDisabled(true)
+    }
+    catch (error) {
+
+      console.log(error)
+
+      Toast.show({
+        type: 'error',
+        text1: '이메일 인증에 실패했습니다.',
+        text2: ':cry:'
+      })
+    }
     }
 
     // 피보호자 관계 선택 반영
@@ -87,7 +115,7 @@ const SignupForm = () => {
       <SafeAreaView>
         <Text className='my-2'>이메일 아이디</Text>
         <View className='flex-row justify-between w-64'>
-          <TextInput className='bg-white w-44 rounded-lg px-2' onChangeText={(id) => setId(id)}></TextInput>
+          <TextInput className='bg-white w-44 rounded-lg px-2' onChangeText={(email) => setEmail(email)}></TextInput>
           <TouchableOpacity 
             className={`${!disabled ? 'bg-sky-500' : 'bg-gray-500'} w-16 h-8 rounded justify-center`}
             // className='w-16 h-8 rounded justify-center bg-sky-500'
