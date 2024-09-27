@@ -18,6 +18,9 @@ public class JwtUtil {
     @Value("${jwt.access-token-validity-in-seconds}")
     private long EXPIRATION_TIME;
 
+    @Value("${jwt.refresh-token-validity-in-seconds}")
+    private long REFRESH_TOKEN_EXPIRATION_TIME;
+
     // JWT 토큰 생성
     public String generateToken(String userKey, int subscriptionType) {
         Claims claims = Jwts.claims().setSubject(userKey);
