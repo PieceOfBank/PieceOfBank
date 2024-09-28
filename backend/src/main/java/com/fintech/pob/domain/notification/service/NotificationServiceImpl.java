@@ -5,11 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fintech.pob.domain.notification.dto.NotificationMessageDto;
 import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
-import com.fintech.pob.domain.notification.entity.NotificationStatus;
-import com.fintech.pob.domain.notification.entity.NotificationType;
-import com.fintech.pob.domain.notification.entity.TransactionApproval;
+import com.fintech.pob.domain.notification.entity.*;
 import com.fintech.pob.domain.notification.repository.NotificationRepository;
-import com.fintech.pob.domain.notification.entity.Notification;
 import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
 import com.fintech.pob.domain.notification.repository.TransactionApprovalRepository;
 import com.fintech.pob.domain.user.entity.User;
@@ -55,7 +52,6 @@ public class NotificationServiceImpl implements NotificationService {
                 .orElseThrow(() -> new IllegalArgumentException("Notification Type not found"));
         User sender = userRepository.findByUserKey(transactionApprovalRequestDto.getSenderKey())
                 .orElseThrow(() -> new IllegalArgumentException("Sender not found"));
-        // receiver 값 못 받으면 Subscription에서 조회하여 사용
         User receiver = userRepository.findByUserKey(transactionApprovalRequestDto.getReceiverKey())
                 .orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
 
@@ -73,7 +69,8 @@ public class NotificationServiceImpl implements NotificationService {
         TransactionApproval transactionApproval = TransactionApproval.builder()
                 .notification(notification)
                 .receiverName(transactionApprovalRequestDto.getReceiverName())
-                .amount(1000000L)
+                .amount(transactionApprovalRequestDto.getAmount())
+                .transactionApprovalStatus(TransactionApprovalStatus.PENDING)
                 .build();
         transactionApprovalRepository.save(transactionApproval);
 
@@ -84,6 +81,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void acceptTransferRequest(TransactionApprovalRequestDto transactionApprovalRequestDto) {
 
     }
+
 
     /**
      * 푸시 메시지 처리를 수행하는 비즈니스 로직

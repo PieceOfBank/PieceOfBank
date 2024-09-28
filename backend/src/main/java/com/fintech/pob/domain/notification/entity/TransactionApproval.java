@@ -23,14 +23,15 @@ public class TransactionApproval {
     @Column(nullable = false)
     private Long amount; // 이체 받는 금액
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean approve = false;
+    private TransactionApprovalStatus status; // 승인 상태
 
     @Builder
-    public TransactionApproval(Notification notification, String receiverName, Long amount, boolean approve) {
+    public TransactionApproval(Notification notification, String receiverName, Long amount, TransactionApprovalStatus transactionApprovalStatus) {
         this.notification = notification;
         this.receiverName = receiverName;
         this.amount = amount;
-        this.approve = approve;
+        this.status = transactionApprovalStatus;
     }
 }
