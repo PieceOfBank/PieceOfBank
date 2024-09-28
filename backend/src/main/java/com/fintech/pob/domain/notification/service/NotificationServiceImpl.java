@@ -29,7 +29,6 @@ import reactor.core.publisher.Mono;
 import java.io.IOException;
 import java.util.List;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -53,7 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public void requestExceedTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto) {
         NotificationType notificationType = notificationTypeRepository.findByTypeName("거래 수락 요청 알림")
-                .orElseThrow(() -> new IllegalArgumentException("Notification Type not found"));;
+                .orElseThrow(() -> new IllegalArgumentException("Notification Type not found"));
         User sender = userRepository.findByUserKey(transactionApprovalRequestDto.getSenderKey())
                 .orElseThrow(() -> new IllegalArgumentException("Sender not found"));
         // receiver 값 못 받으면 Subscription에서 조회하여 사용
