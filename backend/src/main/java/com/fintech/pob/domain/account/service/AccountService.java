@@ -2,6 +2,8 @@ package com.fintech.pob.domain.account.service;
 
 import com.fintech.pob.domain.account.dto.client.ClientAccountCreationRequestDTO;
 import com.fintech.pob.domain.account.dto.client.ClientAccountCreationResponseDTO;
+import com.fintech.pob.domain.account.dto.client.ClientAccountListRequestDTO;
+import com.fintech.pob.domain.account.dto.client.ClientAccountListResponseDTO;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
 import com.fintech.pob.global.header.service.HeaderService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,15 +27,26 @@ public class AccountService {
         requestDTO.setHeader(header);
         requestDTO.setAccountTypeUniqueNo(accountTypeUniqueNo);
 
-        System.out.println(header);
-        System.out.println(accountTypeUniqueNo);
-
         return webClient.post()
                 .uri("demandDeposit/createDemandDepositAccount")
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(requestDTO)
                 .retrieve()
                 .bodyToMono(ClientAccountCreationResponseDTO.class);
+    }
+
+    public Mono<ClientAccountListResponseDTO> getAccountList() {
+        HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
+
+        ClientAccountListRequestDTO requestDTO = new ClientAccountListRequestDTO();
+        requestDTO.setHeader(header);
+
+        return webClient.post()
+                .uri("demandDeposit/inquireDemandDepositAccountList")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(requestDTO)
+                .retrieve()
+                .bodyToMono(ClientAccountListResponseDTO.class);
     }
 }
 
