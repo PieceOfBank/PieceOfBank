@@ -1,14 +1,10 @@
 package com.fintech.pob.domain.account.controller;
 
-import com.fintech.pob.domain.account.dto.client.ClientAccountCreationResponseDTO;
-import com.fintech.pob.domain.account.dto.client.ClientAccountListResponseDTO;
+import com.fintech.pob.domain.account.dto.client.*;
 import com.fintech.pob.domain.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -28,6 +24,13 @@ public class ClientAccountController {
     @PostMapping("/inquireDemandDepositAccountList")
     public Mono<ResponseEntity<ClientAccountListResponseDTO>> getClientAccountList() {
         return accountService.getAccountList()
+                .map(ResponseEntity::ok);
+    }
+
+    @PostMapping("/inquireDemandDepositAccount")
+    public Mono<ResponseEntity<ClientAccountDetailResponseDTO>> getClientAccountDetail(
+            @RequestParam String accountNo) {
+        return accountService.getAccountDetail(accountNo)
                 .map(ResponseEntity::ok);
     }
 }

@@ -7,17 +7,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClientAccountListResponseDTO {
+public class ClientAccountDetailResponseDTO {
     @JsonProperty("Header")
     private HeaderResponseDTO header;
     @JsonProperty("REC")
-    private List<Record> rec;
+    private Record rec;
 
     @Getter
     @Setter

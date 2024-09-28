@@ -1,11 +1,7 @@
 package com.fintech.pob.domain.account.service;
 
-import com.fintech.pob.domain.account.dto.client.ClientAccountCreationRequestDTO;
-import com.fintech.pob.domain.account.dto.client.ClientAccountCreationResponseDTO;
-import com.fintech.pob.domain.account.dto.client.ClientAccountListRequestDTO;
-import com.fintech.pob.domain.account.dto.client.ClientAccountListResponseDTO;
+import com.fintech.pob.domain.account.dto.client.*;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
-import com.fintech.pob.global.header.service.HeaderService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -47,6 +43,21 @@ public class AccountService {
                 .bodyValue(requestDTO)
                 .retrieve()
                 .bodyToMono(ClientAccountListResponseDTO.class);
+    }
+
+    public Mono<ClientAccountDetailResponseDTO> getAccountDetail(String accountNo) {
+        HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
+
+        ClientAccountDetailRequestDTO requestDTO = new ClientAccountDetailRequestDTO();
+        requestDTO.setHeader(header);
+        requestDTO.setAccountNo(accountNo);
+
+        return webClient.post()
+                .uri("demandDeposit/inquireDemandDepositAccount")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(requestDTO)
+                .retrieve()
+                .bodyToMono(ClientAccountDetailResponseDTO.class);
     }
 }
 
