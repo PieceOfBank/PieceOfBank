@@ -41,4 +41,11 @@ public class ClientAccountController {
         return accountService.updateAccountTransfer(requestPayload)
                 .map(ResponseEntity::ok);
     }
+
+    @PostMapping("/inquireTransactionHistoryList")
+    public Mono<ResponseEntity<ClientAccountHistoryListResponseDTO>> getClientAccountHistoryList(
+            @RequestBody AccountHistoryListRequestDTO requestPayload) {
+        return accountService.getAccountHistoryList(requestPayload)
+                .map(ResponseEntity::ok);
+    }
 }
