@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fintech.pob.domain.notification.dto.NotificationMessageDto;
 import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
-import com.fintech.pob.domain.notification.entity.NotificationStatus;
-import com.fintech.pob.domain.notification.entity.NotificationType;
-import com.fintech.pob.domain.notification.entity.TransactionApproval;
+import com.fintech.pob.domain.notification.dto.TransactionApprovalResponseDto;
+import com.fintech.pob.domain.notification.entity.*;
 import com.fintech.pob.domain.notification.repository.NotificationRepository;
-import com.fintech.pob.domain.notification.entity.Notification;
 import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
 import com.fintech.pob.domain.notification.repository.TransactionApprovalRepository;
 import com.fintech.pob.domain.user.entity.User;
@@ -29,7 +27,6 @@ import reactor.core.publisher.Mono;
 import java.io.IOException;
 import java.util.List;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -49,14 +46,13 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationTypeRepository notificationTypeRepository;
     private final UserRepository userRepository;
 
-
+    @Override
     @Transactional
-    public void sendLimitExceedNotification(TransactionApprovalRequestDto transactionApprovalRequestDto) {
+    public Long requestExceedTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto) {
         NotificationType notificationType = notificationTypeRepository.findByTypeName("거래 수락 요청 알림")
-                .orElseThrow(() -> new IllegalArgumentException("Notification Type not found"));;
+                .orElseThrow(() -> new IllegalArgumentException("Notification Type not found"));
         User sender = userRepository.findByUserKey(transactionApprovalRequestDto.getSenderKey())
                 .orElseThrow(() -> new IllegalArgumentException("Sender not found"));
-        // receiver 값 못 받으면 Subscription에서 조회하여 사용
         User receiver = userRepository.findByUserKey(transactionApprovalRequestDto.getReceiverKey())
                 .orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
 
@@ -74,10 +70,34 @@ public class NotificationServiceImpl implements NotificationService {
         TransactionApproval transactionApproval = TransactionApproval.builder()
                 .notification(notification)
                 .receiverName(transactionApprovalRequestDto.getReceiverName())
+                .amount(transactionApprovalRequestDto.getAmount())
+                .transactionApprovalStatus(TransactionApprovalStatus.PENDING)
                 .build();
-        transactionApprovalRepository.save(transactionApproval);
+        TransactionApproval savedApproval = transactionApprovalRepository.save(transactionApproval);
 
         // 푸시 알림 전송 처리 예정
+        return savedApproval.getTransactionApprovalId();
+    }
+
+    @Transactional
+    @Override
+    public TransactionApprovalResponseDto acceptTransferRequest(Long transactionApprovalId) {
+        TransactionApproval transactionApproval = transactionApprovalRepository.findById(transactionApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Transaction Approval not found"));
+        transactionApproval.setStatus(TransactionApprovalStatus.APPROVED); // 승인 상태로 설정
+        transactionApprovalRepository.save(transactionApproval);
+
+        Notification notification = transactionApproval.getNotification();
+        notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
+        notificationRepository.save(notification);
+
+        return TransactionApprovalResponseDto.builder()
+                .senderKey(notification.getSenderUser().getUserKey())
+                .receiverKey(notification.getReceiverUser().getUserKey())
+                .receiverName(transactionApproval.getReceiverName())
+                .amount(transactionApproval.getAmount())
+                .status(transactionApproval.getStatus())
+                .build();
     }
 
     /**
