@@ -4,6 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fintech.pob.domain.notification.dto.NotificationMessageDto;
 import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
+import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
+import com.fintech.pob.domain.notification.entity.NotificationStatus;
+import com.fintech.pob.domain.notification.entity.NotificationType;
+import com.fintech.pob.domain.notification.entity.TransactionApproval;
+import com.fintech.pob.domain.notification.repository.NotificationRepository;
+import com.fintech.pob.domain.notification.entity.Notification;
+import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
+import com.fintech.pob.domain.notification.repository.TransactionApprovalRepository;
+import com.fintech.pob.domain.user.entity.User;
+import com.fintech.pob.domain.user.repository.UserRepository;
 import com.google.auth.oauth2.GoogleCredentials;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +22,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -30,9 +42,43 @@ public class NotificationServiceImpl implements NotificationService {
     @Value("${fcm.api.url}")
     private String FCM_API_URL;
 
-    private final ObjectMapper objectMapper;  // FCM의 body 형태에 따라 생성한 값을 문자열로 저장하기 위한 Mapper 클래스
     private final WebClient webClient;
 
+    private final NotificationRepository notificationRepository;
+    private final TransactionApprovalRepository transactionApprovalRepository;
+    private final NotificationTypeRepository notificationTypeRepository;
+    private final UserRepository userRepository;
+
+
+    @Transactional
+    public void sendLimitExceedNotification(TransactionApprovalRequestDto transactionApprovalRequestDto) {
+        NotificationType notificationType = notificationTypeRepository.findByTypeName("거래 수락 요청 알림")
+                .orElseThrow(() -> new IllegalArgumentException("Notification Type not found"));;
+        User sender = userRepository.findByUserKey(transactionApprovalRequestDto.getSenderKey())
+                .orElseThrow(() -> new IllegalArgumentException("Sender not found"));
+        // receiver 값 못 받으면 Subscription에서 조회하여 사용
+        User receiver = userRepository.findByUserKey(transactionApprovalRequestDto.getReceiverKey())
+                .orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
+
+        // Notification 생성
+        Notification notification = Notification.builder()
+                .senderUser(sender)
+                .receiverUser(receiver)
+                .type(notificationType)
+                .created(LocalDateTime.now())
+                .notificationStatus(NotificationStatus.UNREAD)
+                .build();
+        notificationRepository.save(notification);
+
+        // TransactionApproval 생성
+        TransactionApproval transactionApproval = TransactionApproval.builder()
+                .notification(notification)
+                .receiverName(transactionApprovalRequestDto.getReceiverName())
+                .build();
+        transactionApprovalRepository.save(transactionApproval);
+
+        // 푸시 알림 전송 처리 예정
+    }
 
     /**
      * 푸시 메시지 처리를 수행하는 비즈니스 로직
