@@ -19,6 +19,12 @@ public class HeaderInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+
+        if (request.getAttribute("accessInterceptor") != null) {
+            return true; // 재실행 방지
+        }
+        request.setAttribute("accessInterceptor", true);
+
         String userKey = request.getHeader("userKey");
         String apiName = request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/") + 1);
 
