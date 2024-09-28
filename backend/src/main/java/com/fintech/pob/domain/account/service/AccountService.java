@@ -1,6 +1,7 @@
 package com.fintech.pob.domain.account.service;
 
 import com.fintech.pob.domain.account.dto.client.*;
+import com.fintech.pob.domain.account.dto.request.*;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,12 @@ public class AccountService {
     private final WebClient webClient;
     private final HttpServletRequest request;
 
-    public Mono<ClientAccountCreationResponseDTO> createAccount(String accountTypeUniqueNo) {
+    public Mono<ClientAccountCreationResponseDTO> createAccount(AccountCreationRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
 
         ClientAccountCreationRequestDTO requestDTO = new ClientAccountCreationRequestDTO();
         requestDTO.setHeader(header);
-        requestDTO.setAccountTypeUniqueNo(accountTypeUniqueNo);
+        requestDTO.setAccountTypeUniqueNo(requestPayload.getAccountTypeUniqueNo());
 
         return webClient.post()
                 .uri("demandDeposit/createDemandDepositAccount")
@@ -45,12 +46,12 @@ public class AccountService {
                 .bodyToMono(ClientAccountListResponseDTO.class);
     }
 
-    public Mono<ClientAccountDetailResponseDTO> getAccountDetail(String accountNo) {
+    public Mono<ClientAccountDetailResponseDTO> getAccountDetail(AccountDetailRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
 
         ClientAccountDetailRequestDTO requestDTO = new ClientAccountDetailRequestDTO();
         requestDTO.setHeader(header);
-        requestDTO.setAccountNo(accountNo);
+        requestDTO.setAccountNo(requestPayload.getAccountNo());
 
         return webClient.post()
                 .uri("demandDeposit/inquireDemandDepositAccount")
