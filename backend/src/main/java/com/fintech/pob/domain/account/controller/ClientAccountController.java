@@ -34,4 +34,11 @@ public class ClientAccountController {
         return accountService.getAccountDetail(requestPayload)
                 .map(ResponseEntity::ok);
     }
+
+    @PostMapping("/updateDemandDepositAccountTransfer")
+    public Mono<ResponseEntity<ClientAccountTransferResponseDTO>> updateClientAccountTransfer(
+            @RequestBody AccountTransferRequestDTO requestPayload) {
+        return accountService.updateAccountTransfer(requestPayload)
+                .map(ResponseEntity::ok);
+    }
 }
