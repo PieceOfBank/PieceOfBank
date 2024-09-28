@@ -73,5 +73,18 @@ public class AccountService {
                 .retrieve()
                 .bodyToMono(ClientAccountTransferResponseDTO.class);
     }
+
+    public Mono<ClientAccountHistoryListResponseDTO> getAccountHistoryList(AccountHistoryListRequestDTO requestPayload) {
+        HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
+
+        ClientAccountHistoryListRequestDTO requestDTO = ClientAccountHistoryListRequestDTO.of(header, requestPayload);
+
+        return webClient.post()
+                .uri("demandDeposit/inquireTransactionHistoryList")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(requestDTO)
+                .retrieve()
+                .bodyToMono(ClientAccountHistoryListResponseDTO.class);
+    }
 }
 
