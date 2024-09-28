@@ -1,15 +1,13 @@
 package com.fintech.pob.domain.notification.controller;
 
 import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
+import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
 import com.fintech.pob.domain.notification.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -23,6 +21,12 @@ public class NotificationController {
 
     public NotificationController(NotificationService notificationService) {
         this.notificationService = notificationService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> sendLimitExceedNotification(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto) {
+        notificationService.sendLimitExceedNotification(transactionApprovalRequestDto);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/send")
