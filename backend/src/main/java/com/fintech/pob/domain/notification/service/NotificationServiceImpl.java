@@ -51,7 +51,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 
     @Transactional
-    public void sendLimitExceedNotification(TransactionApprovalRequestDto transactionApprovalRequestDto) {
+    public void requestExceedTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto) {
         NotificationType notificationType = notificationTypeRepository.findByTypeName("거래 수락 요청 알림")
                 .orElseThrow(() -> new IllegalArgumentException("Notification Type not found"));;
         User sender = userRepository.findByUserKey(transactionApprovalRequestDto.getSenderKey())
@@ -74,10 +74,16 @@ public class NotificationServiceImpl implements NotificationService {
         TransactionApproval transactionApproval = TransactionApproval.builder()
                 .notification(notification)
                 .receiverName(transactionApprovalRequestDto.getReceiverName())
+                .amount(1000000L)
                 .build();
         transactionApprovalRepository.save(transactionApproval);
 
         // 푸시 알림 전송 처리 예정
+    }
+
+    @Override
+    public void acceptTransferRequest(TransactionApprovalRequestDto transactionApprovalRequestDto) {
+
     }
 
     /**

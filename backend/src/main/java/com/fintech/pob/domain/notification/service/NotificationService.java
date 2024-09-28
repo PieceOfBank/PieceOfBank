@@ -8,5 +8,6 @@ import java.io.IOException;
 
 public interface NotificationService {
     Mono<Integer> sendMessageTo(NotificationRequestDto notificationSendDto) throws IOException;
-    void sendLimitExceedNotification(TransactionApprovalRequestDto transactionApprovalRequestDto);
+    void requestExceedTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto);
+    void acceptTransferRequest(TransactionApprovalRequestDto transactionApprovalRequestDto);
 }

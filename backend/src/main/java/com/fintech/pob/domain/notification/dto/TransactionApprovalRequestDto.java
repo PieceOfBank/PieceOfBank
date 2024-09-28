@@ -18,4 +18,5 @@ public class TransactionApprovalRequestDto {
     private UUID senderKey; // 피보호자
     private UUID receiverKey; // 보호자
     private String receiverName; // 이체를 받는 타인
+    private Long amount; // 이체 금액
 }

@@ -23,11 +23,18 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-    @PostMapping
-    public ResponseEntity<Void> sendLimitExceedNotification(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto) {
-        notificationService.sendLimitExceedNotification(transactionApprovalRequestDto);
+    @PostMapping("/transfers/request")
+    public ResponseEntity<Void> requestExceedTransfer(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto) {
+        notificationService.requestExceedTransfer(transactionApprovalRequestDto);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/transfers/accept")
+    public ResponseEntity<Void> acceptTransferRequest(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto) {
+        notificationService.acceptTransferRequest(transactionApprovalRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
 
     @PostMapping("/send")
     public Mono<ResponseEntity<Integer>> pushMessage(@RequestBody @Validated NotificationRequestDto notificationRequestDto) throws IOException {
