@@ -2,6 +2,7 @@ package com.fintech.pob.domain.notification.controller;
 
 import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
+import com.fintech.pob.domain.notification.dto.TransactionApprovalResponseDto;
 import com.fintech.pob.domain.notification.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,25 +25,24 @@ public class NotificationController {
     }
 
     @PostMapping("/transfers/request")
-    public ResponseEntity<Void> requestExceedTransfer(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto) {
-        notificationService.requestExceedTransfer(transactionApprovalRequestDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Long> requestExceedTransfer(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto) {
+        Long transactionApprovalId = notificationService.requestExceedTransfer(transactionApprovalRequestDto);
+        return ResponseEntity.ok(transactionApprovalId);
     }
 
-    @PostMapping("/transfers/accept")
-    public ResponseEntity<Void> acceptTransferRequest(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto) {
-        notificationService.acceptTransferRequest(transactionApprovalRequestDto);
-        return ResponseEntity.ok().build();
+    @PatchMapping("/transfers/accept")
+    public ResponseEntity<TransactionApprovalResponseDto> acceptTransferRequest(@RequestBody Long transactionApprovalId) {
+        TransactionApprovalResponseDto transactionApprovalResponseDto = notificationService.acceptTransferRequest(transactionApprovalId);
+        return ResponseEntity.ok(transactionApprovalResponseDto);
     }
 
 
     @PostMapping("/send")
     public Mono<ResponseEntity<Integer>> pushMessage(@RequestBody @Validated NotificationRequestDto notificationRequestDto) throws IOException {
         log.debug("[+] 푸시 메시지를 전송합니다.");
-        // 비동기적으로 NotificationService의 sendMessageTo 메서드를 호출하고, Mono를 반환하도록 변경
         return notificationService.sendMessageTo(notificationRequestDto)
-                .map(result -> new ResponseEntity<>(result, HttpStatus.OK)) // 성공 시 OK 응답
-                .doOnError(e -> log.error("푸시 메시지 전송 중 에러 발생: {}", e.getMessage())) // 에러 로그
+                .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
+                .doOnError(e -> log.error("푸시 메시지 전송 중 에러 발생: {}", e.getMessage()))
                 .onErrorResume(e -> Mono.just(new ResponseEntity<>(0, HttpStatus.INTERNAL_SERVER_ERROR))); // 실패 시 500 응답, 0 반환
     }
 }

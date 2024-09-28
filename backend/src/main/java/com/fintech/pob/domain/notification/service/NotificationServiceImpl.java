@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fintech.pob.domain.notification.dto.NotificationMessageDto;
 import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
+import com.fintech.pob.domain.notification.dto.TransactionApprovalResponseDto;
 import com.fintech.pob.domain.notification.entity.*;
 import com.fintech.pob.domain.notification.repository.NotificationRepository;
 import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
@@ -45,9 +46,9 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationTypeRepository notificationTypeRepository;
     private final UserRepository userRepository;
 
-
+    @Override
     @Transactional
-    public void requestExceedTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto) {
+    public Long requestExceedTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto) {
         NotificationType notificationType = notificationTypeRepository.findByTypeName("거래 수락 요청 알림")
                 .orElseThrow(() -> new IllegalArgumentException("Notification Type not found"));
         User sender = userRepository.findByUserKey(transactionApprovalRequestDto.getSenderKey())
@@ -72,16 +73,32 @@ public class NotificationServiceImpl implements NotificationService {
                 .amount(transactionApprovalRequestDto.getAmount())
                 .transactionApprovalStatus(TransactionApprovalStatus.PENDING)
                 .build();
-        transactionApprovalRepository.save(transactionApproval);
+        TransactionApproval savedApproval = transactionApprovalRepository.save(transactionApproval);
 
         // 푸시 알림 전송 처리 예정
+        return savedApproval.getTransactionApprovalId();
     }
 
+    @Transactional
     @Override
-    public void acceptTransferRequest(TransactionApprovalRequestDto transactionApprovalRequestDto) {
+    public TransactionApprovalResponseDto acceptTransferRequest(Long transactionApprovalId) {
+        TransactionApproval transactionApproval = transactionApprovalRepository.findById(transactionApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Transaction Approval not found"));
+        transactionApproval.setStatus(TransactionApprovalStatus.APPROVED); // 승인 상태로 설정
+        transactionApprovalRepository.save(transactionApproval);
 
+        Notification notification = transactionApproval.getNotification();
+        notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
+        notificationRepository.save(notification);
+
+        return TransactionApprovalResponseDto.builder()
+                .senderKey(notification.getSenderUser().getUserKey())
+                .receiverKey(notification.getReceiverUser().getUserKey())
+                .receiverName(transactionApproval.getReceiverName())
+                .amount(transactionApproval.getAmount())
+                .status(transactionApproval.getStatus())
+                .build();
     }
-
 
     /**
      * 푸시 메시지 처리를 수행하는 비즈니스 로직
