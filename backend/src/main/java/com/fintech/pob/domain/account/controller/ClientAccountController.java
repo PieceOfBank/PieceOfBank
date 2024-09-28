@@ -48,4 +48,11 @@ public class ClientAccountController {
         return accountService.getAccountHistoryList(requestPayload)
                 .map(ResponseEntity::ok);
     }
+
+    @PostMapping("/inquireTransactionHistory")
+    public Mono<ResponseEntity<ClientAccountHistoryDetailResponseDTO>> getClientAccountHistoryDetail(
+            @RequestBody AccountHistoryDetailRequestDTO requestPayload) {
+        return accountService.getAccountHistoryDetail(requestPayload)
+                .map(ResponseEntity::ok);
+    }
 }
