@@ -31,7 +31,7 @@ export default function LoginScreen() {
         <Link className='my-2' href={'/signup/page1'}>회원가입</Link>
         {/* <Link className='my-2' href={'/signup/page3'}>테스트중</Link> */}
         <Link className='my-2' href={'/ward/main'}>피보호자</Link>
-        <Link className="my-2" href={`/family/FamilyMain`}>보호자2</Link>
+        <Link className="my-2" href={`/family copy/familyMain`}>보호자 테스트</Link>
       </View>
     </ImageBackground>
   );

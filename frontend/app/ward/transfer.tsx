@@ -1,18 +1,73 @@
-import { Link, useRouter } from "expo-router";
-import { View, Text, ImageBackground, TextInput, SafeAreaView, Alert } from 'react-native';
+import { Link, useRouter, useLocalSearchParams } from "expo-router";
+import { View, Text, ImageBackground, TextInput, SafeAreaView, Alert, Button, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import TransferObject from "../../src/ui/components/TransferObject";
 import TransferCheck from "../../src/ui/components/TransferCheck";
 import PinConfirm from "../../src/ui/components/PinConfirm";
 import TransferOk from "../../src/ui/components/TransferOk";
+import DirectoryTransfer from "../../src/ui/components/DirectoryTransfer";
+import Toast from "react-native-toast-message";
 
 const careTransfer = () => {
 
-    // 화면 가로고정
-    useEffect(() => {
-        const screenChange = async() => {
-            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+  interface directoryInfo {
+    nowAccount?: string,
+    nowBank?: string,
+    nowName?: string
+  }
+  
+  // 전달받은 계좌번호, 은행, 이름 
+  const params = useLocalSearchParams() as directoryInfo
+  const {nowAccount, nowBank, nowName} = params
+
+  // 전달받은 정보 변환 - 연락처 등록 대상에게 송금 할 때만 사용
+  const [existAccount, setExistAccount] = useState<directoryInfo>({})
+  const [existBank, setExistBank] = useState<directoryInfo>({})
+
+  // 현재 계정의 핀 번호 정보
+  const [nowPin, setNowPin] = useState('')
+
+  // 현재 계정의 핀 번호 요청
+  const pinInfo = () => {
+    try{
+      /* ★ 핀 번호 요청 보내는 내용 추가하기 ★ */
+      setNowPin('111111') // 임시 핀번호
+
+    } catch(error){
+      console.log(error)
+    }
+  }
+
+  // 현재 계정의 금액 한도 정보
+  const [nowLimit, setNowLimit] = useState('')
+
+  // 현재 계정의 한도 정보 요청
+    const limitInfo = () => {
+      try{
+        /* ★ 한도 정보 요청 보내는 내용 추가하기 ★ */
+        setNowLimit('300000') // 임시 한도 금액
+  
+      } catch(error){
+        console.log(error)
+      }
+    }
+ 
+  // 화면 가로고정
+  useEffect(() => {
+    const screenChange = async() => {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+
+        // 전달받은 계좌번호, 은행 정보 최초 송금 정보에 넣기 (일반 송금해서 직접 입력하는 경우 나중에 재입력 됨)
+        setExistAccount({nowAccount})
+        setExistBank({nowBank})
+
+        // 현재 계정의 핀번호 확인
+        pinInfo()
+
+        // 현재 계정의 금액 한도 확인
+        limitInfo()
+
         };
         screenChange();
         return () => {
@@ -24,52 +79,110 @@ const careTransfer = () => {
 
     const [step, setStep] = useState('1'); // 송금 절차 화면 (1-1차, 2-2차, 3-3차, 4-4차)
       
-    const [accountNumber, setAccountNumber] = useState<string>(''); // 계좌번호
-
+    /* 요청 보낼 정보 */
+    const [account, setAccount] = useState<string>(''); // 계좌번호
     const [bank, setBank] = useState<string>(''); // 은행  
+    const [balance, setBalance] = useState<string>(''); // 금액
 
-    const [account, setAccount] = useState<string>(''); // 금액
-
+    
     const [inputPin, setInputPin] = useState<string>(''); // 핀번호    
 
 
-    const firstChange = (num:string, bank:string, account:string) => {
-      setAccountNumber(num)
-      setBank(bank)
+    /* 1차 - 전체 대상 송금 (연락처 없는 경우) : 송금시 필요한 계좌, 은행, 금액 입력 받는 화면 */
+    const firstChange = (account:string, bank:string, balance:string) => {
       setAccount(account)
+      setBank(bank)
+      setBalance(balance)
       setStep('2')
     }
 
+    /* 1차 - 연락처 대상 송금 : 송금시 필요한 금액 입력 받는 화면 & 계좌, 은행은 전달받은 정보 활용 */
+    const existChange = (balance:string) => {
+      setBank(nowBank as string)
+      setAccount(nowAccount as string)
+      setBalance(balance)
+      setStep('2')
+    }
+
+    /* 2차 - 송금 정보 맞는지 확인하는 화면 */
     const secondChange = () => {
       setStep('3')
     }
 
-    const thirdChange = () => {
-      setStep('4')
+    /* 3차 - 핀번호 입력 화면 */
+    const thirdChange = (inputPin:string) => {
+      if (inputPin == nowPin){
+
+        // 금액 한도 제한 확인해야 함
+        const limitCheck = parseInt(nowLimit) // 한도 기준 숫자 변환
+        const balanceCheck = parseInt(balance) // 송금 금액 숫자 변환
+        if (balanceCheck > limitCheck){
+          // setStep('4')
+          Toast.show({
+            type: 'error',
+            text1: '송금 실패 - 한도 초과!',
+            text2: '기준 금액 초과로 승인 허락 요청이 들어갔습니다'
+          })
+        }
+        else {
+          Toast.show({
+            type: 'success',
+            text1: '송금 성공!',
+            text2: '송금에 성공하셨습니다!'
+          })
+        }
+
+      }
+      else {
+        Toast.show({
+          type: 'error',
+          text1: '비밀번호가 일치하지 않습니다',
+          text2: '다시 입력해주세요!'
+        })
+      }
     }
 
-    // 1차 송금 화면
+
+
+
+
+    // 1차 송금 화면 - 연락처 있는 사람이면 전달받은 계좌 정보 넣기 / 전체 거래 내역에서 송금하면 계좌 정보 직접 입력
     if (step=='1') {
-      return (
-        <View className='flex-1 justify-center items-center'>
-          <View className='flex-1 flex-row justify-center items-center'>
-            <TransferObject onChange={firstChange} />
+      // 연락처에 없는 경우 일반 송금 - 계좌번호 & 은행 & 금액 입력받기
+      if (nowName=='전체 기록'){
+        return (
+          <View className='flex-1 justify-center items-center'>
+            <View className='flex-1 flex-row justify-center items-center'>
+              <TransferObject onChange={firstChange} /> 
+            </View>
           </View>
-        </View>
-      );
+        );
+      }
+      // 연락처 등록된 경우 - 금액만 입력 받고 전달받은 계좌 정보 넣기 
+      else {
+        return (
+          <View className='flex-1 justify-center items-center'>
+            <View className='flex-1 flex-row justify-center items-center'>
+              <DirectoryTransfer onChange={existChange} name={nowName}/> 
+            </View>
+          </View>
+        );
+      }
+
     }
 
-    // 2차 송금 화면
+    // 2차 송금 화면 - 계좌 이체 정보 맞는지 보여주기
     else if (step=='2') {
       return (
         <View className='flex-1 justify-center items-center'>
           <View className='flex-1 flex-row justify-center items-center'>
-            <TransferCheck onChange={secondChange} account={account} />
+            <TransferCheck onChange={secondChange} balance={balance} />
           </View>
         </View>
       );
     }
 
+    // 3차 송금 화면 - 핀번호 입력 일치 확인하기
     else if (step=='3'){
       return(
         <View>
@@ -82,14 +195,16 @@ const careTransfer = () => {
       )
     }
 
+    // 4차 송금 화면 
     // 금액 한도 초과일 경우 보호자에게 알림
-    // 금액 이하일 경우 송금 완료 
+    // 금액 한도 이하일 경우 송금 완료 
     else if (step=='4'){
       return(
         <View>
           <View className='flex-1 justify-center items-center'>
             <View className='flex-1 flex-row justify-center items-center'>
-              <TransferOk />
+              <Text>{}</Text>
+              {/* <TransferOk /> */}
             </View>
           </View>
         </View>

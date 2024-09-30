@@ -3,6 +3,9 @@ import { View, Text, ImageBackground, TextInput, SafeAreaView, Alert, TouchableO
 import React, { useState, useEffect } from 'react';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import Checkbox from 'expo-checkbox';
+import { useRouter } from 'expo-router';
+import Toast from "react-native-toast-message";
+
 
 const familyAdd = () => {
 
@@ -20,6 +23,8 @@ const familyAdd = () => {
      // 보호자 관계 수락
     const [mainConnect, setMainConnect] = useState('');
 
+    const router = useRouter()
+
     // 임시 관계 요청자
     interface ConnectItem {
         id: string;
@@ -35,7 +40,12 @@ const familyAdd = () => {
         if (i == index){
             const familyName : string = connectList[i]['name']
             // 요청 보내기
-            Alert.alert(`${name}님과의 관계 설정이 완료되었습니다.`)
+            Toast.show({
+                type: 'success',
+                text1: `${name}님과의 관계 설정이 완료되었습니다.`,
+                text2: '앞으로 주요 서비스를 이용하실 수 있습니다'
+              })
+            router.push('/ward/main')
             }
         }
         }
@@ -46,7 +56,11 @@ const familyAdd = () => {
         if (i == index){
             const familyName : string = connectList[i]['name']
             // 요청 보내기
-            Alert.alert(`${name}님과의 관계를 거절했습니다.`)
+            Toast.show({
+                type: 'info',
+                text1: `${name}님과의 관계를 거절했습니다`,
+                text2: '관계 설정 후 주요 서비스를 이용하실 수 있습니다'
+              })
             }
         }
         }

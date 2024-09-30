@@ -12,7 +12,7 @@ export default function page1(){
 
   const [firstPin, setFirstPin] = useState<string>(''); // 1차 6자리 핀번호
 
-  // 1차 확인 완료될경우 2차로 이동하는 함수
+  // 1차 확인 완료될경우 2차로 이동
   const changePin = (value: string) => {
     setPinRegister('2');
     setFirstPin(value);
