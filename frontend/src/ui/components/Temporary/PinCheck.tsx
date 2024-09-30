@@ -2,11 +2,11 @@ import { View, Text, Button, ImageBackground, Alert, TextInput, TouchableOpacity
 import { useRouter, Link } from 'expo-router';
 import React, { useState } from 'react';
 
-interface thirdInfo {
+interface pinInput {
   onChange: (inputPin:string) => void;
 }
 
-const PinConfirm = ({ onChange }: thirdInfo) => {
+const PinInfo = ({ onChange }: pinInput) => {
     const router = useRouter();
 
     const [numCheck, setNumCheck] = useState(0); // 입력된 핀번호 개수
@@ -52,41 +52,32 @@ const PinConfirm = ({ onChange }: thirdInfo) => {
       <View className={`${number<=numCheck ? 'bg-blue-500' : 'bg-white'} w-8 h-8 rounded-full m-1`} key={number}></View>)
 
      return(
-        <View className='flex-1 flex-row h-5/6'>
-            <View className='flex-1 justfiy-center items-center basis-2/5 m-2 p-2 h-72'>
-                <View className='h-16'></View>
-                <View className='bg-gray-300 px-12 py-5 rounded-xl'>
+        <View className='flex-1 justify-center items-center'>
+                <View className='bg-gray-300 rounded-xl w-2/4 p-2'>
                   <Text className='text-2xl text-center font-bold'>비밀번호를</Text>
                   <Text className='text-2xl text-center font-bold'>입력해주세요</Text>
                 </View>
-               
                 <View className='m-5'>
                     <View className='flex-row'>
                         {touchCircle}
                     </View>
                 </View>
-            </View>
-
-            <View className='flex-1 justfiy-center items-center basis-2/5 m-2 h-72'>
-
             <View>
                 {touchNumber.map((list, index) => 
-                <View className='flex-row' key={index}>
-                    {list.map((number, indexs)=> 
-                    <TouchableOpacity 
-                    className='w-14 h-14 border justify-center items-center m-1 bg-white' 
-                    onPress={() => pinChecking(number)} 
-                    key={indexs}>
-                    <Text className='text-center text-2xl'>{number}</Text>
-                    </TouchableOpacity>
+                    <View className='flex-row' key={index}>
+                        {list.map((number, indexs)=> 
+                        <TouchableOpacity 
+                        className='w-14 h-14 border justify-center items-center m-1 bg-white' 
+                        onPress={() => pinChecking(number)} 
+                        key={indexs}>
+                        <Text className='text-center text-2xl'>{number}</Text>
+                        </TouchableOpacity>
+                        )}
+                    </View>
                     )}
-                </View>
-                )}
             <Button title="확인" onPress={thirdCheck}></Button>
-
             </View>
 
-            </View>
         </View>
 
     )
@@ -95,4 +86,4 @@ const PinConfirm = ({ onChange }: thirdInfo) => {
 
 }
 
-export default PinConfirm
+export default PinInfo

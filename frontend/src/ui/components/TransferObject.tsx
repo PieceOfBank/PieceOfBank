@@ -3,20 +3,20 @@ import { useRouter, Link } from 'expo-router';
 import React, { useState } from 'react';
 
 interface firstInfo {
-    onChange: (inputNum:string, inputBank:string, inputAccount:string) => void;
+    onChange: (inputAccount:string, inputBank:string, inputBalance:string) => void;
 }
 
 const TransferObject = ({ onChange } : firstInfo) => {
 
-    const [inputNum, setInputNum] = useState<string>(''); // 계좌번호
+    const [inputAccount, setInputAccount] = useState<string>(''); // 계좌번호
 
     const [inputBank, setInputBank] = useState<string>(''); // 은행  
 
-    const [inputAccount, setInputAccount] = useState<string>(''); // 금액
+    const [inputBalance, setInputBalance] = useState<string>(''); // 금액
 
 
     const firstCheck = () =>{
-        onChange(inputNum, inputBank, inputAccount)
+        onChange(inputAccount, inputBank, inputBalance)
     }
 
      return(
@@ -26,7 +26,7 @@ const TransferObject = ({ onChange } : firstInfo) => {
             <SafeAreaView>
                 <View>
                     <Text className='mb-2'>계좌번호</Text>
-                    <TextInput className='my-1 w-80 h-12 bg-white' keyboardType='numeric' onChangeText={(num) => setInputNum(num)}/>
+                    <TextInput className='my-1 w-80 h-12 bg-white' keyboardType='numeric' onChangeText={(account) => setInputAccount(account)}/>
                 </View>
                 <View>
                     <Text className='mb-2'>은행</Text>
@@ -39,7 +39,7 @@ const TransferObject = ({ onChange } : firstInfo) => {
             <Text className='text-2xl m-2 text-center my-4'>보낼 금액</Text>
             <SafeAreaView>
                 <View className='flex-row justify-center items-center'>
-                    <TextInput className='my-1 w-64 h-12 bg-white' keyboardType='numeric' onChangeText={(account) => setInputAccount(account)} />
+                    <TextInput className='my-1 w-64 h-12 bg-white' keyboardType='numeric' onChangeText={(balance) => setInputBalance(balance)} />
                     <Text className='my-2 text-2xl'>   원</Text>
                 </View>
             </SafeAreaView>

@@ -3,16 +3,38 @@ import { View, Text, ImageBackground, TextInput, SafeAreaView, TouchableOpacity,
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import { subscriptionGet } from "../../services/api";
 
 const WardListForm = () => {
 
     const router = useRouter();
 
-    interface CareItem {
-        id: string;
-        name: string;
+    interface DirectoryItem {
+        directoryId : number,
+        userKey: string,
+        accountNo: string,
+        institutionCode: number,
+        name: string
     }
 
+    // 보호자 연결 상태 확인 - 1 : 연결 전 (보호자 요청 수락 페이지) / 2 : 연결 후 (기본 메인)
+    const [connect, setConnect] = useState(2);
+
+    // 보호자 연결 조회 (GET)
+    const connectCheck = async () => {
+
+        try{
+            const response = await subscriptionGet();
+            // // ★ api 요청 & 응답 추가 - 보호자 연결 되어있으면 setConnect(2)
+            // if (response) {
+            //     setConnect(2)
+            // }
+        }catch (error){
+            console.log(error)
+        }
+    }
+
+    
      // 현재 페이지 기준
      const [nowPage, setNowPage] = useState(0)
 
@@ -33,36 +55,49 @@ const WardListForm = () => {
          }
      }
 
-     // 피보호자 연결 전인지 확인 - 1이면 연결 전 2이면 연결 후
-     const connect:number = 1;
+
  
      // 임시 리스트 (전체 연락처)
-     const careList: CareItem [] = [{id:'1', name:'딸'}, {id:'2', name:'아들'}, {id:'3', name:'미숙'}, {id:'4', name:'영숙'}, {id:'5', name:'정숙'}]
+     const careList: DirectoryItem [] = [{ directoryId : 1, userKey: '1', accountNo: '123456789', institutionCode: 1, name: '딸' },
+                                        { directoryId : 2, userKey: '2', accountNo: '222222222', institutionCode: 3, name: '미영' },
+                                        { directoryId : 3, userKey: '3', accountNo: '33333333', institutionCode: 5, name: '진숙' }]
      
      // 임시 리스트 (고정 카드: 전체 기록 카드)
-     const addList: CareItem = {id:'99', name:'전체 기록'}
+     const addList: DirectoryItem = { directoryId : 99, userKey: '', accountNo: '', institutionCode: 99, name: '전체 기록' }
  
      // 임시 리스트 (전체 연락처 + 고정)
-     const allList : CareItem [] = (connect==2) ? [...careList, addList] : [{id:'00', name:'연결하기'}]
+     const allList : DirectoryItem [] = (connect==2) ? [...careList, addList] : [{ directoryId : 999, userKey: '', accountNo: '', institutionCode: 999, name: '연결하기' }]
 
      // 버튼 클릭시 이동 - 1이면 관계 등록 페이지 2이면 거래 내역 확인 페이지
      const connectAdd = connect == 2 ? '/ward/transaction' : '/ward/addFamily'
- 
+        
+     // 이름 클릭 시 이동~~
+    //  const addStatus = (item:any) => {
+    //   if (connect == 2){
+    //     router.push({
+    //         pathname: '/ward/transaction',
+    //         params: {item}
+            
+    //   })
+    //   } else{
+    //     router.push('/ward/addFamily')
+    //   } 
+    //  }
  
      // 카드 출력
-     const careView = ({item}:{item:CareItem}) => 
+     const careView = ({item}:{item:DirectoryItem}) => 
          (
 
          <View className="w-48 h-48 m-4 bg-white justify-center items-center rounded-3xl">
              <Image className="w-32 h-32 bg-teal-400 mt-4" source={require('../../../assets/favicon.png')}></Image>
-             {/* <TouchableOpacity 
-                className='w-20 h-6 rounded-3xl justify-center bg-sky-200 m-4' 
-                onPress={() => router.push({pathname:'/ward/transaction', params:{props:item.title}})}>
-             <Text className='text-center rounded-3xl font-bold'>{item.title}</Text></TouchableOpacity>    */}
              <Link className='w-20 h-6 rounded-3xl justify-center bg-sky-200 m-4 text-center rounded-3xl font-bold' 
              href={
-                {pathname:connectAdd, params:{name:item.name}}
+                {pathname:connectAdd, params:{account:item.accountNo, bank:item.institutionCode, name:item.name}}
                 }>{item.name}</Link>
+            {/* <TouchableOpacity 
+                 className='w-12 h-12'
+                 onPress={() => addStatus(item)}>
+            <Text className='text-center rounded-3xl font-bold text-xl'>{item.name}</Text></TouchableOpacity>    */}
          </View>
 
         )
@@ -87,7 +122,7 @@ const WardListForm = () => {
              <FlatList 
              data={pageList}
              renderItem={careView}
-             keyExtractor={item => item.id}
+             keyExtractor={item => item.userKey}
              horizontal={true}
              contentContainerStyle={styles.container}
             // 스타일 className으로 적용 x

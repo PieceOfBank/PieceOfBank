@@ -2,7 +2,7 @@ import { View, Text, Button, ImageBackground, Alert, TextInput, TouchableOpacity
 import { useRouter, Link } from 'expo-router';
 import React, { useState } from 'react';
 
-const TransactionList = () => {
+const FamilyTransaction = () => {
     interface TransferItem {
         id: string;
         name: string;
@@ -10,7 +10,7 @@ const TransactionList = () => {
         media?: string; // 미디어
     }
      // 임시 리스트 (거래)
-     const transferList: TransferItem [] = [{id:'1', type:'1', name:'9월 1일'}, {id:'2', type:'1', name:'9월 2일', media:'사진'}, {id:'3', type:'2', name:'9월 3일'}, {id:'4', type:'1',name:'9월 4일'}, {id:'5', type:'2',name:'9월 5일'}]
+     const transferList: TransferItem [] = [{id:'1', type:'1', name:'9월 1일'}, {id:'2', type:'1', name:'9월 2일'}, {id:'3', type:'2', name:'9월 3일', media:'사진'}, {id:'4', type:'1',name:'9월 4일'}, {id:'5', type:'2',name:'9월 5일', media:'사진'}]
 
     const [modals, setModals] = useState(false)
     const ModalOpen = () => {
@@ -59,4 +59,4 @@ const TransactionList = () => {
 
 }
 
-export default TransactionList
+export default FamilyTransaction

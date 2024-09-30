@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 import Checkbox from 'expo-checkbox';
 import Toast from "react-native-toast-message";
 
-const WardAllAccount = () => {
+const FamilyAccountList = () => {
 
     const router = useRouter();
 
@@ -47,7 +47,7 @@ const WardAllAccount = () => {
             text1: '대표 계좌 등록이 완료되었습니다',
             text2: ':happy:'
           })
-        router.push('/ward/main')
+        router.push('/family copy/familyMain')
     
     }
 
@@ -85,4 +85,4 @@ const WardAllAccount = () => {
        );
 }
 
-export default WardAllAccount
+export default FamilyAccountList

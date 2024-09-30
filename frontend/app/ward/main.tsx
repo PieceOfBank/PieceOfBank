@@ -26,7 +26,6 @@ const caregiver = () => {
 
    return(
     <View className='flex-1 justify-center items-center mx-1'>
-        <Text>보호자 메인</Text>
         <NowAccount />
         <WardListForm />
     </View>
