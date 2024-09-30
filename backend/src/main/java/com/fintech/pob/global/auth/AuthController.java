@@ -1,6 +1,6 @@
 package com.fintech.pob.global.auth;
 
-import com.fintech.pob.domain.user.application.LocalUserService;
+import com.fintech.pob.domain.user.service.LocalUserService;
 import com.fintech.pob.domain.user.entity.User;
 import com.fintech.pob.global.auth.jwt.JwtUtil;
 import lombok.Getter;

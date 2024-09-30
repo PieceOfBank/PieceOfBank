@@ -42,4 +42,13 @@ public class Notification {
     protected void onCreate() {
         this.created = LocalDateTime.now();
     }
+
+    @Builder
+    public Notification(User senderUser, User receiverUser, NotificationType type, LocalDateTime created, NotificationStatus notificationStatus) {
+        this.senderUser = senderUser;
+        this.receiverUser = receiverUser;
+        this.type = type;
+        this.created = created;
+        this.notificationStatus = notificationStatus;
+    }
 }

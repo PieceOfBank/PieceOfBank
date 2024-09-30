@@ -1,10 +1,10 @@
-package com.fintech.pob.domain.user.api;
+package com.fintech.pob.domain.user.controller;
 
-import com.fintech.pob.domain.user.application.LocalUserService;
-import com.fintech.pob.domain.user.application.UserService;
+import com.fintech.pob.domain.user.dto.request.CreateUserRequest;
+import com.fintech.pob.domain.user.dto.request.UserRequest;
+import com.fintech.pob.domain.user.service.LocalUserService;
+import com.fintech.pob.domain.user.service.UserServiceImpl;
 import jakarta.servlet.http.HttpSession;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +19,11 @@ import java.util.UUID;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService  userService;
+    private final UserServiceImpl userService;
     private final LocalUserService localUserService;
 
     @Autowired
-    public UserController(UserService userService, LocalUserService localUserService) {
+    public UserController(UserServiceImpl userService, LocalUserService localUserService) {
         this.userService = userService;
         this.localUserService = localUserService;
     }
@@ -38,13 +38,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("계정 생성 실패: " + e.getMessage());
         }
     }
-
-    @Getter
-    @Setter
-    public static class CreateUserRequest {
-        private String email;
-    }
-
 
     @PostMapping("/regist")
     public ResponseEntity<String> registUser(@RequestBody UserRequest userReqeust, HttpSession session) {
@@ -62,11 +55,4 @@ public class UserController {
         }
     }
 
-    @Getter
-    @Setter
-    public static class UserRequest {
-        private String userName;
-        private String userPassword;
-        private int userSubscriptionType;
-    }
 }

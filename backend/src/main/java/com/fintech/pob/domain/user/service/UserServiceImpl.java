@@ -1,4 +1,4 @@
-package com.fintech.pob.domain.user.application;
+package com.fintech.pob.domain.user.service;
 
 import org.json.JSONObject;
 import org.springframework.http.*;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService {
 
     private static final String API_URL = "https://finopenapi.ssafy.io/ssafy/api/v1/member/";
 
