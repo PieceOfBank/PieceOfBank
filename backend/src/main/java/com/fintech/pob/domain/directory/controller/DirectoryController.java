@@ -30,6 +30,7 @@ public class DirectoryController {
 
 
         String key = (String) session.getAttribute("userKey");
+        System.out.println(key);
         UUID userKey = UUID.fromString(key);
 
 
