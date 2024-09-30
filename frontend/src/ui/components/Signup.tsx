@@ -34,8 +34,9 @@ const SignupForm = () => {
       }
       
       const response = await createUser(JsonData);
-      console.log(response)
-      
+      console.log(response.data)
+      console.log("### success? ###")
+
       Toast.show({
         type: 'success',
         text1: '이메일 인증에 성공했습니다',
