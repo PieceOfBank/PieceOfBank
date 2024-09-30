@@ -30,10 +30,8 @@ public class DirectoryController {
 
 
         String key = (String) session.getAttribute("userKey");
+        System.out.println(key);
         UUID userKey = UUID.fromString(key);
-
-
-
         directoryDTO.setUserKey(userKey);
         DirectoryRequestDto createdDirectory = directoryService.createDirectory(directoryDTO,userKey);
         return ResponseEntity.ok(createdDirectory);
@@ -56,11 +54,12 @@ public class DirectoryController {
     public ResponseEntity<DirectoryRequestDto> updateDirectory(
             @PathVariable Long id,
             @RequestBody DirectoryRequestDto directoryDTO,
-            HttpServletRequest request
+            HttpServletRequest request,HttpSession session
     ) {
         //String userKey = extractUserKeyFromRequest(request);
-        UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
-
+    //    UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
+        String key = (String) session.getAttribute("userKey");
+        UUID userKey = UUID.fromString(key);
         directoryDTO.setUserKey(userKey);
 
         DirectoryRequestDto updatedDirectory = directoryService.updateDirectory(id, directoryDTO);
