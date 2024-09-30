@@ -11,7 +11,7 @@ import java.util.*;
 
 @Service
 @AllArgsConstructor
-public class DriectoryServiceImpl implements  DirectoryService{
+public class DirectoryServiceImpl implements  DirectoryService{
 
 
     private final DirectoryRepository directoryRepository;
@@ -37,7 +37,7 @@ public class DriectoryServiceImpl implements  DirectoryService{
             DirectoryRequestDto dto = new DirectoryRequestDto();
 
 
-            dto.setDirectoryId(directory.getDirectoryId());
+          //  dto.setDirectoryId(directory.getDirectoryId());
             dto.setAccountNo(directory.getAccountNo());
             dto.setInstitutionCode(directory.getInstitutionCode());
             dto.setName(directory.getName());
