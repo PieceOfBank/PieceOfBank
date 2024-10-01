@@ -2,6 +2,9 @@ package com.fintech.pob.domain.account.service;
 
 import com.fintech.pob.domain.account.dto.client.*;
 import com.fintech.pob.domain.account.dto.request.*;
+import com.fintech.pob.domain.account.service.transfer.TransferCheckResult;
+import com.fintech.pob.domain.account.service.transfer.TransferCheckService;
+import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -10,12 +13,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AccountService {
 
     private final WebClient webClient;
     private final HttpServletRequest request;
+    private final TransferCheckService transferCheckService;
+    private final SubscriptionService subscriptionService;
 
     public Mono<ClientAccountCreationResponseDTO> createAccount(AccountCreationRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
@@ -63,6 +70,21 @@ public class AccountService {
 
     public Mono<ClientAccountTransferResponseDTO> updateAccountTransfer(AccountTransferRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
+
+        Optional<Subscription> subscriptionOptional = subscriptionService.findByTargetUserKey(header.getUserKey());
+        if (subscriptionOptional.isPresent()) {
+            TransferCheckResult checkResult = transferCheckService.checkTransfer(requestPayload, header);
+            if (checkResult != TransferCheckResult.SUCCESS) {
+                // 알림 전송
+                // int notiId = notificationService.sendNotification(checkResult);
+
+                if (checkResult == TransferCheckResult.LIMIT || checkResult == TransferCheckResult.INACTIVITY) {
+                    // pendingHistory 추가
+                    // pendingHistoryService.addPendingHistory(requestPayload, notiId);
+                }
+                return null;
+            }
+        }
 
         ClientAccountTransferRequestDTO requestDTO = ClientAccountTransferRequestDTO.of(header, requestPayload);
 
