@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -36,10 +35,14 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public List<NotificationResponseDto> getAllNotificationsByReceiverKey(UUID receiverKey) {
         List<Notification> notifications = notificationRepository.findByReceiverUser_UserKey(receiverKey);
-        for (Notification notification : notifications) {
-            System.out.println(notification);
-        }
         return notifications.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public NotificationResponseDto getNotificationByNotificationId(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 알림 내역이 없습니다."));
+        return convertToDto(notification);
     }
 
     private NotificationResponseDto convertToDto(Notification notification) {

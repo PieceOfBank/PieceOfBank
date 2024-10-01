@@ -39,6 +39,12 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
+    @GetMapping("/{notificationId}")
+    public ResponseEntity<NotificationResponseDto> getNotificationById(@PathVariable("notificationId") Long notificationId) {
+        NotificationResponseDto notification = notificationService.getNotificationByNotificationId(notificationId);
+        return ResponseEntity.ok(notification);
+    }
+
     @PostMapping("/transfers/request")
     public ResponseEntity<Long> requestExceedTransfer(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto) {
         Long transactionApprovalId = notificationService.requestExceedTransfer(transactionApprovalRequestDto);
