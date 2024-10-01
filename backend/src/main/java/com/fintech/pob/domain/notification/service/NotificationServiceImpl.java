@@ -61,17 +61,53 @@ public class NotificationServiceImpl implements NotificationService {
         return savedApproval.getTransactionApprovalId();
     }
 
-    @Transactional
     @Override
-    public TransactionApprovalResponseDto acceptTransferRequest(Long transactionApprovalId) {
+    @Transactional
+    public TransactionApprovalResponseDto approveTransferRequest(Long transactionApprovalId) {
         TransactionApproval transactionApproval = transactionApprovalRepository.findById(transactionApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Transaction Approval not found"));
-        transactionApproval.setStatus(TransactionApprovalStatus.APPROVED); // 승인 상태로 설정
+        transactionApproval.setStatus(TransactionApprovalStatus.APPROVED);
         transactionApprovalRepository.save(transactionApproval);
 
         Notification notification = transactionApproval.getNotification();
         notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
         notificationRepository.save(notification);
+
+        return TransactionApprovalResponseDto.builder()
+                .senderKey(notification.getSenderUser().getUserKey())
+                .receiverKey(notification.getReceiverUser().getUserKey())
+                .receiverName(transactionApproval.getReceiverName())
+                .amount(transactionApproval.getAmount())
+                .status(transactionApproval.getStatus())
+                .build();
+    }
+
+    @Override
+    public TransactionApprovalResponseDto refuseTransferRequest(Long transactionApprovalId) {
+        TransactionApproval transactionApproval = transactionApprovalRepository.findById(transactionApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Transaction Refusal not found"));
+        transactionApproval.setStatus(TransactionApprovalStatus.REFUSED);
+        transactionApprovalRepository.save(transactionApproval);
+
+        Notification notification = transactionApproval.getNotification();
+
+        return TransactionApprovalResponseDto.builder()
+                .senderKey(notification.getSenderUser().getUserKey())
+                .receiverKey(notification.getReceiverUser().getUserKey())
+                .receiverName(transactionApproval.getReceiverName())
+                .amount(transactionApproval.getAmount())
+                .status(transactionApproval.getStatus())
+                .build();
+    }
+
+    @Override
+    public TransactionApprovalResponseDto expireTransferRequest(Long transactionApprovalId) {
+        TransactionApproval transactionApproval = transactionApprovalRepository.findById(transactionApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Transaction Expiry not found"));
+        transactionApproval.setStatus(TransactionApprovalStatus.EXPIRED);
+        transactionApprovalRepository.save(transactionApproval);
+
+        Notification notification = transactionApproval.getNotification();
 
         return TransactionApprovalResponseDto.builder()
                 .senderKey(notification.getSenderUser().getUserKey())

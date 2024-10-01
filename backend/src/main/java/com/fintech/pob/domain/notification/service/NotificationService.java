@@ -5,5 +5,7 @@ import com.fintech.pob.domain.notification.dto.TransactionApprovalResponseDto;
 
 public interface NotificationService {
     Long requestExceedTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto);
-    TransactionApprovalResponseDto acceptTransferRequest(Long transactionApprovalId);
+    TransactionApprovalResponseDto approveTransferRequest(Long transactionApprovalId);
+    TransactionApprovalResponseDto refuseTransferRequest(Long transactionApprovalId);
+    TransactionApprovalResponseDto expireTransferRequest(Long transactionApprovalId);
 }

@@ -33,9 +33,21 @@ public class NotificationController {
         return ResponseEntity.ok(transactionApprovalId);
     }
 
-    @PatchMapping("/transfers/accept")
-    public ResponseEntity<TransactionApprovalResponseDto> acceptTransferRequest(@RequestBody Long transactionApprovalId) {
-        TransactionApprovalResponseDto transactionApprovalResponseDto = notificationService.acceptTransferRequest(transactionApprovalId);
+    @PatchMapping("/transfers/approval")
+    public ResponseEntity<TransactionApprovalResponseDto> approveTransferRequest(@RequestBody Long transactionApprovalId) {
+        TransactionApprovalResponseDto transactionApprovalResponseDto = notificationService.approveTransferRequest(transactionApprovalId);
+        return ResponseEntity.ok(transactionApprovalResponseDto);
+    }
+
+    @PatchMapping("/transfers/refusal")
+    public ResponseEntity<TransactionApprovalResponseDto> refuseTransferRequest(@RequestBody Long transactionApprovalId) {
+        TransactionApprovalResponseDto transactionApprovalResponseDto = notificationService.refuseTransferRequest(transactionApprovalId);
+        return ResponseEntity.ok(transactionApprovalResponseDto);
+    }
+
+    @PatchMapping("/transfers/expiry")
+    public ResponseEntity<TransactionApprovalResponseDto> expireTransferRequest(@RequestBody Long transactionApprovalId) {
+        TransactionApprovalResponseDto transactionApprovalResponseDto = notificationService.expireTransferRequest(transactionApprovalId);
         return ResponseEntity.ok(transactionApprovalResponseDto);
     }
 
