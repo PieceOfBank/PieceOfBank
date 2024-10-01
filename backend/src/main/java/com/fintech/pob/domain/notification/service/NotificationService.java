@@ -1,15 +1,17 @@
 package com.fintech.pob.domain.notification.service;
 
-import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
+import com.fintech.pob.domain.notification.dto.NotificationResponseDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalResponseDto;
-import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
-import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
 public interface NotificationService {
-    Mono<Integer> sendMessageTo(NotificationRequestDto notificationSendDto) throws IOException;
+    List<NotificationResponseDto> getAllNotificationsByReceiverKey(UUID receiverKey);
+    NotificationResponseDto getNotificationByNotificationId(Long notificationId);
     Long requestExceedTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto);
-    TransactionApprovalResponseDto acceptTransferRequest(Long transactionApprovalId);
+    TransactionApprovalResponseDto approveTransferRequest(Long transactionApprovalId);
+    TransactionApprovalResponseDto refuseTransferRequest(Long transactionApprovalId);
+    TransactionApprovalResponseDto expireTransferRequest(Long transactionApprovalId);
 }

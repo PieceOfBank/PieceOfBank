@@ -1,9 +1,6 @@
 package com.fintech.pob.domain.notification.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fintech.pob.domain.notification.dto.NotificationMessageDto;
-import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
+import com.fintech.pob.domain.notification.dto.NotificationResponseDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalResponseDto;
 import com.fintech.pob.domain.notification.entity.*;
@@ -12,21 +9,17 @@ import com.fintech.pob.domain.notification.repository.NotificationTypeRepository
 import com.fintech.pob.domain.notification.repository.TransactionApprovalRepository;
 import com.fintech.pob.domain.user.entity.User;
 import com.fintech.pob.domain.user.repository.UserRepository;
-import com.google.auth.oauth2.GoogleCredentials;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.*;
+
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
-import java.io.IOException;
-import java.util.List;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -34,17 +27,35 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
-    @Value("${fcm.key.path}")
-    private String SERVICE_ACCOUNT_JSON;
-    @Value("${fcm.api.url}")
-    private String FCM_API_URL;
-
-    private final WebClient webClient;
-
     private final NotificationRepository notificationRepository;
     private final TransactionApprovalRepository transactionApprovalRepository;
     private final NotificationTypeRepository notificationTypeRepository;
     private final UserRepository userRepository;
+
+    @Override
+    public List<NotificationResponseDto> getAllNotificationsByReceiverKey(UUID receiverKey) {
+        List<Notification> notifications = notificationRepository.findByReceiverUser_UserKey(receiverKey);
+        return notifications.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public NotificationResponseDto getNotificationByNotificationId(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 알림 내역이 없습니다."));
+        return convertToDto(notification);
+    }
+
+    private NotificationResponseDto convertToDto(Notification notification) {
+        return NotificationResponseDto.builder()
+                .notificationId(notification.getNotificationId())
+                .senderKey(notification.getSenderUser().getUserKey())
+                .receiverKey(notification.getReceiverUser().getUserKey())
+                .notificationType(notification.getType().getTypeName())
+                .created(notification.getCreated())
+                .readAt(notification.getRead_at())
+                .notificationStatus(notification.getNotificationStatus())
+                .build();
+    }
 
     @Override
     @Transactional
@@ -79,12 +90,12 @@ public class NotificationServiceImpl implements NotificationService {
         return savedApproval.getTransactionApprovalId();
     }
 
-    @Transactional
     @Override
-    public TransactionApprovalResponseDto acceptTransferRequest(Long transactionApprovalId) {
+    @Transactional
+    public TransactionApprovalResponseDto approveTransferRequest(Long transactionApprovalId) {
         TransactionApproval transactionApproval = transactionApprovalRepository.findById(transactionApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Transaction Approval not found"));
-        transactionApproval.setStatus(TransactionApprovalStatus.APPROVED); // 승인 상태로 설정
+        transactionApproval.setStatus(TransactionApprovalStatus.APPROVED);
         transactionApprovalRepository.save(transactionApproval);
 
         Notification notification = transactionApproval.getNotification();
@@ -100,69 +111,40 @@ public class NotificationServiceImpl implements NotificationService {
                 .build();
     }
 
-    /**
-     * 푸시 메시지 처리를 수행하는 비즈니스 로직
-     *
-     * @param notificationRequestDto 모바일에서 전달받은 Object
-     * @return 성공(1), 실패(0)
-     */
-    public Mono<Integer> sendMessageTo(NotificationRequestDto notificationRequestDto) throws IOException {
-        String message = makeMessage(notificationRequestDto);
-        System.out.println("+++++++++" + message);
-        String accessToken = getAccessToken();
+    @Override
+    public TransactionApprovalResponseDto refuseTransferRequest(Long transactionApprovalId) {
+        TransactionApproval transactionApproval = transactionApprovalRepository.findById(transactionApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Transaction Refusal not found"));
+        transactionApproval.setStatus(TransactionApprovalStatus.REFUSED);
+        transactionApprovalRepository.save(transactionApproval);
 
-        return webClient.post()
-                .uri(FCM_API_URL)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .bodyValue(message)
-                .retrieve()
-                .toBodilessEntity()
-                .map(response -> response.getStatusCode().is2xxSuccessful() ? 1 : 0)
-                .doOnError(e -> {
+        Notification notification = transactionApproval.getNotification();
 
-                    log.error("[-] FCM 전송 오류 :: " + e.getMessage());
-                    log.error("[" + notificationRequestDto.getToken() + "]이 유효하지 않습니다");
-                })
-                .onErrorReturn(0);
-    }
-
-    /**
-     * Firebase Admin SDK의 비공개 키를 참조하여 Bearer 토큰을 발급 받습니다.
-     *
-     * @return Bearer token
-     */
-    private String getAccessToken() throws IOException {
-        GoogleCredentials googleCredentials = GoogleCredentials
-                .fromStream(new ClassPathResource(SERVICE_ACCOUNT_JSON).getInputStream())
-                .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
-
-        googleCredentials.refreshIfExpired();
-        log.info("getAccessToken() - googleCredentials: {} ", googleCredentials.getAccessToken().getTokenValue());
-        return googleCredentials.getAccessToken().getTokenValue();
-    }
-
-    /**
-     * FCM 전송 정보를 기반으로 메시지를 구성합니다. (Object -> String)
-     *
-     * @param notificationRequestDto notificationRequestDto
-     * @return String
-     */
-    private String makeMessage(NotificationRequestDto notificationRequestDto) throws JsonProcessingException {
-        ObjectMapper om = new ObjectMapper();
-        NotificationMessageDto fcmMessageDto = NotificationMessageDto
-                .builder()
-                .message(NotificationMessageDto.Message.builder()
-                        .token(notificationRequestDto.getToken()) // 1:1 전송 시 대상 토큰
-                        .notification(NotificationMessageDto.Notification.builder()
-                                .title(notificationRequestDto.getTitle())
-                                .body(notificationRequestDto.getBody())
-                                .image(null)
-                                .build()
-                        ).build())
-                .validateOnly(false)
+        return TransactionApprovalResponseDto.builder()
+                .senderKey(notification.getSenderUser().getUserKey())
+                .receiverKey(notification.getReceiverUser().getUserKey())
+                .receiverName(transactionApproval.getReceiverName())
+                .amount(transactionApproval.getAmount())
+                .status(transactionApproval.getStatus())
                 .build();
+    }
 
-        return om.writeValueAsString(fcmMessageDto);
+    @Override
+    public TransactionApprovalResponseDto expireTransferRequest(Long transactionApprovalId) {
+        TransactionApproval transactionApproval = transactionApprovalRepository.findById(transactionApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Transaction Expiry not found"));
+        transactionApproval.setStatus(TransactionApprovalStatus.EXPIRED);
+        transactionApprovalRepository.save(transactionApproval);
+
+        Notification notification = transactionApproval.getNotification();
+
+        return TransactionApprovalResponseDto.builder()
+                .senderKey(notification.getSenderUser().getUserKey())
+                .receiverKey(notification.getReceiverUser().getUserKey())
+                .receiverName(transactionApproval.getReceiverName())
+                .amount(transactionApproval.getAmount())
+                .status(transactionApproval.getStatus())
+                .build();
     }
 }
 
