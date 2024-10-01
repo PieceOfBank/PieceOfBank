@@ -1,5 +1,6 @@
 package com.fintech.pob.domain.notification.service;
 
+import com.fintech.pob.domain.notification.dto.NotificationResponseDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalResponseDto;
 import com.fintech.pob.domain.notification.entity.*;
@@ -15,7 +16,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -27,6 +32,27 @@ public class NotificationServiceImpl implements NotificationService {
     private final TransactionApprovalRepository transactionApprovalRepository;
     private final NotificationTypeRepository notificationTypeRepository;
     private final UserRepository userRepository;
+
+    @Override
+    public List<NotificationResponseDto> getAllNotificationsByReceiverKey(UUID receiverKey) {
+        List<Notification> notifications = notificationRepository.findByReceiverUser_UserKey(receiverKey);
+        for (Notification notification : notifications) {
+            System.out.println(notification);
+        }
+        return notifications.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    private NotificationResponseDto convertToDto(Notification notification) {
+        return NotificationResponseDto.builder()
+                .notificationId(notification.getNotificationId())
+                .senderKey(notification.getSenderUser().getUserKey())
+                .receiverKey(notification.getReceiverUser().getUserKey())
+                .notificationType(notification.getType().getTypeName())
+                .created(notification.getCreated())
+                .readAt(notification.getRead_at())
+                .notificationStatus(notification.getNotificationStatus())
+                .build();
+    }
 
     @Override
     @Transactional

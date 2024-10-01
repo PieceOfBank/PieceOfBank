@@ -1,6 +1,7 @@
 package com.fintech.pob.domain.notification.controller;
 
 import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
+import com.fintech.pob.domain.notification.dto.NotificationResponseDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalResponseDto;
 import com.fintech.pob.domain.notification.service.FCMService;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -25,6 +28,15 @@ public class NotificationController {
     public NotificationController(NotificationService notificationService, FCMService fcmService) {
         this.notificationService = notificationService;
         this.fcmService = fcmService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<NotificationResponseDto>> getNotificationsByReceiverKey(@RequestParam("receiverKey") UUID receiverKey) {
+        List<NotificationResponseDto> notifications = notificationService.getAllNotificationsByReceiverKey(receiverKey);
+        if (notifications.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(notifications);
     }
 
     @PostMapping("/transfers/request")
