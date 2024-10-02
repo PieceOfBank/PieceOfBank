@@ -8,4 +8,6 @@ public interface LocalUserService {
     void saveUser(UUID userKey, String userName, String userPassword, int userSubscriptionType);
 
     User authenticate(String userName, String password);
+
+    User findByUserKey(String userKey);
 }
