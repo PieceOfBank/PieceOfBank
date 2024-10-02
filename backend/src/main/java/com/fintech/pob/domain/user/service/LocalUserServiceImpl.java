@@ -16,6 +16,7 @@ public class LocalUserServiceImpl implements LocalUserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Override
     public void saveUser(UUID userKey, String userName, String userPassword, int userSubscriptionType) {
         User user = new User();
         if (userKey == null) {
@@ -31,7 +32,17 @@ public class LocalUserServiceImpl implements LocalUserService {
         userRepository.save(user);
     }
 
+    @Override
     public User authenticate(String userName, String password) {
         return userRepository.findByUserNameAndUserPassword(userName, password);
     }
+
+    @Override
+    public User findByUserKey(String userKey) {
+        return userRepository.findByUserKey(UUID.fromString(userKey))
+                .orElseThrow(() -> new IllegalArgumentException("해당 userKey 찾을 수 없음"));
+    }
+
+
+
 }

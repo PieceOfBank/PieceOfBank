@@ -21,26 +21,48 @@ public class JwtUtil {
     @Value("${jwt.refresh-token-validity-in-seconds}")
     private long REFRESH_TOKEN_EXPIRATION_TIME;
 
+    // Access Token 만들기
+    public String generateAccessToken(String userKey, int subscriptionType) {
+        return createToken(userKey, subscriptionType, EXPIRATION_TIME);
+    }
+
+    // Refresh Token 만들기
+    public String generateRefreshToken(String userKey) {
+        return createToken(userKey, null, REFRESH_TOKEN_EXPIRATION_TIME);
+    }
+
+
     // JWT 토큰 생성
-    public String generateToken(String userKey, int subscriptionType) {
+    public String createToken(String userKey, Integer subscriptionType, long expirationTime) {
         Claims claims = Jwts.claims().setSubject(userKey);
-        claims.put("subscriptionType", subscriptionType);
+        if (subscriptionType != null) {
+            claims.put("subscriptionType", subscriptionType);
+
+        }
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime * 1000))
                 .signWith(key)
                 .compact();
     }
 
     // JWT 토큰에서 userKey 추출
     public String extractUserKey(String token) {
-        return Jwts.parser().setSigningKey(key).parseClaimsJwt(token).getBody().getSubject();
+        try {
+            // 서명된 JWT를 파싱할 때는 parseClaimsJws()를 사용
+            return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
+        } catch (Exception e) {
+            // 예외 처리 및 로그 출력
+            System.out.println("Error extracting user key from token: " + e.getMessage());
+            throw new RuntimeException("JWT Parsing Error");
+        }
     }
 
+
     // JWT 토큰에서 subscriptionType 추출
-    public int extractSubscriptiontyoe(String token) {
+    public int extractSubscriptiontype(String token) {
         Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         return (int) claims.get("subscriptionType");
     }

@@ -23,7 +23,7 @@ public class RefreshTokenService {
     }
 
     // Refresh Token 확인
-    public String refreshToken(String userKey) {
+    public String getRefreshToken(String userKey) {
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
         return ops.get(userKey);
     }
