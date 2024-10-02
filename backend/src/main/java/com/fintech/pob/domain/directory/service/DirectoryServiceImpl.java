@@ -42,6 +42,7 @@ public class DirectoryServiceImpl implements  DirectoryService{
             dto.setAccountNo(directory.getAccountNo());
             dto.setInstitutionCode(directory.getInstitutionCode());
             dto.setName(directory.getName());
+            dto.setUrl(directory.getUrl());
 
 
             directoryDtos.add(dto);
