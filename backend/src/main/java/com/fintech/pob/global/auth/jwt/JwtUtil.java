@@ -1,5 +1,6 @@
 package com.fintech.pob.global.auth.jwt;
 
+import com.fintech.pob.global.auth.service.LogoutService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,6 +14,8 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
+    private final LogoutService logoutService;
+
     SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     @Value("${jwt.access-token-validity-in-seconds}")
@@ -20,6 +23,10 @@ public class JwtUtil {
 
     @Value("${jwt.refresh-token-validity-in-seconds}")
     private long REFRESH_TOKEN_EXPIRATION_TIME;
+
+    public JwtUtil(LogoutService logoutService) {
+        this.logoutService = logoutService;
+    }
 
     // Access Token 만들기
     public String generateAccessToken(String userKey, int subscriptionType) {
@@ -69,12 +76,19 @@ public class JwtUtil {
 
     // 토큰 유효성 검사
     public boolean isTokenValid(String token, String userKey) {
-        final String extractedUserKey = extractUserKey(token);
-        return (extractedUserKey.equals(userKey) && !isTokenExpired(token));
+        if (logoutService.isTokenInBlackList(token)) {
+            return false;
+        }
+        final String extractedKey = extractUserKey(token);
+        return (extractedKey.equals(userKey) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token) {
         return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getExpiration().before(new Date());
+    }
+
+    public long getExpirationTime(String token) {
+        return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getExpiration().getTime();
     }
 
 

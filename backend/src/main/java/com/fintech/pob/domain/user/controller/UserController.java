@@ -41,8 +41,8 @@ public class UserController {
 
     @PostMapping("/regist")
     public ResponseEntity<String> registUser(@RequestBody UserRequest userReqeust, HttpSession session) {
-//        String userKeyString = (String) session.getAttribute("userKey");
-        String userKeyString = "b2f01678-938e-4358-bf71-7b0bedb48f71";
+        String userKeyString = (String) session.getAttribute("userKey");
+//        String userKeyString = "b2f01678-938e-4358-bf71-7b0bedb48f71";
 
         if (userKeyString == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효한 세션이 아닙니다.");

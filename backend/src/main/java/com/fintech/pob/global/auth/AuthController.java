@@ -7,13 +7,11 @@ import com.fintech.pob.global.auth.dto.AuthRequest;
 import com.fintech.pob.global.auth.dto.AuthResponse;
 import com.fintech.pob.global.auth.dto.RefreshRequest;
 import com.fintech.pob.global.auth.jwt.JwtUtil;
+import com.fintech.pob.global.auth.service.LogoutService;
 import com.fintech.pob.global.auth.service.RefreshTokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,11 +20,13 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final LocalUserService localUserService;
     private final RefreshTokenService refreshTokenService;
+    private final LogoutService logoutService;
 
-    public AuthController(JwtUtil jwtUtil, LocalUserService localUserService, RefreshTokenService refreshTokenService) {
+    public AuthController(JwtUtil jwtUtil, LocalUserService localUserService, RefreshTokenService refreshTokenService, LogoutService logoutService) {
         this.jwtUtil = jwtUtil;
         this.localUserService = localUserService;
         this.refreshTokenService = refreshTokenService;
+        this.logoutService = logoutService;
     }
 
     // 로그인 할 때 access 랑 refresh 둘다 발급
@@ -67,6 +67,19 @@ public class AuthController {
             return ResponseEntity.ok(new AccessTokenResponse(newAccessToken));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한 검증 불가 refresh token");
+        }
+    }
+
+    // 로그아웃 처리
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token){
+        try{
+            String jwtToken = token.replace("Bearer", "");
+            long expirationTime = jwtUtil.getExpirationTime(jwtToken);
+            logoutService.logout(jwtToken, expirationTime);
+            return ResponseEntity.ok("로그아웃 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("로그아웃 실패");
         }
     }
 
