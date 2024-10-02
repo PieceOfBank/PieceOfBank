@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import Checkbox from 'expo-checkbox';
 import Toast from "react-native-toast-message";
+import CancelButton from "../CancelButton";
 
 const FamilyAccountList = () => {
 
@@ -52,29 +53,33 @@ const FamilyAccountList = () => {
     }
 
      return (
-        <View className='flex-1 w-4/5'>
+        <View className='flex-1 w-5/6'>
             <ScrollView className='flex-1'>
                 <View className='justify-center items-center'>
                 {accountList.map((list, index) => (
-                    <View key={index} className='w-5/6 h-12 p-3 m-2 flex-row items-center bg-gray-300 justify-between rounded-2xl'>
-                        <Text className='pl-4'>{list.bank}</Text>
+                    <View key={index} className='w-5/6 h-28 p-3 m-2 items-center bg-gray-300 justify-between rounded-2xl'>
+                            <View className='mx-2'>
+                                <TouchableOpacity 
+                                    className={`w-32 h-8 rounded-2xl justify-center ${accountChecked[index] ? 'bg-sky-500' : 'bg-gray-500'}`}
+                                    onPress={() => checkChange(index)} 
+                                    >
+                                    <View className='flex-row justify-center'>
+                                        <Text className='text-white text-center font-bold'>대표 계좌</Text>
+                                        <Text className={`text-white text-center font-bold ${accountChecked[index] ? ' text-yellow-300' : 'text-gray-400'}`}> ★ </Text>
+                                    </View>
+                                </TouchableOpacity>
+                        </View> 
+                        <Text>{list.bank}</Text>
                         <Text>{list.number}</Text>
-                        <View className='mx-2'>
-                            <TouchableOpacity 
-                            className={`w-24 h-8 rounded-xl justify-center ${accountChecked[index] ? 'bg-sky-500' : 'bg-gray-500'}`}
-                            onPress={() => checkChange(index)} 
-                            >
-                                <View className='flex-row justify-center'>
-                                <Text className='text-white text-center font-bold'>대표 계좌</Text>
-                                <Text className={`text-white text-center font-bold ${accountChecked[index] ? ' text-yellow-300' : 'text-gray-400'}`}> ★ </Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>      
+     
                     </View>
              
                 ))}
-                <View className='justify-center items-center'>
-                    <Button title="대표 계좌 등록하기" onPress={mainSelect}></Button>
+                <View className='justify-center items-center flex-row'>
+                <TouchableOpacity className='m-2 py-2 px-4 bg-sky-400 rounded-3xl' onPress={mainSelect}>
+                    <Text className='text-white'>대표 계좌 등록하기</Text>
+                    </TouchableOpacity>
+                    <CancelButton />
                 </View>
                 </View>
 

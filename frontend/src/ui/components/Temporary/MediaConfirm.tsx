@@ -1,6 +1,7 @@
 import { View, Text, Button, ImageBackground, Alert, TextInput, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import { useRouter, Link } from 'expo-router';
 import React, { useState } from 'react';
+import CancelButton from '../CancelButton';
 
 interface mediaCheck {
   onChange: () => void;
@@ -10,18 +11,28 @@ const MediaConfirm = ({ onChange }: mediaCheck) => {
     const router = useRouter();
 
     const thirdCheck = () => {
-        onChange()
+        // onChange()
+        router.push('/family copy/media/selectMedia')
     }
 
      return(
-        <View className='flex-1 justify-center items-center'>
-                <View className='bg-gray-300 rounded-xl w-3/4 p-2'>
-                  <Text className='text-2xl text-center font-bold '>송금이 완료되었습니다</Text>
-                  <Text className='text-2xl text-center font-bold'>미디어 송금을 할까요?</Text>
+        <View className='flex-1 items-center'>
+                <View className='bg-gray-300 rounded-xl w-3/4 p-2 mt-28'>
+                  <Text className='text-3xl my-5 text-center font-bold'>송금 완료!</Text>
+                  <Text className='text-2xl text-center '>이체가 완료되었습니다</Text>
+                  <Text className='text-2xl text-center '>추가로 미디어 컨텐츠를</Text>
+                  <Text className='text-2xl text-center mb-5'>보내시겠습니까?</Text>
                 </View>
                 <View className='m-5'>
                 </View>
-            <Button title="네" onPress={thirdCheck}></Button>
+            <View className='flex-row'>
+            <TouchableOpacity className='m-2 py-2 px-4 bg-sky-400 rounded-3xl w-20' onPress={thirdCheck}>
+                    <Text className='text-white text-center'>네</Text>
+                    </TouchableOpacity>
+            <TouchableOpacity className='m-2 py-2 px-4 bg-red-400 rounded-3xl w-20' onPress={() => router.back()}>
+            <Text className='text-white text-center'>아니오</Text>
+            </TouchableOpacity>
+            </View>
 
         </View>
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import Checkbox from 'expo-checkbox';
 import Toast from "react-native-toast-message";
+import CancelButton from "./CancelButton";
 
 const WardAllAccount = () => {
 
@@ -73,8 +74,11 @@ const WardAllAccount = () => {
                     </View>
              
                 ))}
-                <View className='justify-center items-center'>
-                    <Button title="대표 계좌 등록하기" onPress={mainSelect}></Button>
+                <View className='justify-center items-center flex-row'>
+                <TouchableOpacity className='m-2 py-2 px-4 bg-sky-400 rounded-3xl w-40' onPress={mainSelect}>
+                    <Text className='text-white text-center'>대표 계좌 등록하기</Text>
+                    </TouchableOpacity>
+                    <CancelButton />
                 </View>
                 </View>
 

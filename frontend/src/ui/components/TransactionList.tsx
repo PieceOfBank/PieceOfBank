@@ -19,7 +19,7 @@ const TransactionList = () => {
     } 
     
      return(
-        <View className='bg-green-300 flex-1 w-4/5'>
+        <View className='bg-gray-200 flex-1 w-4/5 rounded-2xl'>
             <ScrollView className='flex-1'>
             {transferList.map((list, index) => (
                 <View key={index} className={`${list.type == '1' ? 'items-start' : 'items-end'} flex-1 justify-center m-2`}>

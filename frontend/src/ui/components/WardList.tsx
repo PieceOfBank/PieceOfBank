@@ -18,7 +18,7 @@ const WardListForm = () => {
     }
 
     // 보호자 연결 상태 확인 - 1 : 연결 전 (보호자 요청 수락 페이지) / 2 : 연결 후 (기본 메인)
-    const [connect, setConnect] = useState(2);
+    const [connect, setConnect] = useState(1);
 
     // 보호자 연결 조회 (GET)
     const connectCheck = async () => {
@@ -63,13 +63,19 @@ const WardListForm = () => {
                                         { directoryId : 3, userKey: '3', accountNo: '33333333', institutionCode: 5, name: '진숙' }]
      
      // 임시 리스트 (고정 카드: 전체 기록 카드)
-     const addList: DirectoryItem = { directoryId : 99, userKey: '', accountNo: '', institutionCode: 99, name: '전체 기록' }
+     const addList: DirectoryItem = { directoryId : 99, userKey: '9999', accountNo: '', institutionCode: 99, name: '전체 기록' }
  
      // 임시 리스트 (전체 연락처 + 고정)
-     const allList : DirectoryItem [] = (connect==2) ? [...careList, addList] : [{ directoryId : 999, userKey: '', accountNo: '', institutionCode: 999, name: '연결하기' }]
+     const allList : DirectoryItem [] = (connect==2) 
+                                        ? [...careList, addList] 
+                                        : [{ directoryId : 999, userKey: '999', accountNo: '', institutionCode: 999, name: '관계 맺기' },
+                                            addList
+                                        ]
 
      // 버튼 클릭시 이동 - 1이면 관계 등록 페이지 2이면 거래 내역 확인 페이지
-     const connectAdd = connect == 2 ? '/ward/transaction' : '/ward/addFamily'
+     const connectAdd = connect == 2 
+     ? '/ward/transaction' 
+     : '/ward/addFamily'
         
      // 이름 클릭 시 이동~~
     //  const addStatus = (item:any) => {
@@ -88,12 +94,32 @@ const WardListForm = () => {
      const careView = ({item}:{item:DirectoryItem}) => 
          (
 
-         <View className="w-48 h-48 m-4 bg-white justify-center items-center rounded-3xl">
-             <Image className="w-32 h-32 bg-teal-400 mt-4" source={require('../../../assets/favicon.png')}></Image>
-             <Link className='w-20 h-6 rounded-3xl justify-center bg-sky-200 m-4 text-center rounded-3xl font-bold' 
-             href={
-                {pathname:connectAdd, params:{account:item.accountNo, bank:item.institutionCode, name:item.name}}
-                }>{item.name}</Link>
+         <View className="w-40 h-40 m-4 bg-white justify-center items-center rounded-3xl">
+             <Image className="w-[120px] sm:w-[90px] lg:w-[150px] h-[120px] sm:h-[90px] lg:h-[150px]" source={require('../../../assets/smile.png')}></Image>
+             {/* <Image className="w-28 h-28 bg-teal-400 mt-4" source={require('../../../assets/smile.png')}></Image> */}
+             {
+                (connect == 1)
+                ?
+                    (item.name == '전체 기록')
+                    ?             
+                    <Link className='w-20 h-6 rounded-3xl justify-center bg-sky-200 m-2 text-center rounded-3xl' 
+                    href={
+                       {pathname: '/ward/transaction', params:{account:item.accountNo, bank:item.institutionCode, name:item.name}}
+                       }>{item.name}</Link>
+                    :             
+                    <Link className='w-20 h-6 rounded-3xl justify-center bg-sky-200 m-2 text-center rounded-3xl' 
+                    href={
+                       {pathname:'/ward/addFamily' , params:{account:item.accountNo, bank:item.institutionCode, name:item.name}}
+                       }>{item.name}</Link>
+                 
+                :             
+                    <Link className='w-20 h-6 rounded-3xl justify-center bg-sky-200 m-2 text-center rounded-3xl' 
+                    href={
+                    {pathname:connectAdd, params:{account:item.accountNo, bank:item.institutionCode, name:item.name}}
+                    }>{item.name}</Link>
+             }
+             
+
             {/* <TouchableOpacity 
                  className='w-12 h-12'
                  onPress={() => addStatus(item)}>
@@ -112,7 +138,7 @@ const WardListForm = () => {
             {/* 화살표 이전(<) 버튼 */}
              <View>
                  <TouchableOpacity 
-                 className={`w-10 h-10 rounded-3xl justify-center ml-4 mt-24 ${nowPage === 0? 'bg-gray-500' : 'bg-sky-200'}`} 
+                 className={`w-10 h-10 rounded-3xl justify-center ml-4 mt-24 border-2 ${nowPage === 0? 'bg-gray-500' : 'bg-white'}`} 
                  onPress={() => prevPage(nowPage)} 
                  disabled={nowPage === 0}>
                      <Text className='text-center rounded-3xl font-bold text-3xl'>&lt;</Text></TouchableOpacity>   
@@ -131,7 +157,7 @@ const WardListForm = () => {
              {/* 화살표 다음(>) 버튼 */}
              <View>
                  <TouchableOpacity 
-                 className={`w-10 h-10 rounded-3xl justify-center mr-4 mt-24 ${(nowPage + 1) * pageNum >= allList.length ? 'bg-gray-500' : 'bg-sky-200'}`}
+                 className={`w-10 h-10 rounded-3xl justify-center mr-4 mt-24 border-2 ${(nowPage + 1) * pageNum >= allList.length ? 'bg-gray-500' : 'bg-white'}`}
                  onPress={() => nextPage(nowPage)} 
                  disabled={(nowPage + 1) * pageNum >= allList.length}>
                      <Text className='text-center rounded-3xl font-bold text-3xl'>&gt;</Text></TouchableOpacity>   

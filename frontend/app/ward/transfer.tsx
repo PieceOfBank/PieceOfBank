@@ -1,5 +1,5 @@
 import { Link, useRouter, useLocalSearchParams } from "expo-router";
-import { View, Text, ImageBackground, TextInput, SafeAreaView, Alert, Button, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ImageBackground, TextInput, SafeAreaView, Alert, Button, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import TransferObject from "../../src/ui/components/TransferObject";
@@ -8,6 +8,7 @@ import PinConfirm from "../../src/ui/components/PinConfirm";
 import TransferOk from "../../src/ui/components/TransferOk";
 import DirectoryTransfer from "../../src/ui/components/DirectoryTransfer";
 import Toast from "react-native-toast-message";
+import smallLogo from "../../src/assets/SmallLogo.png";
 
 const careTransfer = () => {
 
@@ -117,12 +118,13 @@ const careTransfer = () => {
         const limitCheck = parseInt(nowLimit) // 한도 기준 숫자 변환
         const balanceCheck = parseInt(balance) // 송금 금액 숫자 변환
         if (balanceCheck > limitCheck){
-          // setStep('4')
           Toast.show({
             type: 'error',
             text1: '송금 실패 - 한도 초과!',
             text2: '기준 금액 초과로 승인 허락 요청이 들어갔습니다'
           })
+          setStep('4')
+
         }
         else {
           Toast.show({
@@ -130,6 +132,7 @@ const careTransfer = () => {
             text1: '송금 성공!',
             text2: '송금에 성공하셨습니다!'
           })
+          router.push('/ward/main')
         }
 
       }
@@ -151,21 +154,40 @@ const careTransfer = () => {
       // 연락처에 없는 경우 일반 송금 - 계좌번호 & 은행 & 금액 입력받기
       if (nowName=='전체 기록'){
         return (
-          <View className='flex-1 justify-center items-center'>
+          <ImageBackground source={require('../../src/assets/POBbackGround.png')}
+          className="flex-1">
+            <View className="h-16 bg-blue-400 dark:bg-blue-100 flex flex-row justify-start items-center">
+            <Image source={smallLogo} className="w-12 h-12" />
+              <View className='flex-1 justify-start items-center'>
+              <Text className='text-2xl text-white font-bold'>송금하기</Text>
+            </View>
+            </View>
+            <View className='flex-1 justify-center items-center'>
             <View className='flex-1 flex-row justify-center items-center'>
               <TransferObject onChange={firstChange} /> 
             </View>
           </View>
+          </ImageBackground>
+
         );
       }
       // 연락처 등록된 경우 - 금액만 입력 받고 전달받은 계좌 정보 넣기 
       else {
         return (
+          <ImageBackground source={require('../../src/assets/POBbackGround.png')}
+          className="flex-1">
+                     <View className="h-16 bg-blue-400 dark:bg-blue-100 flex flex-row justify-start items-center">
+            <Image source={smallLogo} className="w-12 h-12" />
+              <View className='flex-1 justify-start items-center'>
+              <Text className='text-2xl text-white font-bold'>송금하기</Text>
+            </View>
+            </View>  
           <View className='flex-1 justify-center items-center'>
             <View className='flex-1 flex-row justify-center items-center'>
               <DirectoryTransfer onChange={existChange} name={nowName}/> 
             </View>
           </View>
+          </ImageBackground>
         );
       }
 
@@ -174,17 +196,34 @@ const careTransfer = () => {
     // 2차 송금 화면 - 계좌 이체 정보 맞는지 보여주기
     else if (step=='2') {
       return (
+        <ImageBackground source={require('../../src/assets/POBbackGround.png')}
+        className="flex-1">
+                     <View className="h-16 bg-blue-400 dark:bg-blue-100 flex flex-row justify-start items-center">
+            <Image source={smallLogo} className="w-12 h-12" />
+              <View className='flex-1 justify-start items-center'>
+              <Text className='text-2xl text-white font-bold'>송금 정보 확인</Text>
+            </View>
+            </View>
         <View className='flex-1 justify-center items-center'>
           <View className='flex-1 flex-row justify-center items-center'>
             <TransferCheck onChange={secondChange} balance={balance} />
           </View>
         </View>
+        </ImageBackground>
       );
     }
 
     // 3차 송금 화면 - 핀번호 입력 일치 확인하기
     else if (step=='3'){
       return(
+        <ImageBackground source={require('../../src/assets/POBbackGround.png')}
+        className="flex-1">
+                     <View className="h-16 bg-blue-400 dark:bg-blue-100 flex flex-row justify-start items-center">
+            <Image source={smallLogo} className="w-12 h-12" />
+              <View className='flex-1 justify-start items-center'>
+              <Text className='text-2xl text-white font-bold'>송금하기</Text>
+            </View>
+            </View>
         <View>
           <View className='flex-1 justify-center items-center'>
             <View className='flex-1 flex-row justify-center items-center'>
@@ -192,6 +231,7 @@ const careTransfer = () => {
             </View>
           </View>
         </View>
+        </ImageBackground>
       )
     }
 
@@ -200,6 +240,14 @@ const careTransfer = () => {
     // 금액 한도 이하일 경우 송금 완료 
     else if (step=='4'){
       return(
+        <ImageBackground source={require('../../src/assets/POBbackGround.png')}
+        className="flex-1">
+                     <View className="h-16 bg-blue-400 dark:bg-blue-100 flex flex-row justify-start items-center">
+            <Image source={smallLogo} className="w-12 h-12" />
+              <View className='flex-1 justify-start items-center'>
+              <Text className='text-2xl text-white font-bold'>송금하기</Text>
+            </View>
+            </View>
         <View>
           <View className='flex-1 justify-center items-center'>
             <View className='flex-1 flex-row justify-center items-center'>
@@ -208,6 +256,7 @@ const careTransfer = () => {
             </View>
           </View>
         </View>
+        </ImageBackground>
       )
     }
 

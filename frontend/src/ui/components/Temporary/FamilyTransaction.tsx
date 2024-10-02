@@ -19,7 +19,7 @@ const FamilyTransaction = () => {
     } 
     
      return(
-        <View className='bg-green-300 flex-1 w-4/5'>
+        <View className='bg-gray-300 rounded-3xl flex-1 w-4/5'>
             <ScrollView className='flex-1'>
             {transferList.map((list, index) => (
                 <View key={index} className={`${list.type == '1' ? 'items-start' : 'items-end'} flex-1 justify-center m-2`}>
@@ -27,7 +27,7 @@ const FamilyTransaction = () => {
                         <Text>{list.name}</Text>
                         { list.media ?
                         (<TouchableOpacity 
-                            className='w-5/6 h-8 m-3 rounded justify-center items-center bg-sky-500'
+                            className='w-5/6 h-12 m-3 rounded justify-center items-center bg-sky-500'
                             onPress={ModalOpen}>
                             <Text className='text-white text-center font-bold'>메세지를 확인해보세요!</Text>
                         </TouchableOpacity>)
@@ -42,7 +42,7 @@ const FamilyTransaction = () => {
                 <Modal visible={modals}
                 transparent={true}>
                     <View className='flex-1 justify-center items-center' style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}>
-                        <View className='bg-sky-200 font-3xl w-2/4 h-3/4'>
+                        <View className='bg-sky-200 font-3xl w-3/4 h-2/4'>
                             <View className='w-40 h-40'></View>
                             <Text className='text-center'>모달 내용</Text>
                         </View>

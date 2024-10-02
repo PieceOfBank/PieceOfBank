@@ -53,8 +53,8 @@ const PinConfirm = ({ onChange }: thirdInfo) => {
 
      return(
         <View className='flex-1 flex-row h-5/6'>
-            <View className='flex-1 justfiy-center items-center basis-2/5 m-2 p-2 h-72'>
-                <View className='h-16'></View>
+            <View className='flex-1 justfiy-center items-center basis-2/5 m-2 h-64'>
+                <View className='h-8'></View>
                 <View className='bg-gray-300 px-12 py-5 rounded-xl'>
                   <Text className='text-2xl text-center font-bold'>비밀번호를</Text>
                   <Text className='text-2xl text-center font-bold'>입력해주세요</Text>
@@ -67,7 +67,7 @@ const PinConfirm = ({ onChange }: thirdInfo) => {
                 </View>
             </View>
 
-            <View className='flex-1 justfiy-center items-center basis-2/5 m-2 h-72'>
+            <View className='flex-1 justfiy-center items-center basis-2/5 m-2 h-60'>
 
             <View>
                 {touchNumber.map((list, index) => 

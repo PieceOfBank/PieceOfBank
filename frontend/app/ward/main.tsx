@@ -1,9 +1,11 @@
 import { Link } from "expo-router";
 import { View, Text, ImageBackground, TextInput, SafeAreaView, TouchableOpacity, Image, FlatList } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import WardListForm from "../../src/ui/components/WardList";
 import NowAccount from "../../src/ui/components/NowAccount";
+import SmallLogo from "../../src/assets/SmallLogo.png";
 
 
 interface CareItem {
@@ -12,6 +14,8 @@ interface CareItem {
 }
 
 const caregiver = () => {
+
+    const router = useRouter()
 
     // 화면 가로고정
     useEffect(() => {
@@ -25,10 +29,30 @@ const caregiver = () => {
         },[]);
 
    return(
-    <View className='flex-1 justify-center items-center mx-1'>
-        <NowAccount />
-        <WardListForm />
-    </View>
+    <ImageBackground source={require('../../src/assets/POBbackGround.png')} className="flex-1">
+        <SafeAreaView>
+            <View className="h-16 bg-blue-400 dark:bg-blue-100 flex-row justify-start items-center">
+            <Image source={SmallLogo} className="w-12 h-12" />
+            <NowAccount />
+            <TouchableOpacity 
+                  className='w-24 h-8 m-5 rounded-3xl justify-center bg-gray-500'
+                  onPress={() => router.push('/')} 
+                  >
+                <Text className='text-center text-white'>로그아웃</Text></TouchableOpacity>
+            </View>
+        </SafeAreaView>
+        <View className='flex-row justify-center items-center mt-1'>
+            <TouchableOpacity 
+            className="w-28 bg-green-800 h-8 rounded-3xl justify-center items-center"
+            onPress={() => router.push('/ward/noticeCheck')}>
+                <Text className='text-white'>알림함</Text>
+            </TouchableOpacity>
+        </View>
+        <View className='flex-1 items-center justify-center'>
+            <WardListForm />
+        </View>
+    </ImageBackground>
+
    )
 }
 

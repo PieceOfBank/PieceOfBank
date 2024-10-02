@@ -52,8 +52,8 @@ const PinInfo = ({ onChange }: pinInput) => {
       <View className={`${number<=numCheck ? 'bg-blue-500' : 'bg-white'} w-8 h-8 rounded-full m-1`} key={number}></View>)
 
      return(
-        <View className='flex-1 justify-center items-center'>
-                <View className='bg-gray-300 rounded-xl w-2/4 p-2'>
+        <View className='flex-1 items-center'>
+                <View className='bg-gray-300 rounded-xl w-2/4 p-4 mt-16'>
                   <Text className='text-2xl text-center font-bold'>비밀번호를</Text>
                   <Text className='text-2xl text-center font-bold'>입력해주세요</Text>
                 </View>
@@ -75,7 +75,11 @@ const PinInfo = ({ onChange }: pinInput) => {
                         )}
                     </View>
                     )}
-            <Button title="확인" onPress={thirdCheck}></Button>
+            <TouchableOpacity 
+            className='m-2 py-2 px-4 bg-red-400 rounded-3xl bg-sky-500'
+            onPress={thirdCheck} 
+            >
+            <Text className='text-white text-center font-bold'>송금하기</Text></TouchableOpacity>
             </View>
 
         </View>

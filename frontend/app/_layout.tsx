@@ -4,7 +4,7 @@ import Toast from "react-native-toast-message";
 export default function Layout() {
   return (
     <>
-      <Stack />
+      <Stack screenOptions={{headerShown:false}}/>
       <Toast />
     </>
   );

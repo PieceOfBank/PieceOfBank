@@ -60,11 +60,11 @@ interface makeDirectory{
 /* Login API 구현 */
 // 1. create
 export const createUser = (email: Record<string, string>) => {
-    return axiosClient.post(`/api/users/create`, email);
+    return axiosClient.post(`/users/create`, email);
 }
 // 2. regist
 export const registUser = (newMember: Record<string, unknown>) => {
-    return axiosClient.post(`/api/users/regist`, newMember);
+    return axiosClient.post(`/users/regist`, newMember);
 }
 
 /* JWT 코드 */
@@ -110,10 +110,8 @@ export const deleteDirectory = (id: number) => {
 
 /* Account API */
 // 1. 계좌 생성 - POST
-export const createAccount = (data: accountTypeNo, key:number) => {
-    return axiosClient.post(`/api/account/client/createDemandDepositAccount`, data, {
-        headers:{userKey:key}
-    })
+export const createAccount = (data: Record<string, string>) => {
+    return axiosClient.post(`/account/client/createDemandDepositAccount`, data)
 }
 // 2. 계좌 목록 조회
 export const getAccountList = (key:number) => {

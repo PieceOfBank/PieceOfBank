@@ -5,7 +5,7 @@ import Toast from "react-native-toast-message";
 import TransferInput from "../../src/ui/components/Temporary/TransferInput";
 import PinInfo from "../../src/ui/components/Temporary/PinCheck";
 import MediaConfirm from "../../src/ui/components/Temporary/MediaConfirm";
-
+import Header from "../../src/ui/components/Header";
 
 /*
 일반 송금 후 미디어 송금 추가 요청 -> 송금 후 거래고유번호 받아와서 변수로 넘기기
@@ -79,12 +79,14 @@ useEffect(() => {
     // 1차 화면 - 보낼 금액 입력받는 화면
     if (step == '1') {
         return (
-            <View className='flex-1 justify-center items-center'>
-            <View className='flex-1 flex-row justify-center items-center'>
+          <View className='flex-1'>
+            <Header />
+            <View className='flex-row justify-center items-center'>
                 {/* <TransferObject onChange={firstChange} />  */}
                 <TransferInput onChange={existChange} name={nowName}/>
             </View>
-            </View>
+          </View>
+
         )
     }
 
@@ -92,6 +94,7 @@ useEffect(() => {
     else if (step == '2') {
         return(
             <View className='flex-1'>
+              <Header />
                 <PinInfo onChange={secondChange}/>
             </View>
           )
@@ -101,17 +104,18 @@ useEffect(() => {
     else if (step == '3'){
         return(
             <View className='flex-1'>
+              <Header />
                 <MediaConfirm onChange={thirdChange}/>
             </View>
         )
     }
 
-    // 미디어 보낼 경우 media/selectMedia로 보내기
-    else if (step == '4'){
-        return(
-            router.push('/family copy/media/selectMedia')
-        )
-    }
+    // // 미디어 보낼 경우 media/selectMedia로 보내기
+    // else if (step == '4'){
+    //     return(
+    //         router.push('/family copy/media/selectMedia')
+    //     )
+    // }
 
 };
 
