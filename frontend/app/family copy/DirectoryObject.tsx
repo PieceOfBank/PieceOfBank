@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import ObjectInput from "../../src/ui/components/Temporary/ObjectInput";
-import Header from "../../src/ui/components/Header";
 
 const DirectoryObject = () => {
     const [oneLimit, setOneLimit] = useState<string>("");
@@ -21,7 +20,6 @@ const DirectoryObject = () => {
 
   return (
     <View className='flex-1'>
-      <Header />
       <View className='justify-center items-center p-4'>
         <ObjectInput />
 

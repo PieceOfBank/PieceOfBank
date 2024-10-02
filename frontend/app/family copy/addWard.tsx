@@ -2,7 +2,6 @@ import { View, Text, SafeAreaView, TextInput, Button, TouchableOpacity } from "r
 import { Link } from "expo-router";
 import { useState } from "react";
 import Toast from 'react-native-toast-message';
-import Header from "../../src/ui/components/Header";
 import CancelButton from "../../src/ui/components/CancelButton";
 import { useRouter} from 'expo-router';
 
@@ -25,7 +24,6 @@ const AddWard = () => {
 
   return (
     <View className='flex-1'>
-      <Header />
         <View className='justfiy-center items-center'> 
         <Text className="w-60 p-2 bg-gray-300 rounded-3xl text-center justfiy-center items-center m-5 text-lg">피보호자 등록 신청</Text>
         <View className='border bg-white border-gray-300 rounded-2xl p-5 mt-10 h-60'>

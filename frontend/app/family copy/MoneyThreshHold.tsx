@@ -4,7 +4,6 @@ import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import Toast from 'react-native-toast-message';
 import CancelButton from "../../src/ui/components/CancelButton";
-import Header from "../../src/ui/components/Header";
 
 const MoneyTrheshHold = () => {
   const [oneLimit, setOneLimit] = useState<string>("");
@@ -22,7 +21,6 @@ const MoneyTrheshHold = () => {
 
   return (
     <View className='flex-1'>
-      <Header />
       <View className='justify-center items-center p-4'>
         <Text className='mt-20 mb-8 bg-gray-300 p-3 w-48 rounded-3xl text-xl text-center font-semibold'>금액 한도 설정</Text>
         <SafeAreaView className='bg-gray-300 rounded-3xl p-5'>

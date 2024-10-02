@@ -1,7 +1,6 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View, Text, Image, Button, ImageBackground } from "react-native";
-import Header from "../../src/ui/components/Header";
 import LinkToAddWard from "../../src/ui/components/LinkToAddWard";
 
 const FamilyMain = () => {
@@ -12,7 +11,6 @@ const FamilyMain = () => {
 
   return (
     <View>
-      <Header />
       <View className="bg-gray-200 flex justify-center items-center">
         <Text>테스트용 00 계좌 : 102312-300-231245</Text>
       </View>

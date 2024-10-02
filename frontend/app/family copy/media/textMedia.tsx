@@ -3,7 +3,6 @@ import { View, Text, ImageBackground, TextInput, SafeAreaView, Alert, Button, To
 import React, { useState, useEffect } from 'react';
 import Toast from "react-native-toast-message";
 import MessageEx from "../../../src/ui/components/Temporary/MessageEx";
-import Header from "../../../src/ui/components/Header";
 
 const textMedia = () => {
 
@@ -21,7 +20,6 @@ const textMedia = () => {
     if (useEx == '1'){
         return(
             <View className='flex-1'>
-                <Header />
                 <View className='flex-1 items-center'>
                 <View className='mt-16 mb-16 p-2 h-16 w-56 rounded-3xl bg-gray-300'>
                     <Text className='text-xl m-2 text-center font-bold'>메세지를 작성해주세요</Text>

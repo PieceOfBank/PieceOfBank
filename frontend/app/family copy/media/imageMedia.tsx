@@ -2,14 +2,12 @@ import { Link, useRouter, useLocalSearchParams } from "expo-router";
 import { View, Text, ImageBackground, TextInput, SafeAreaView, Alert, Button, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Toast from "react-native-toast-message";
-import Header from "../../../src/ui/components/Header";
 
 const imageMedia = () => {
     const [message, setMessage] = useState('')
 
     return(
         <View className='flex-1'> 
-            <Header />
             <View className='flex-1 justify-center items-center'>
             <Text className='text-2xl'>이미지를 첨부해주세요</Text>
             <SafeAreaView>

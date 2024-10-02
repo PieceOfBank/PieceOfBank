@@ -2,7 +2,6 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View, Text, Image, Button, ImageBackground, TouchableOpacity, SafeAreaView } from "react-native";
 import { Link } from "expo-router";
-import Header from "../../src/ui/components/Header";
 import LinkToAddWard from "../../src/ui/components/LinkToAddWard";
 import sendMoney from "./sendMoney";
 import DealHistory from "./dealHistory";

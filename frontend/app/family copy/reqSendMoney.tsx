@@ -5,7 +5,6 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import Checkbox from 'expo-checkbox';
 import { useRouter } from 'expo-router';
 import Toast from "react-native-toast-message";
-import Header from "../../src/ui/components/Header";
 import CancelButton from "../../src/ui/components/CancelButton";
 
 const ReqSendMoney = () => {
@@ -60,7 +59,6 @@ const ReqSendMoney = () => {
 
     return (
         <View className='flex-1'>
-            <Header />
             <View className='justify-center items-center bg-gray-300 rounded-3xl mt-12 p-2 mx-20 mb-5'>
                 <Text className='text-xl text-center font-semibold'>알림 내역</Text>
             </View>

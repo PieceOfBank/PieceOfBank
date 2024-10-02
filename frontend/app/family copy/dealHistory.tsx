@@ -1,7 +1,6 @@
 import { Link, useNavigation, useRouter, useLocalSearchParams } from "expo-router";
 import { View, Text, Image, ImageBackground, TextInput, SafeAreaView, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import Header from "../../src/ui/components/Header";
 import smallLogo from "../../src/assets/SmallLogo.png";
 import FamilyTransaction from "../../src/ui/components/Temporary/FamilyTransaction";
 import CancelButton from "../../src/ui/components/CancelButton";
@@ -11,7 +10,6 @@ const DealHistory = () => {
     const router = useRouter()
     return(
       <View className='flex-1'>
-        <Header />
         <View className='flex-1 justify-center items-center'>
         <Text className='text-lg bg-gray-300 p-2 m-3 w-60 rounded-2xl text-center font-bold'>엄마와의 기록</Text>
         <FamilyTransaction />

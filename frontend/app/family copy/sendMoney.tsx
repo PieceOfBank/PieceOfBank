@@ -5,7 +5,6 @@ import Toast from "react-native-toast-message";
 import TransferInput from "../../src/ui/components/Temporary/TransferInput";
 import PinInfo from "../../src/ui/components/Temporary/PinCheck";
 import MediaConfirm from "../../src/ui/components/Temporary/MediaConfirm";
-import Header from "../../src/ui/components/Header";
 
 /*
 일반 송금 후 미디어 송금 추가 요청 -> 송금 후 거래고유번호 받아와서 변수로 넘기기
@@ -80,7 +79,6 @@ useEffect(() => {
     if (step == '1') {
         return (
           <View className='flex-1'>
-            <Header />
             <View className='flex-row justify-center items-center'>
                 {/* <TransferObject onChange={firstChange} />  */}
                 <TransferInput onChange={existChange} name={nowName}/>
@@ -94,7 +92,6 @@ useEffect(() => {
     else if (step == '2') {
         return(
             <View className='flex-1'>
-              <Header />
                 <PinInfo onChange={secondChange}/>
             </View>
           )
@@ -104,7 +101,6 @@ useEffect(() => {
     else if (step == '3'){
         return(
             <View className='flex-1'>
-              <Header />
                 <MediaConfirm onChange={thirdChange}/>
             </View>
         )
