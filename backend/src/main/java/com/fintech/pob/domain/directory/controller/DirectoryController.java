@@ -72,7 +72,7 @@ public class DirectoryController {
 
     @GetMapping("/findUserImage")
     public ResponseEntity<Resource> findMedia(
-           String accountNo)
+           @RequestBody String accountNo)
     {
 
         Optional<Directory> media = directoryRepository.findByAccountNo(accountNo);
