@@ -51,6 +51,12 @@ public class NotificationController {
         return ResponseEntity.ok(updatedNotification);
     }
 
+    @PatchMapping("/delete/{notificationId}")
+    public ResponseEntity<NotificationResponseDto> updateNotificationStatusToDelete(@PathVariable("notificationId") Long notificationId) {
+        NotificationResponseDto updatedNotification = notificationService.updateNotificationStatusToDelete(notificationId);
+        return ResponseEntity.ok(updatedNotification);
+    }
+
     @PostMapping("/transfers/request")
     public ResponseEntity<Long> requestExceedTransfer(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto) {
         Long transactionApprovalId = notificationService.requestExceedTransfer(transactionApprovalRequestDto);

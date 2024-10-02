@@ -11,6 +11,7 @@ public interface NotificationService {
     List<NotificationResponseDto> getAllNotificationsByReceiverKey(UUID receiverKey);
     NotificationResponseDto getNotificationByNotificationId(Long notificationId);
     NotificationResponseDto updateNotificationStatusToRead(Long notificationId);
+    NotificationResponseDto updateNotificationStatusToDelete(Long notificationId);
     Long requestExceedTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto);
     TransactionApprovalResponseDto approveTransferRequest(Long transactionApprovalId);
     TransactionApprovalResponseDto refuseTransferRequest(Long transactionApprovalId);

@@ -55,6 +55,16 @@ public class NotificationServiceImpl implements NotificationService {
         return convertToDto(notification);
     }
 
+    @Override
+    public NotificationResponseDto updateNotificationStatusToDelete(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 알림 내역이 없습니다."));
+        notification.setNotificationStatus(NotificationStatus.DELETED);
+        notification.setRead_at(LocalDateTime.now());
+        notificationRepository.save(notification);
+        return convertToDto(notification);
+    }
+
     private NotificationResponseDto convertToDto(Notification notification) {
         return NotificationResponseDto.builder()
                 .notificationId(notification.getNotificationId())
