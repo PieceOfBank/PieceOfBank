@@ -34,8 +34,12 @@ public class Directory {
     @Column(name = "created", nullable = false, updatable = false)
     private LocalDateTime created;
 
+
     @Column(name = "updated", nullable = false)
     private LocalDateTime updated;
+
+    @Column(name = "url", nullable = true)
+    private String url;
 
     @PrePersist
     protected void onCreate() {

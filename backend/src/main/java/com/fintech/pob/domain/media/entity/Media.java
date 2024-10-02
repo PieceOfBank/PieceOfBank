@@ -18,8 +18,8 @@ public class Media {
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private MediaTypeENUM type;
-
     private String url;
     private String content;
+
 
 }
