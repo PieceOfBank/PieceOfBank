@@ -67,6 +67,7 @@ export const registUser = (newMember: Record<string, unknown>) => {
     return axiosClient.post(`/users/regist`, newMember);
 }
 
+
 /* JWT 코드 */
 
 
@@ -215,6 +216,3 @@ export const subscriptionUpdate = () => {
 export const subscriptionGet = () => {
 
 }
-
-
-
