@@ -11,5 +11,6 @@ public class DirectoryRequestDto {
     private String accountNo;
     private Integer institutionCode;
     private String name;
+    private String url;
 
 }
