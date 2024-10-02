@@ -38,10 +38,6 @@ public class AccountService {
         ClientAccountListRequestDTO requestDTO = new ClientAccountListRequestDTO();
         requestDTO.setHeader(header);
 
-        System.out.println("------------------------");
-        System.out.println(header);
-        System.out.println("------------------------");
-
         return webClient.post()
                 .uri("demandDeposit/inquireDemandDepositAccountList")
                 .accept(MediaType.APPLICATION_JSON)
