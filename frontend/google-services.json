@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "661068921434",
+    "project_id": "pieceofbank-aa753",
+    "storage_bucket": "pieceofbank-aa753.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:661068921434:android:5e7841ffa36482048f3663",
+        "android_client_info": {
+          "package_name": "com.bexco123.PieceOfBank"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC90YbPKvOuu5DRKTzjV9QFD5kNfn5Vq28"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
