@@ -28,7 +28,8 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
         "NOTIFICATIONS"
-      ]
+      ],
+      "package" : "com.bexco12.pieceOfBank"
     },
     "web": {
       "favicon": "./assets/favicon.png"
