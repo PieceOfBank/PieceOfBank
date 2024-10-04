@@ -49,7 +49,7 @@ public class UserController {
         }
         try {
             UUID userkey = UUID.fromString(userKeyString);
-            localUserService.saveUser(userkey, userReqeust.getUserName(), userReqeust.getUserPassword(), userReqeust.getUserSubscriptionType());
+            localUserService.saveUser(userkey, userReqeust.getUserId(), userReqeust.getUserName(), userReqeust.getUserPassword(), userReqeust.getUserSubscriptionType());
             return ResponseEntity.ok("사용자 정보 저장 성공");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("사용자 정보 저장 실패");

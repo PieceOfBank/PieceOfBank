@@ -17,7 +17,7 @@ public class LocalUserServiceImpl implements LocalUserService {
     private UserRepository userRepository;
 
     @Override
-    public void saveUser(UUID userKey, String userName, String userPassword, int userSubscriptionType) {
+    public void saveUser(UUID userKey, String userId, String userName, String userPassword, int userSubscriptionType) {
         User user = new User();
         if (userKey == null) {
             throw new IllegalArgumentException("userKey는 null이거나 비어 있을 수 없습니다.");
@@ -33,8 +33,8 @@ public class LocalUserServiceImpl implements LocalUserService {
     }
 
     @Override
-    public User authenticate(String userName, String password) {
-        return userRepository.findByUserNameAndUserPassword(userName, password);
+    public User authenticate(String userId, String password) {
+        return userRepository.findByUserIdAndUserPassword(userId, password);
     }
 
     @Override
