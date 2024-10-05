@@ -214,5 +214,20 @@ public class NotificationServiceImpl implements NotificationService {
                 .protectKey(notification.getReceiverUser().getUserKey())
                 .build();
     }
+
+    @Override
+    public SubscriptionApprovalResponseDto refuseSubscriptionRequest(Long subscriptionApprovalId) {
+        SubscriptionApproval subscriptionApproval = subscriptionApprovalRepository.findById(subscriptionApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Subscription Approval not found"));
+        subscriptionApproval.setStatus(SubscriptionApprovalStatus.REFUSED);
+        subscriptionApprovalRepository.save(subscriptionApproval);
+
+        Notification notification = subscriptionApproval.getNotification();
+
+        return SubscriptionApprovalResponseDto.builder()
+                .targetKey(notification.getSenderUser().getUserKey())
+                .protectKey(notification.getReceiverUser().getUserKey())
+                .build();
+    }
 }
 

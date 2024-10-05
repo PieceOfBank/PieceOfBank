@@ -16,4 +16,5 @@ public interface NotificationService {
     TransactionApprovalResponseDto expireTransferRequest(Long transactionApprovalId);
     Long requestSubscription(SubscriptionApprovalRequestDto subscriptionApprovalRequestDto);
     SubscriptionApprovalResponseDto approveSubscriptionRequest(Long subscriptionApprovalId);
+    SubscriptionApprovalResponseDto refuseSubscriptionRequest(Long subscriptionApprovalId);
 }
