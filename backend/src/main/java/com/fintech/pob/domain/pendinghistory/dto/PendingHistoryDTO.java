@@ -1,4 +1,4 @@
-package com.fintech.pob.domain.account.dto.request;
+package com.fintech.pob.domain.pendinghistory.dto;
 
 import lombok.*;
 
@@ -6,8 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class AccountTransferRequestDTO {
+public class PendingHistoryDTO {
     private String depositAccountNo;
     private Long transactionBalance;
     private String withdrawalAccountNo;
