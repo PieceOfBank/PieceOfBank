@@ -1,11 +1,13 @@
 package com.fintech.pob.domain.notification.service;
 
 import com.fintech.pob.domain.notification.dto.NotificationResponseDto;
+import com.fintech.pob.domain.notification.dto.SubscriptionApprovalRequestDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
 import com.fintech.pob.domain.notification.dto.TransactionApprovalResponseDto;
 import com.fintech.pob.domain.notification.entity.*;
 import com.fintech.pob.domain.notification.repository.NotificationRepository;
 import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
+import com.fintech.pob.domain.notification.repository.SubscriptionApprovalRepository;
 import com.fintech.pob.domain.notification.repository.TransactionApprovalRepository;
 import com.fintech.pob.domain.user.entity.User;
 import com.fintech.pob.domain.user.repository.UserRepository;
@@ -31,6 +33,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final TransactionApprovalRepository transactionApprovalRepository;
     private final NotificationTypeRepository notificationTypeRepository;
     private final UserRepository userRepository;
+    private final SubscriptionApprovalRepository subscriptionApprovalRepository;
 
     @Override
     public List<NotificationResponseDto> getAllNotificationsByReceiverKey(UUID receiverKey) {
@@ -165,6 +168,36 @@ public class NotificationServiceImpl implements NotificationService {
                 .amount(transactionApproval.getAmount())
                 .status(transactionApproval.getStatus())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public Long requestSubscription(SubscriptionApprovalRequestDto subscriptionApprovalRequestDto) {
+
+        NotificationType notificationType = notificationTypeRepository.findByTypeName("구독 신청 알림")
+                .orElseThrow(() -> new IllegalArgumentException("Notification Type not found"));
+        User receiver = userRepository.findByUserId(subscriptionApprovalRequestDto.getReceiverId())
+                .orElseThrow(() -> new IllegalArgumentException("Receiver user not found"));
+        User sender = userRepository.findByUserKey(subscriptionApprovalRequestDto.getSenderKey())
+                .orElseThrow(() -> new IllegalArgumentException("Sender user not found"));
+
+        // Notification 생성
+        Notification notification = Notification.builder()
+                .senderUser(sender)
+                .receiverUser(receiver)
+                .type(notificationType)
+                .created(LocalDateTime.now())
+                .notificationStatus(NotificationStatus.UNREAD)
+                .build();
+        notificationRepository.save(notification);
+
+        // SubscriptionApproval 생성
+        SubscriptionApproval subscriptionApproval = SubscriptionApproval.builder()
+                .notification(notification)
+                .status(SubscriptionApprovalStatus.PENDING).build();
+        SubscriptionApproval savedApproval = subscriptionApprovalRepository.save(subscriptionApproval);
+
+        return savedApproval.getSubscriptionApprovalId();
     }
 }
 
