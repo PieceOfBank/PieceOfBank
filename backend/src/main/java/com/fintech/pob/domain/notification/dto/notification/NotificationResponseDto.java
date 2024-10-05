@@ -1,6 +1,6 @@
-package com.fintech.pob.domain.notification.dto;
+package com.fintech.pob.domain.notification.dto.notification;
 
-import com.fintech.pob.domain.notification.entity.NotificationStatus;
+import com.fintech.pob.domain.notification.entity.notification.NotificationStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;

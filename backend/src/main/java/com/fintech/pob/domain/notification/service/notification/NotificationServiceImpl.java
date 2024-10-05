@@ -1,12 +1,21 @@
-package com.fintech.pob.domain.notification.service;
+package com.fintech.pob.domain.notification.service.notification;
 
-import com.fintech.pob.domain.notification.dto.NotificationResponseDto;
-import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
-import com.fintech.pob.domain.notification.dto.TransactionApprovalResponseDto;
-import com.fintech.pob.domain.notification.entity.*;
-import com.fintech.pob.domain.notification.repository.NotificationRepository;
-import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
-import com.fintech.pob.domain.notification.repository.TransactionApprovalRepository;
+import com.fintech.pob.domain.notification.dto.notification.NotificationResponseDto;
+import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalRequestDto;
+import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalResponseDto;
+import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalRequestDto;
+import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalResponseDto;
+import com.fintech.pob.domain.notification.entity.notification.Notification;
+import com.fintech.pob.domain.notification.entity.notification.NotificationStatus;
+import com.fintech.pob.domain.notification.entity.notification.NotificationType;
+import com.fintech.pob.domain.notification.entity.subscription.SubscriptionApproval;
+import com.fintech.pob.domain.notification.entity.subscription.SubscriptionApprovalStatus;
+import com.fintech.pob.domain.notification.entity.transaction.TransactionApproval;
+import com.fintech.pob.domain.notification.entity.transaction.TransactionApprovalStatus;
+import com.fintech.pob.domain.notification.repository.notification.NotificationRepository;
+import com.fintech.pob.domain.notification.repository.notification.NotificationTypeRepository;
+import com.fintech.pob.domain.notification.repository.subscription.SubscriptionApprovalRepository;
+import com.fintech.pob.domain.notification.repository.transaction.TransactionApprovalRepository;
 import com.fintech.pob.domain.user.entity.User;
 import com.fintech.pob.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +40,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final TransactionApprovalRepository transactionApprovalRepository;
     private final NotificationTypeRepository notificationTypeRepository;
     private final UserRepository userRepository;
+    private final SubscriptionApprovalRepository subscriptionApprovalRepository;
 
     @Override
     public List<NotificationResponseDto> getAllNotificationsByReceiverKey(UUID receiverKey) {
@@ -164,6 +174,69 @@ public class NotificationServiceImpl implements NotificationService {
                 .receiverName(transactionApproval.getReceiverName())
                 .amount(transactionApproval.getAmount())
                 .status(transactionApproval.getStatus())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public Long requestSubscription(SubscriptionApprovalRequestDto subscriptionApprovalRequestDto) {
+
+        NotificationType notificationType = notificationTypeRepository.findByTypeName("구독 신청 알림")
+                .orElseThrow(() -> new IllegalArgumentException("Notification Type not found"));
+        User receiver = userRepository.findByUserId(subscriptionApprovalRequestDto.getReceiverId())
+                .orElseThrow(() -> new IllegalArgumentException("Receiver user not found"));
+        User sender = userRepository.findByUserKey(subscriptionApprovalRequestDto.getSenderKey())
+                .orElseThrow(() -> new IllegalArgumentException("Sender user not found"));
+
+        // Notification 생성
+        Notification notification = Notification.builder()
+                .senderUser(sender)
+                .receiverUser(receiver)
+                .type(notificationType)
+                .created(LocalDateTime.now())
+                .notificationStatus(NotificationStatus.UNREAD)
+                .build();
+        notificationRepository.save(notification);
+
+        // SubscriptionApproval 생성
+        SubscriptionApproval subscriptionApproval = SubscriptionApproval.builder()
+                .notification(notification)
+                .status(SubscriptionApprovalStatus.PENDING).build();
+        SubscriptionApproval savedApproval = subscriptionApprovalRepository.save(subscriptionApproval);
+
+        return savedApproval.getSubscriptionApprovalId();
+    }
+
+    @Override
+    @Transactional
+    public SubscriptionApprovalResponseDto approveSubscriptionRequest(Long subscriptionApprovalId) {
+        SubscriptionApproval subscriptionApproval = subscriptionApprovalRepository.findById(subscriptionApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Subscription Approval not found"));
+        subscriptionApproval.setStatus(SubscriptionApprovalStatus.APPROVED);
+        subscriptionApprovalRepository.save(subscriptionApproval);
+
+        Notification notification = subscriptionApproval.getNotification();
+        notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
+        notificationRepository.save(notification);
+
+        return SubscriptionApprovalResponseDto.builder()
+                .targetKey(notification.getSenderUser().getUserKey())
+                .protectKey(notification.getReceiverUser().getUserKey())
+                .build();
+    }
+
+    @Override
+    public SubscriptionApprovalResponseDto refuseSubscriptionRequest(Long subscriptionApprovalId) {
+        SubscriptionApproval subscriptionApproval = subscriptionApprovalRepository.findById(subscriptionApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Subscription Approval not found"));
+        subscriptionApproval.setStatus(SubscriptionApprovalStatus.REFUSED);
+        subscriptionApprovalRepository.save(subscriptionApproval);
+
+        Notification notification = subscriptionApproval.getNotification();
+
+        return SubscriptionApprovalResponseDto.builder()
+                .targetKey(notification.getSenderUser().getUserKey())
+                .protectKey(notification.getReceiverUser().getUserKey())
                 .build();
     }
 }
