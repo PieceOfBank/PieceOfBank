@@ -44,7 +44,7 @@ public class UserRepositoryTest {
         sender.setSubscriptionType(1);
 
         User receiver = new User();
-        sender.setUserId("receiver");
+        receiver.setUserId("receiver");
         receiver.setUserKey(receiverKey);
         receiver.setUserName("Receiver User");
         receiver.setUserPassword("password456");
