@@ -1,9 +1,9 @@
-package com.fintech.pob.domain.notification.service;
+package com.fintech.pob.domain.notification.service.fcm;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fintech.pob.domain.notification.dto.NotificationMessageDto;
-import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
+import com.fintech.pob.domain.notification.dto.fcm.NotificationMessageDto;
+import com.fintech.pob.domain.notification.dto.notification.NotificationRequestDto;
 import com.google.auth.oauth2.GoogleCredentials;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ import java.util.List;
 @Component
 @Service
 @RequiredArgsConstructor
-public class FCMServiceImpl implements FCMService{
+public class FCMServiceImpl implements FCMService {
 
     @Value("${fcm.key.path}")
     private String SERVICE_ACCOUNT_JSON;

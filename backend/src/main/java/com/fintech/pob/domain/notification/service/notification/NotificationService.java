@@ -1,6 +1,10 @@
-package com.fintech.pob.domain.notification.service;
+package com.fintech.pob.domain.notification.service.notification;
 
-import com.fintech.pob.domain.notification.dto.*;
+import com.fintech.pob.domain.notification.dto.notification.NotificationResponseDto;
+import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalRequestDto;
+import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalResponseDto;
+import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalRequestDto;
+import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalResponseDto;
 
 import java.util.List;
 import java.util.UUID;

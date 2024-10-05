@@ -1,11 +1,11 @@
 package com.fintech.pob.notification;
 
-import com.fintech.pob.domain.notification.entity.Notification;
-import com.fintech.pob.domain.notification.entity.NotificationStatus;
-import com.fintech.pob.domain.notification.entity.NotificationType;
+import com.fintech.pob.domain.notification.entity.notification.Notification;
+import com.fintech.pob.domain.notification.entity.notification.NotificationStatus;
+import com.fintech.pob.domain.notification.entity.notification.NotificationType;
 import com.fintech.pob.domain.user.entity.User;
-import com.fintech.pob.domain.notification.repository.NotificationRepository;
-import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
+import com.fintech.pob.domain.notification.repository.notification.NotificationRepository;
+import com.fintech.pob.domain.notification.repository.notification.NotificationTypeRepository;
 import com.fintech.pob.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
