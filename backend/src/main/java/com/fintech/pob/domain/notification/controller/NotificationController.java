@@ -84,6 +84,12 @@ public class NotificationController {
         return ResponseEntity.ok(subscriptionApprovalId);
     }
 
+    @PatchMapping("/subscriptions/approval")
+    public ResponseEntity<SubscriptionApprovalResponseDto> approveSubscriptionRequest(@RequestBody Long subscriptionApprovalId) {
+        SubscriptionApprovalResponseDto subscriptionApprovalResponseDto = notificationService.approveSubscriptionRequest(subscriptionApprovalId);
+        return ResponseEntity.ok(subscriptionApprovalResponseDto);
+    }
+
     @PostMapping("/send")
     public Mono<ResponseEntity<Integer>> pushMessage(@RequestBody @Validated NotificationRequestDto notificationRequestDto) throws IOException {
         log.debug("[+] 푸시 메시지를 전송합니다.");

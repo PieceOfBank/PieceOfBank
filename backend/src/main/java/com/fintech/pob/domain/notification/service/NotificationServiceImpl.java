@@ -1,9 +1,6 @@
 package com.fintech.pob.domain.notification.service;
 
-import com.fintech.pob.domain.notification.dto.NotificationResponseDto;
-import com.fintech.pob.domain.notification.dto.SubscriptionApprovalRequestDto;
-import com.fintech.pob.domain.notification.dto.TransactionApprovalRequestDto;
-import com.fintech.pob.domain.notification.dto.TransactionApprovalResponseDto;
+import com.fintech.pob.domain.notification.dto.*;
 import com.fintech.pob.domain.notification.entity.*;
 import com.fintech.pob.domain.notification.repository.NotificationRepository;
 import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
@@ -198,6 +195,24 @@ public class NotificationServiceImpl implements NotificationService {
         SubscriptionApproval savedApproval = subscriptionApprovalRepository.save(subscriptionApproval);
 
         return savedApproval.getSubscriptionApprovalId();
+    }
+
+    @Override
+    @Transactional
+    public SubscriptionApprovalResponseDto approveSubscriptionRequest(Long subscriptionApprovalId) {
+        SubscriptionApproval subscriptionApproval = subscriptionApprovalRepository.findById(subscriptionApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Subscription Approval not found"));
+        subscriptionApproval.setStatus(SubscriptionApprovalStatus.APPROVED);
+        subscriptionApprovalRepository.save(subscriptionApproval);
+
+        Notification notification = subscriptionApproval.getNotification();
+        notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
+        notificationRepository.save(notification);
+
+        return SubscriptionApprovalResponseDto.builder()
+                .targetKey(notification.getSenderUser().getUserKey())
+                .protectKey(notification.getReceiverUser().getUserKey())
+                .build();
     }
 }
 
