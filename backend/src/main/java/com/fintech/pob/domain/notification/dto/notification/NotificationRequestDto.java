@@ -1,4 +1,4 @@
-package com.fintech.pob.domain.notification.dto;
+package com.fintech.pob.domain.notification.dto.notification;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

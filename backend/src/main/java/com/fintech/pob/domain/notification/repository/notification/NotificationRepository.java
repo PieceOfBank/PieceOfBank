@@ -1,6 +1,6 @@
-package com.fintech.pob.domain.notification.repository;
+package com.fintech.pob.domain.notification.repository.notification;
 
-import com.fintech.pob.domain.notification.entity.Notification;
+import com.fintech.pob.domain.notification.entity.notification.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.fintech.pob.domain.notification.service;
+package com.fintech.pob.domain.notification.service.fcm;
 
-import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
+import com.fintech.pob.domain.notification.dto.notification.NotificationRequestDto;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
