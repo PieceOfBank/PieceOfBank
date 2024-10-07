@@ -13,6 +13,7 @@ const SignupForm = () => {
 
   // 회원가입 정보 저장
   const [email, setEmail] = useState(''); // 이메일
+  const [userId, setUserId] = useState(''); // 아이디
   const [name, setName] = useState(''); // 이름
   const [relation, setRelation] = useState(0); // 관계 [0:Default, 1:보호자, 2:피보호자]
   const [isChecked, setChecked] = useState(false); // 개인정보 동의 체크
@@ -44,9 +45,9 @@ const SignupForm = () => {
         email : email,
       }
       const response = await createUser(JsonData);
-      console.log(response)
-      const emailAnswer = response.data.split(':')[1].trim() // 응답값에서 토큰만 가져오기
-      console.log(emailAnswer)
+      // console.log(response)
+      // const emailAnswer = response.data.split(':')[1].trim() // 응답값에서 토큰만 가져오기
+      // console.log(emailAnswer)
       Toast.show({
         type: 'success',
         text1: '이메일 인증에 성공했습니다',
@@ -54,7 +55,7 @@ const SignupForm = () => {
       })
       setIdCheck(true) // 이메일 조건 완료 처리
       setDisabled(true) // 인증하기 버튼 비활성화
-      setEmailToken(emailAnswer) // 이메일 토큰 정보
+      // setEmailToken(emailAnswer) // 이메일 토큰 정보
     }
     catch (error) {
         console.log(error)
@@ -82,6 +83,10 @@ const SignupForm = () => {
   const consentCheck = () => {
     setChecked(!isChecked)
     setBoxCheck(!boxCheck)
+  }
+
+  const IdInput = (value:string) => {
+    setUserId(value)
   }
 
   // 이름 입력 반영 : 두 글자 이상일 때만 (나중에 필요하면 조건 추가하기)
@@ -139,13 +144,13 @@ const SignupForm = () => {
   const registTry = async () => {
     try {
       const JsonData = {
-        userId: email,
+        userId: userId,
         userName: name,
         userPassword: firstPin,
         userSubscriptionType: relation
       }
-      // const response = await registUser(JsonData, emailToken);
-      // console.log(response)
+      const response = await registUser(JsonData);
+      console.log(response)
       Toast.show({
         type: 'success',
         text1: '회원 가입 성공!',
@@ -197,11 +202,13 @@ const SignupForm = () => {
 
       {(emailAlert) ? <View className='my-1'><Text className='text-red-500 font-bold'>이메일 인증을 진행해주세요</Text></View> : null}
 
-      <Text className='my-2'>이름</Text>
-        <TextInput className='bg-white w-64 rounded-lg px-2 mb-3' onChangeText={(name) => nameConfirm(name)}></TextInput>
+      <Text className='my-2'>아이디</Text>
+        <TextInput className='bg-white w-64 rounded-lg px-2 mb-3' onChangeText={(name) => setUserId(name)}></TextInput>
       
       {(nameAlert) ? <View className='my-1'><Text className='text-red-500 font-bold'>이름을 입력해주세요</Text></View> : null}
-
+      
+      <Text className='my-2'>이름</Text>
+        <TextInput className='bg-white w-64 rounded-lg px-2 mb-3' onChangeText={(name) => nameConfirm(name)}></TextInput>
 
       <Text className='my-2'>비밀번호</Text>
       <TouchableOpacity 

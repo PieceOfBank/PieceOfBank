@@ -63,7 +63,7 @@ interface makeDirectory{
 export const createUser = async (email: Record<string, string>) => {
     try {
         const response = await axiosClient.post(`/users/create`, email);
-        const userKey = response.data.userKey;
+        const userKey = response.data.split(':')[1].trim();
         AsyncStorage.setItem('userKey', userKey);
     }
     catch (error) {
@@ -77,7 +77,8 @@ export const registUser = async (newMember: Record<string, unknown>) => {
     try {
         const userKey = await AsyncStorage.getItem('userKey');
         newMember = { ...newMember, 'userKey': userKey };
-        return axiosClient.post(`/users/regist`, newMember);
+        console.log(newMember)
+        return axiosClient.post(`/users/register`, newMember);
     } catch (error) {
         console.error(error);
     }
