@@ -73,6 +73,18 @@ public class AccountService {
                 .bodyToMono(ClientAccountListResponseDTO.class);
     }
 
+    public Mono<ClientAccountListResponseDTO> getAccountList(HeaderRequestDTO header) {
+        ClientAccountListRequestDTO requestDTO = new ClientAccountListRequestDTO();
+        requestDTO.setHeader(header);
+
+        return webClient.post()
+                .uri("demandDeposit/inquireDemandDepositAccountList")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(requestDTO)
+                .retrieve()
+                .bodyToMono(ClientAccountListResponseDTO.class);
+    }
+
     public Mono<ClientAccountHistoryListResponseDTO> getAccountHistoryList(AccountHistoryListRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
         System.out.println(header.toString());
