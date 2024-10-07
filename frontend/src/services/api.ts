@@ -105,8 +105,11 @@ export const loginUser = async (email: Record<string, string>) => {
 
 // 4. logout
 export const logoutUser = () => {
+
+    const accessToken = AsyncStorage.getItem("accessToken");
+
     return axiosClient.post(`/auth/logout`, {
-        headers:{'Requires-Auth': true }
+        headers:{ 'Authorization' : `${accessToken}`, 'Requires-Auth': true }
     });
 }
 
