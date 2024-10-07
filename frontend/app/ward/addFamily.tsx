@@ -22,7 +22,7 @@ const familyAdd = () => {
         }
         },[]);
 
-     // 보호자 관계 수락
+    // 보호자 관계 수락
     const [mainConnect, setMainConnect] = useState('');
 
     const router = useRouter()

@@ -4,18 +4,19 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { subscriptionGet } from "../../services/api";
+import { directory } from "../../types/directory";
 
 const WardListForm = () => {
 
     const router = useRouter();
 
-    interface DirectoryItem {
-        directoryId : number,
-        userKey: string,
-        accountNo: string,
-        institutionCode: number,
-        name: string
-    }
+    // interface DirectoryItem {
+    //     directoryId : number,
+    //     userKey: string,
+    //     accountNo: string,
+    //     institutionCode: number,
+    //     name: string
+    // }
 
     // 보호자 연결 상태 확인 - 1 : 연결 전 (보호자 요청 수락 페이지) / 2 : 연결 후 (기본 메인)
     const [connect, setConnect] = useState(1);
@@ -58,17 +59,19 @@ const WardListForm = () => {
 
  
      // 임시 리스트 (전체 연락처)
-     const careList: DirectoryItem [] = [{ directoryId : 1, userKey: '1', accountNo: '123456789', institutionCode: 1, name: '딸' },
-                                        { directoryId : 2, userKey: '2', accountNo: '222222222', institutionCode: 3, name: '미영' },
-                                        { directoryId : 3, userKey: '3', accountNo: '33333333', institutionCode: 5, name: '진숙' }]
+     const careList: directory [] = [
+        {userKey: "333333", accountNo: "0019197589758057", institutionCode: 0, name: "딸", url: "string"},
+        {userKey: "444444", accountNo: "23455789", institutionCode: 0, name: "진숙", url: "string"},
+        {userKey: "555555", accountNo: "678976543", institutionCode: 0, name: "영숙", url: "string"},
+]
      
      // 임시 리스트 (고정 카드: 전체 기록 카드)
-     const addList: DirectoryItem = { directoryId : 99, userKey: '9999', accountNo: '', institutionCode: 99, name: '전체 기록' }
+     const addList: directory = {userKey: "99", accountNo: "", institutionCode: 0, name: "전체 기록", url: "string"}
  
      // 임시 리스트 (전체 연락처 + 고정)
-     const allList : DirectoryItem [] = (connect==2) 
+     const allList : directory [] = (connect==2) 
                                         ? [...careList, addList] 
-                                        : [{ directoryId : 999, userKey: '999', accountNo: '', institutionCode: 999, name: '관계 맺기' },
+                                        : [{userKey: "9999", accountNo: "", institutionCode: 0, name: "관계 맺기", url: "string"},
                                             addList
                                         ]
 
@@ -91,7 +94,7 @@ const WardListForm = () => {
     //  }
  
      // 카드 출력
-     const careView = ({item}:{item:DirectoryItem}) => 
+     const careView = ({item}:{item:directory}) => 
          (
 
          <View className="w-40 h-40 m-4 bg-white justify-center items-center rounded-3xl">

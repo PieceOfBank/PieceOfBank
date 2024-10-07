@@ -5,6 +5,8 @@ import { useRouter } from 'expo-router';
 import Checkbox from 'expo-checkbox';
 import Toast from "react-native-toast-message";
 import CancelButton from "./CancelButton";
+import { account } from "../../types/account";
+import { getAccountList } from "../../services/api";
 
 const WardAllAccount = () => {
 
@@ -12,14 +14,26 @@ const WardAllAccount = () => {
 
     // 임시 대표 계좌 정보
     const [mainAccount, setMainAccount] = useState('');
-    // 임시 전체 계좌 정보
-    interface AccountItem {
-        id: string;
-        bank: string;
-        number: string;
-      }
-    // 임시 전체 계좌
-    const accountList : AccountItem [] = [{id:'1', bank:'신한은행', number:'11111111111'}, {id:'2', bank:'하나은행', number:'2222222222'}, {id:'3', bank:'국민은행', number:'33333333333'}]
+
+    // 계좌 목록 정보
+    const [accountList, setAccountList] = useState<account[]>([])
+
+    // 계좌 목록 요청 보내기
+    const accountRequest = async() => {
+        try {
+          const response = await getAccountList();
+          const answer = response.data.REC // 계좌목록
+          setAccountList(answer)
+        }
+        catch (error) {
+          console.log(`에러: ${error}`)
+        }
+      } 
+
+    // 처음 접속 시 실행
+    useEffect(() => {
+        accountRequest() // 계좌 목록 요청
+    }, [])
 
     // 체크박스 표시
     const [accountChecked, setAccountChecked] = useState(Array(accountList.length).fill(false));
@@ -31,7 +45,7 @@ const WardAllAccount = () => {
         for (let i = 0; i < accountList.length; i++){
         if (i == index){
             updateCheck[i] = true
-            setMainAccount(accountList[i]['number'])
+            setMainAccount(accountList[i]['accountNo'])
         }
         else {
             updateCheck[i] = false
@@ -40,6 +54,7 @@ const WardAllAccount = () => {
         setAccountChecked(updateCheck)
     }
 
+    // ★ 메인 계좌 등록 요청 (요청 구현해야 함)
     const mainSelect = () => {
         console.log(mainAccount)
         console.log(accountChecked)
@@ -58,8 +73,8 @@ const WardAllAccount = () => {
                 <View className='justify-center items-center'>
                 {accountList.map((list, index) => (
                     <View key={index} className='w-5/6 h-12 p-3 m-2 flex-row items-center bg-gray-300 justify-between rounded-2xl'>
-                        <Text className='pl-4'>{list.bank}</Text>
-                        <Text>{list.number}</Text>
+                        <Text className='pl-4'>{list.bankName}</Text>
+                        <Text>{list.accountNo}</Text>
                         <View className='mx-2'>
                             <TouchableOpacity 
                             className={`w-24 h-8 rounded-xl justify-center ${accountChecked[index] ? 'bg-sky-500' : 'bg-gray-500'}`}
@@ -90,3 +105,30 @@ const WardAllAccount = () => {
 }
 
 export default WardAllAccount
+
+
+    // 임시 전체 계좌 정보
+    // interface AccountItem {
+    //     id: string;
+    //     bank: string;
+    //     number: string;
+    //   }
+    // 임시 전체 계좌 정보
+//     interface AccountItems {
+// "accountBalance": 0, 
+// "accountCreatedDate": "20241003", 
+// "accountExpiryDate": "20291003", 
+// "accountName": "한국은행 수시입출금 상품", 
+// "accountNo": "0011474303166137", 
+// "accountTypeCode": "1", 
+// "accountTypeName": "수시입출금", 
+// "bankCode": "001", 
+// "bankName": "한국은행", 
+// "currency": "KRW", 
+// "dailyTransferLimit": 500000000, 
+// "lastTransactionDate": "", 
+// "oneTimeTransferLimit": 100000000, 
+// "username": null
+//       }
+    // 임시 전체 계좌
+    // const accountList : AccountItem [] = [{id:'1', bank:'신한은행', number:'11111111111'}, {id:'2', bank:'하나은행', number:'2222222222'}, {id:'3', bank:'국민은행', number:'33333333333'}]

@@ -6,6 +6,7 @@ import Checkbox from 'expo-checkbox';
 import { useRouter } from 'expo-router';
 import Toast from "react-native-toast-message";
 import CancelButton from "../../src/ui/components/CancelButton";
+import Header from "../../src/ui/components/Header";
 
 const ReqSendMoney = () => {
     const [mainConnect, setMainConnect] = useState('');
@@ -14,23 +15,52 @@ const ReqSendMoney = () => {
 
     // 임시 
     interface ConnectItem {
-        id: string;
-        name: string;
-        date: string;
-        money: string;
+        notificationId: number,
+        senderKey: string,
+        receiverKey: string,
+        notificationType: string,
+        created: string,
+        readAt: string,
+        notificationStatus: string
     }
 
     // 임시 목록
     const connectList : ConnectItem [] = 
-        [{id:'1', name:'OOO', date:'2024-09-01', money:'500000'}, 
-        {id:'2', name:'★★★', date:'2024-09-03', money:'1500000'}, 
-        {id:'3', name:'☆☆☆', date:'2024-09-05', money:'1000000'}]
+        [
+            {
+                notificationId: 0,
+                senderKey: "key1",
+                receiverKey: "key",
+                notificationType: "string",
+                created: "2024-10-06T10:03:01.328Z",
+                readAt: "2024-10-06T10:03:01.328Z",
+                notificationStatus: "UNREAD"
+              },
+            {
+                notificationId: 1,
+                senderKey: "key2",
+                receiverKey: "key",
+                notificationType: "string",
+                created: "2024-10-06T10:03:01.328Z",
+                readAt: "2024-10-06T10:03:01.328Z",
+                notificationStatus: "UNREAD"
+              },
+            {
+                notificationId: 2,
+                senderKey: "key3",
+                receiverKey: "key",
+                notificationType: "string",
+                created: "2024-10-06T10:03:01.328Z",
+                readAt: "2024-10-06T10:03:01.328Z",
+                notificationStatus: "UNREAD"
+              },
+]
 
     // 요청 수락
     const checkAccept = (index:number, name:string) => {
         for (let i = 0; i < connectList.length; i++){
         if (i == index){
-            const familyName : string = connectList[i]['name']
+            const familyName : string = connectList[i]['senderKey']
             // 요청 보내기
             Toast.show({
                 type: 'success',
@@ -45,7 +75,7 @@ const ReqSendMoney = () => {
     const checkReject = (index:number, name:string) => {
         for (let i = 0; i < connectList.length; i++){
         if (i == index){
-            const familyName : string = connectList[i]['name']
+            const familyName : string = connectList[i]['senderKey']
             // 요청 보내기
             Toast.show({
                 type: 'info',
@@ -59,6 +89,7 @@ const ReqSendMoney = () => {
 
     return (
         <View className='flex-1'>
+            <Header />
             <View className='justify-center items-center bg-gray-300 rounded-3xl mt-12 p-2 mx-20 mb-5'>
                 <Text className='text-xl text-center font-semibold'>알림 내역</Text>
             </View>
@@ -67,17 +98,22 @@ const ReqSendMoney = () => {
             {connectList.map((list, index) => (
                 <View key={index} className='w-80 p-2 m-2 flex-row bg-gray-300 rounded-3xl h-24 items-center justify-between'>
                     <View className='mx-2'>
-                        <Text className='font-bold'>일자 : {list.date}</Text>
-                        <Text className='font-bold'>대상 : {list.name}</Text>
-                        <Text className='font-bold'>금액 : {list.money}</Text>
+                        <Text className='font-bold'>일자 : {list.created.slice(0,4)}년
+                        {list.created.slice(5,7)}월
+                        {list.created.slice(8,10)}일
+                        {list.created.slice(11,13)}시
+                        {list.created.slice(14,16)}분
+                        </Text>
+                        <Text className='font-bold'>대상 : {list.senderKey}</Text>
+                        {/* <Text className='font-bold'>금액 : {list.money}</Text> */}
                     </View>
-                    <View className='flex-row mx-2'>
+                    <View className=' mx-2'>
                         <TouchableOpacity className='w-16 h-8 mx-1 rounded-3xl justify-center bg-sky-500'
-                        onPress={()=> checkAccept(index, list.name)} 
+                        onPress={()=> checkAccept(index, list.senderKey)} 
                         >
                         <Text className='text-white text-center font-bold'>승인</Text></TouchableOpacity>
                         <TouchableOpacity className='w-16 h-8 mx-1 rounded-3xl justify-center bg-red-400'
-                        onPress={() => checkReject(index, list.name)}
+                        onPress={() => checkReject(index, list.senderKey)}
                         >
                         <Text className='text-white text-center font-bold'>거부</Text></TouchableOpacity>
                     </View>

@@ -74,7 +74,7 @@ const PinConfirm = ({ onChange }: thirdInfo) => {
                 <View className='flex-row' key={index}>
                     {list.map((number, indexs)=> 
                     <TouchableOpacity 
-                    className='w-14 h-14 border justify-center items-center m-1 bg-white' 
+                    className='w-16 h-16 rounded-2xl justify-center items-center m-1 bg-white' 
                     onPress={() => pinChecking(number)} 
                     key={indexs}>
                     <Text className='text-center text-2xl'>{number}</Text>

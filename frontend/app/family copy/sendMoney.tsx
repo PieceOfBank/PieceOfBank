@@ -5,10 +5,11 @@ import Toast from "react-native-toast-message";
 import TransferInput from "../../src/ui/components/Temporary/TransferInput";
 import PinInfo from "../../src/ui/components/Temporary/PinCheck";
 import MediaConfirm from "../../src/ui/components/Temporary/MediaConfirm";
+import { accountTransfer } from "../../src/services/api";
+import Header from "../../src/ui/components/Header";
 
 /*
 일반 송금 후 미디어 송금 추가 요청 -> 송금 후 거래고유번호 받아와서 변수로 넘기기
-
 */
 const sendMoney = () => {
 
@@ -30,6 +31,34 @@ const sendMoney = () => {
       console.log(error)
     }
   }
+
+  /* 미디어를 보낼 경우 필요한 거래고유번호 저장하기 */
+  const [mediaNo, setMediaNo] = useState(0)
+
+  /* 이체 */
+  const moneyGo = async(balance:number) => {
+  try {
+    const JsonData = {
+      depositAccountNo: account,
+      transactionBalance: balance,
+      withdrawalAccountNo: "0019730654868483", // 임시 - 내 계좌 정보 필요
+      depositTransactionSummary: "string", // 임시
+      withdrawalTransactionSummary: "string" // 임시
+    }
+    const response = await accountTransfer(JsonData);
+    const transNo = response.data.REC[0]["transactionUniqueNo"] // 거래번호 맞게 가져오는지 확인해봐야 함
+    setMediaNo(transNo)
+    console.log(response)
+  }
+  catch (error) {
+    console.log(`에러: ${error}`)
+    Toast.show({
+      type: 'error',
+      text1: '송금 실패!',
+      text2: '입력 정보를 다시 확인해주세요'
+    })
+  }
+} 
 const router = useRouter();
 useEffect(() => {
 
@@ -56,6 +85,8 @@ useEffect(() => {
         if (inputPin == nowPin){
   
           const balanceCheck = parseInt(balance) // 송금 금액 숫자 변환
+          moneyGo(balanceCheck)
+
             setStep('3')
             Toast.show({
               type: 'success',
@@ -74,44 +105,62 @@ useEffect(() => {
         }
 
 
-
-    // 1차 화면 - 보낼 금액 입력받는 화면
-    if (step == '1') {
-        return (
-          <View className='flex-1'>
-            <View className='flex-row justify-center items-center'>
-                {/* <TransferObject onChange={firstChange} />  */}
-                <TransferInput onChange={existChange} name={nowName}/>
-            </View>
+    return(
+      <View className='flex-1'>
+        <Header />
+        {step == '1' && (
+          <View className='flex-row justify-center items-center'>
+              {/* <TransferObject onChange={firstChange} />  */}
+              <TransferInput onChange={existChange} name={nowName}/>
           </View>
-
-        )
-    }
-
-    // 2차 화면 - 핀번호 입력받는 화면
-    else if (step == '2') {
-        return(
-            <View className='flex-1'>
-                <PinInfo onChange={secondChange}/>
-            </View>
           )
-    }
+        }
+        {step == '2' && (
+          <PinInfo onChange={secondChange}/>
+          )
+        }
+        {step == '3' && (
+          <MediaConfirm onChange={thirdChange} mediaNo={mediaNo}/>
+          )
+        }
+      </View>
+    )
+    // if (step == '1') {
+    //     return (
+    //       <View className='flex-1'>
+    //         <View className='flex-row justify-center items-center'>
+    //             {/* <TransferObject onChange={firstChange} />  */}
+    //             <TransferInput onChange={existChange} name={nowName}/>
+    //         </View>
+    //       </View>
 
-    // 3차 화면 - 일반 송금 완료 후 미디어 보낼 지 확인하는 화면
-    else if (step == '3'){
-        return(
-            <View className='flex-1'>
-                <MediaConfirm onChange={thirdChange}/>
-            </View>
-        )
-    }
-
-    // // 미디어 보낼 경우 media/selectMedia로 보내기
-    // else if (step == '4'){
-    //     return(
-    //         router.push('/family copy/media/selectMedia')
     //     )
     // }
+
+    // // 2차 화면 - 핀번호 입력받는 화면
+    // else if (step == '2') {
+    //     return(
+    //         <View className='flex-1'>
+    //             <PinInfo onChange={secondChange}/>
+    //         </View>
+    //       )
+    // }
+
+    // // 3차 화면 - 일반 송금 완료 후 미디어 보낼 지 확인하는 화면
+    // else if (step == '3'){
+    //     return(
+    //         <View className='flex-1'>
+    //             <MediaConfirm onChange={thirdChange} mediaNo={mediaNo}/>
+    //         </View>
+    //     )
+    // }
+
+    // // // 미디어 보낼 경우 media/selectMedia로 보내기
+    // // else if (step == '4'){
+    // //     return(
+    // //         router.push('/family copy/media/selectMedia')
+    // //     )
+    // // }
 
 };
 

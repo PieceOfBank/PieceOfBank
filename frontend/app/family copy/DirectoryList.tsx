@@ -5,11 +5,26 @@ import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import CancelButton from "../../src/ui/components/CancelButton";
 import ListInput from "../../src/ui/components/Temporary/ListInput";
+import Header from "../../src/ui/components/Header";
 
 const DirectoryList = () => {
     const [oneLimit, setOneLimit] = useState<string>("");
     const [todayLimit, setTodayLimit] = useState<string>("");
     const router = useRouter()
+
+  /*
+  ★★★★★★추가해야 할 내용★★★★★★
+  1. 부모 송금 대상 불러오는 기능
+
+  2. 대상 삭제
+
+  3. 5명이면 추가 비활성화
+
+  4. 설정 버튼 클릭 시 송금 대상 정보 넘겨주는 내용
+  
+  */
+
+
   /* 알림팝업 Logic */
   const handleBtn = () => {
     Toast.show({
@@ -21,6 +36,7 @@ const DirectoryList = () => {
 
   return (
     <View className='flex-1'>
+      <Header />
       <View className='flex-1'>
         <View className='justify-center items-center bg-gray-300 rounded-3xl mt-12 p-3 mx-12 mb-5'>
           <Text className='text-xl text-center font-semibold mb-2'>부모 송금 대상 관리</Text>
