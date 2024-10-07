@@ -7,7 +7,9 @@ import com.fintech.pob.domain.directory.service.DirectoryService;
 import com.fintech.pob.domain.media.entity.Media;
 import com.fintech.pob.domain.media.service.MediaService;
 import com.fintech.pob.domain.media.service.MediaUploadService;
+import com.fintech.pob.domain.user.service.UserServiceImpl;
 import com.fintech.pob.global.auth.jwt.JwtUtil;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
@@ -38,18 +40,21 @@ public class DirectoryController {
     private final MediaUploadService mediaUploadService;
     private final MediaService mediaService;
     private final DirectoryRepository directoryRepository;
+    private final UserServiceImpl userServiceImpl;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/create")
     public ResponseEntity<DirectoryRequestDto> createDirectory(
             @RequestPart("directory") DirectoryRequestDto directoryDTO,
             @RequestPart("file") MultipartFile file,
-            HttpSession session
+            @RequestHeader("Authorization") String token
     ) throws IOException {
 
 
         String url = mediaUploadService.uploadFile(file);
+        String key = (String) jwtUtil.extractUserKey(token);
 
-        String key = (String) session.getAttribute("userKey");
+
         UUID userKey = UUID.fromString(key);
         directoryDTO.setUserKey(userKey);
         DirectoryRequestDto createdDirectory = directoryService.createDirectory(directoryDTO, userKey, url);
@@ -59,10 +64,12 @@ public class DirectoryController {
 
 
     @GetMapping("/find")
-    public ResponseEntity<List<DirectoryRequestDto>> getDirectoryById(HttpSession session) {
+    public ResponseEntity<List<DirectoryRequestDto>> getDirectoryById(@RequestHeader("Authorization") String token) {
       //  UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
 
-        String key = (String) session.getAttribute("userKey");
+
+        String key = (String) jwtUtil.extractUserKey(token);
+
         UUID userKey = UUID.fromString(key);
 
         List< DirectoryRequestDto> directoryDTO = directoryService.getDirectoryById(userKey);
@@ -116,11 +123,11 @@ public class DirectoryController {
     public ResponseEntity<DirectoryRequestDto> updateDirectory(
             @PathVariable Long id,
             @RequestBody DirectoryRequestDto directoryDTO,
-            HttpServletRequest request,HttpSession session
+            @RequestHeader("Authorization") String token
     ) {
-        //String userKey = extractUserKeyFromRequest(request);
-    //    UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
-        String key = (String) session.getAttribute("userKey");
+
+        String key = (String) jwtUtil.extractUserKey(token);
+
         UUID userKey = UUID.fromString(key);
         directoryDTO.setUserKey(userKey);
 
