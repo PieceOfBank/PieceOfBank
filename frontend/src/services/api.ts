@@ -1,4 +1,5 @@
 import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { axiosClient } from './axios';
 import { account } from "../types/account";
 
@@ -69,9 +70,66 @@ export const registUser = (newMember: Record<string, unknown>) => {
 
 
 /* JWT 코드 */
+// Interceptor - JWT 로직 (AccessToken & RefreshToken)
+axiosClient.interceptors.request.use(
+    async (config) => {
+        const user = await AsyncStorage.getItem("userId");
 
+        if (!user) return config;
 
+        const accessToken = await AsyncStorage.getItem("accessToken");
 
+        if (accessToken) {
+            config.headers.Authorization = `${accessToken}`;
+        }
+
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+axiosClient.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    async (error) => {
+        const originalRequest = error.config;
+
+        if (error.response && error.response.status === 403 && !originalRequest._retry) {
+            originalRequest._retry = true;
+
+            try {
+                const refreshToken = await AsyncStorage.getItem("refreshToken");
+                const response = await axiosClient.post('/auth/reissue', {}, {
+                    headers: { 'refresh': refreshToken }
+                });
+
+                const newAccessToken = response.headers['authorization'];
+                console.log(response.headers);
+
+                originalRequest.headers.Authorization = `${newAccessToken}`;
+                
+                // 토큰을 다시 저장
+                await AsyncStorage.setItem("accessToken", newAccessToken);
+                // await AsyncStorage.setItem("refreshToken", newRefreshToken);  // 필요 시
+
+                return axiosClient(originalRequest);
+
+            } catch (error) {
+                // 에러 발생 시 저장된 정보 삭제
+                await AsyncStorage.removeItem('userId');
+                await AsyncStorage.removeItem('accessToken');
+                await AsyncStorage.removeItem('refreshToken');
+            }
+
+            return Promise.reject(error);
+        }
+        return Promise.reject(error);
+    }
+);
+        
 
 /* Directory API */
 // 1. 계좌 저장소 수정 - PUT
