@@ -129,9 +129,9 @@ public class DirectoryController {
     }
 
 
-    @DeleteMapping("/deelte/{id}")
-    public ResponseEntity<Void> deleteDirectory(@PathVariable Long id) {
-        directoryService.deleteDirectory(id);
+    @DeleteMapping("/deelte/{accountNo}")
+    public ResponseEntity<Void> deleteDirectory(@PathVariable String accountNo) {
+        directoryService.deleteDirectory(accountNo);
         return ResponseEntity.noContent().build();
     }
 }

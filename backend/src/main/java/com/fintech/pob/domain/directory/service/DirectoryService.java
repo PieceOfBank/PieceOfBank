@@ -11,5 +11,5 @@ public interface DirectoryService {
     public DirectoryRequestDto createDirectory(DirectoryRequestDto directoryDTO,UUID userKey,String url);
     public List<DirectoryRequestDto> getDirectoryById(UUID userKey);
     public DirectoryRequestDto updateDirectory(Long id,DirectoryRequestDto directoryRequestDto);
-    public void deleteDirectory(Long id);
+    public void deleteDirectory(String accoutNo);
 }
