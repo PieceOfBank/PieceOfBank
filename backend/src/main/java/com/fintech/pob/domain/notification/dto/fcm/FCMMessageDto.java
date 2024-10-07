@@ -10,15 +10,15 @@ import lombok.Getter;
  */
 @Getter
 @Builder
-public class NotificationMessageDto {
+public class FCMMessageDto {
     private boolean validateOnly;
-    private NotificationMessageDto.Message message;
+    private FCMMessageDto.Message message;
 
     @Builder
     @AllArgsConstructor
     @Getter
     public static class Message {
-        private NotificationMessageDto.Notification notification;
+        private FCMMessageDto.Notification notification;
         private String token;
     }
 

@@ -2,8 +2,8 @@ package com.fintech.pob.domain.notification.service.fcm;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fintech.pob.domain.notification.dto.fcm.NotificationMessageDto;
-import com.fintech.pob.domain.notification.dto.notification.NotificationRequestDto;
+import com.fintech.pob.domain.notification.dto.fcm.FCMMessageDto;
+import com.fintech.pob.domain.notification.dto.fcm.FCMRequestDto;
 import com.google.auth.oauth2.GoogleCredentials;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class FCMServiceImpl implements FCMService {
      * @param notificationRequestDto 모바일에서 전달받은 Object
      * @return 성공(1), 실패(0)
      */
-    public Mono<Integer> sendMessageTo(NotificationRequestDto notificationRequestDto) throws IOException {
+    public Mono<Integer> sendMessageTo(FCMRequestDto notificationRequestDto) throws IOException {
         String message = makeMessage(notificationRequestDto);
         System.out.println("+++++++++" + message);
         String accessToken = getAccessToken();
@@ -78,13 +78,13 @@ public class FCMServiceImpl implements FCMService {
      * @param notificationRequestDto notificationRequestDto
      * @return String
      */
-    private String makeMessage(NotificationRequestDto notificationRequestDto) throws JsonProcessingException {
+    private String makeMessage(FCMRequestDto notificationRequestDto) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
-        NotificationMessageDto fcmMessageDto = NotificationMessageDto
+        FCMMessageDto fcmMessageDto = FCMMessageDto
                 .builder()
-                .message(NotificationMessageDto.Message.builder()
+                .message(FCMMessageDto.Message.builder()
                         .token(notificationRequestDto.getToken()) // 1:1 전송 시 대상 토큰
-                        .notification(NotificationMessageDto.Notification.builder()
+                        .notification(FCMMessageDto.Notification.builder()
                                 .title(notificationRequestDto.getTitle())
                                 .body(notificationRequestDto.getBody())
                                 .image(null)
