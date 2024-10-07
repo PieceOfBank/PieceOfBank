@@ -17,10 +17,6 @@ public class AccountHistoryListChecker {
 
     public Mono<ClientAccountHistoryListResponseDTO> getAccountHistoryList(AccountHistoryListRequestDTO requestPayload, HeaderRequestDTO header) {
 
-        System.out.println("-----------------HistoryListChecker-----------------");
-        System.out.println(header.toString());
-        System.out.println("----------------------------------------------------");
-
         ClientAccountHistoryListRequestDTO requestDTO = ClientAccountHistoryListRequestDTO.of(header, requestPayload);
 
         return webClient.post()
