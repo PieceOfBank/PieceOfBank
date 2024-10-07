@@ -1,5 +1,6 @@
 package com.fintech.pob.global.header.interceptor;
 
+import com.fintech.pob.global.auth.jwt.JwtUtil;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
 import com.fintech.pob.global.header.service.HeaderService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,9 +13,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class HeaderInterceptor implements HandlerInterceptor {
 
     private final HeaderService headerService;
+    private final JwtUtil jwtUtil;
 
-    public HeaderInterceptor(HeaderService headerService) {
+    public HeaderInterceptor(HeaderService headerService, JwtUtil jwtUtil) {
         this.headerService = headerService;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -25,8 +28,10 @@ public class HeaderInterceptor implements HandlerInterceptor {
         }
         request.setAttribute("accessInterceptor", true);
 
-        String userKey = request.getHeader("userKey");
+        String token = request.getHeader("Authorization");
         String apiName = request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/") + 1);
+
+        String userKey = jwtUtil.extractUserKey(token);
 
         HeaderRequestDTO header = headerService.createCommonHeader(apiName, userKey);
         request.setAttribute("header", header);
