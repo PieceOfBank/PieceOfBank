@@ -1,6 +1,6 @@
 package com.fintech.pob.domain.notification.controller;
 
-import com.fintech.pob.domain.notification.dto.notification.NotificationRequestDto;
+import com.fintech.pob.domain.notification.dto.fcm.FCMRequestDto;
 import com.fintech.pob.domain.notification.dto.notification.NotificationResponseDto;
 import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalRequestDto;
 import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalResponseDto;
@@ -102,7 +102,7 @@ public class NotificationController {
     }
 
     @PostMapping("/send")
-    public Mono<ResponseEntity<Integer>> pushMessage(@RequestBody @Validated NotificationRequestDto notificationRequestDto) throws IOException {
+    public Mono<ResponseEntity<Integer>> pushMessage(@RequestBody @Validated FCMRequestDto notificationRequestDto) throws IOException {
         log.debug("[+] 푸시 메시지를 전송합니다.");
         return fcmService.sendMessageTo(notificationRequestDto)
                 .map(result -> new ResponseEntity<>(result, HttpStatus.OK))

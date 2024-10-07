@@ -17,6 +17,10 @@ public class DataInitializer {
                 notificationTypeRepository.save(new NotificationType(null, "한도 변경 알림"));
                 notificationTypeRepository.save(new NotificationType(null, "거래 기한 알림"));
                 notificationTypeRepository.save(new NotificationType(null, "구독 신청 알림"));
+                notificationTypeRepository.save(new NotificationType(null, "한도 초과 알림"));
+                notificationTypeRepository.save(new NotificationType(null, "잔액 부족 알림"));
+                notificationTypeRepository.save(new NotificationType(null, "계좌 비활성 알림"));
+                notificationTypeRepository.save(new NotificationType(null, "거래 내역 없음 알림"));
                 System.out.println("Notification types initialized.");
             }
         };
