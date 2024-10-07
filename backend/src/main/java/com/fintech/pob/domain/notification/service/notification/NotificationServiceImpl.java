@@ -241,7 +241,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void sendNotification(UUID senderKey, UUID receiverKey, String typeName) {
+    public Long sendNotification(UUID senderKey, UUID receiverKey, String typeName) {
         User senderUser = userRepository.findByUserKey(senderKey)
                 .orElseThrow(() -> new IllegalArgumentException("보내는 유저를 찾을 수 없습니다: " + senderKey));
         User receiverUser = userRepository.findByUserKey(receiverKey)
@@ -257,6 +257,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .build();
 
         notificationRepository.save(notification);
+        return notification.getNotificationId();
     }
 }
 
