@@ -156,7 +156,7 @@ const SignupForm = () => {
         text1: '회원 가입 성공!',
         text2: '회원 가입이 완료되었습니다'
       })
-      // router.push('ward/main') // @@@ 경로 나중에 수정하기
+      router.push('/')
     }
     catch (error) {
       console.log(`에러: ${error}`)
