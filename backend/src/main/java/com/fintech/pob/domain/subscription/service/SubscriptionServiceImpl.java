@@ -47,6 +47,11 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     }
 
     @Override
+    public List<Subscription> findAll() {
+        return findAll();
+    }
+
+    @Override
     public void delete(UUID userKey) {
 
 //        Subscription subscription = subscriptionRepository.findOne(userKey);
