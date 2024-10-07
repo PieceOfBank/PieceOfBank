@@ -60,8 +60,8 @@ public class NotificationController {
     }
 
     @PostMapping("/transfers/request")
-    public ResponseEntity<Long> requestExceedTransfer(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto) {
-        Long transactionApprovalId = notificationService.requestExceedTransfer(transactionApprovalRequestDto);
+    public ResponseEntity<Long> requestTransfer(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto, @RequestParam("typeName") String typeName) {
+        Long transactionApprovalId = notificationService.requestTransfer(transactionApprovalRequestDto, typeName);
         return ResponseEntity.ok(transactionApprovalId);
     }
 
@@ -101,7 +101,16 @@ public class NotificationController {
         return ResponseEntity.ok(subscriptionApprovalResponseDto);
     }
 
-    @PostMapping("/send")
+    @PostMapping()
+    public ResponseEntity<Long> sendNotification(
+            @RequestParam("senderKey") UUID senderKey,
+            @RequestParam("receiverKey") UUID receiverKey,
+            @RequestParam("typeName") String typeName) {
+        Long notificationId = notificationService.sendNotification(senderKey, receiverKey, typeName);
+        return ResponseEntity.ok(notificationId);
+    }
+
+    @PostMapping("/message")
     public Mono<ResponseEntity<Integer>> pushMessage(@RequestBody @Validated FCMRequestDto notificationRequestDto) throws IOException {
         log.debug("[+] 푸시 메시지를 전송합니다.");
         return fcmService.sendMessageTo(notificationRequestDto)

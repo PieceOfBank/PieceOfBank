@@ -14,12 +14,12 @@ public interface NotificationService {
     NotificationResponseDto getNotificationByNotificationId(Long notificationId);
     NotificationResponseDto updateNotificationStatusToRead(Long notificationId);
     NotificationResponseDto updateNotificationStatusToDelete(Long notificationId);
-    Long requestExceedTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto);
+    Long requestTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto, String typeName);
     TransactionApprovalResponseDto approveTransferRequest(Long transactionApprovalId);
     TransactionApprovalResponseDto refuseTransferRequest(Long transactionApprovalId);
     TransactionApprovalResponseDto expireTransferRequest(Long transactionApprovalId);
     Long requestSubscription(SubscriptionApprovalRequestDto subscriptionApprovalRequestDto);
     SubscriptionApprovalResponseDto approveSubscriptionRequest(Long subscriptionApprovalId);
     SubscriptionApprovalResponseDto refuseSubscriptionRequest(Long subscriptionApprovalId);
-    void sendNotification(UUID senderKey, UUID receiverKey, String typeName);
+    Long sendNotification(UUID senderKey, UUID receiverKey, String typeName);
 }
