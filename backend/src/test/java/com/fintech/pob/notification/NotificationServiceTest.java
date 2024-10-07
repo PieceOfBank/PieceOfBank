@@ -74,7 +74,7 @@ public class NotificationServiceTest {
         NotificationType notificationType = notificationTypeRepository.findByTypeName("한도 초과 알림")
                 .orElseThrow(() -> new IllegalArgumentException("NotificationType not found"));
 
-        notificationService.sendNotification(sender.getUserKey(), receiver.getUserKey(), notificationType.getTypeName());
+        notificationService.sendNotification(sender.getUserKey(), receiver.getUserKey(), "한도 초과 알림");
 
         Optional<Notification> savedNotification = notificationRepository.findById(1L);
         assertNotNull(savedNotification);
