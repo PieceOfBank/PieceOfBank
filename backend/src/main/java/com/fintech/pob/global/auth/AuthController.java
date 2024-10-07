@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final JwtUtil jwtUtil;
@@ -72,8 +73,8 @@ public class AuthController {
 
     // 로그아웃 처리
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token){
-        try{
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+        try {
             String jwtToken = token.replace("Bearer", "");
             long expirationTime = jwtUtil.getExpirationTime(jwtToken);
             logoutService.logout(jwtToken, expirationTime);
