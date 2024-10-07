@@ -56,7 +56,11 @@ public class DirectoryServiceImpl implements  DirectoryService{
     }
 
     @Override
-    public void deleteDirectory(Long id) {
+    public void deleteDirectory(String accountNo) {
+
+      Directory directory= directoryRepository.findByAccountNo(accountNo).orElse(null);
+
+        directoryRepository.delete(directory);
 
     }
 }
