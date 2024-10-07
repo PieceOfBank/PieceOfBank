@@ -21,5 +21,5 @@ public interface NotificationService {
     Long requestSubscription(SubscriptionApprovalRequestDto subscriptionApprovalRequestDto);
     SubscriptionApprovalResponseDto approveSubscriptionRequest(Long subscriptionApprovalId);
     SubscriptionApprovalResponseDto refuseSubscriptionRequest(Long subscriptionApprovalId);
-    void sendNotification(UUID senderKey, UUID receiverKey, String typeName);
+    Long sendNotification(UUID senderKey, UUID receiverKey, String typeName);
 }
