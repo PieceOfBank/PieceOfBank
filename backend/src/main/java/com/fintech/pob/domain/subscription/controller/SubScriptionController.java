@@ -32,7 +32,7 @@ public class SubScriptionController {
     public ResponseEntity<Optional<Subscription>> getSubscription(HttpSession session) {
         //  UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
 
-        String key = (String) jwtUtil.extractUserKey(token);
+        String key = (String) session.getAttribute("userKey");
         UUID userKey = UUID.fromString(key);
 
 
