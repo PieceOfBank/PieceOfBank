@@ -12,6 +12,7 @@ const login = () => {
     <ImageBackground source={require('../src/assets/POBbackGround.png')}
       className="flex-1"
     >
+      
       <View className='flex-1 justify-center items-center'>
         <Text className='text-2xl m-2'>POB</Text>
         <Text className='text-xl'>로그인</Text>
