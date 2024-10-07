@@ -39,14 +39,15 @@ const sendMoney = () => {
   const moneyGo = async(balance:number) => {
   try {
     const JsonData = {
-      depositAccountNo: account,
+      depositAccountNo: "0012224552208245",  // 임시 - 받는 계좌 정보
       transactionBalance: balance,
-      withdrawalAccountNo: "0019730654868483", // 임시 - 내 계좌 정보 필요
+      withdrawalAccountNo: "0011474303166137", // 임시 - 내 계좌 정보 필요
       depositTransactionSummary: "string", // 임시
       withdrawalTransactionSummary: "string" // 임시
     }
     const response = await accountTransfer(JsonData);
     const transNo = response.data.REC[0]["transactionUniqueNo"] // 거래번호 맞게 가져오는지 확인해봐야 함
+    console.log(transNo)
     setMediaNo(transNo)
     console.log(response)
   }
@@ -65,7 +66,6 @@ useEffect(() => {
     
     // 현재 계정의 핀번호 확인
     pinInfo()
-    
 }, [])
     
     const nowName = '임시이름'

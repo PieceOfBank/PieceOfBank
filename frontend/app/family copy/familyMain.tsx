@@ -7,9 +7,32 @@ import sendMoney from "./sendMoney";
 import DealHistory from "./dealHistory";
 import smallLogo from "../../src/assets/SmallLogo.png";
 import mail from '../../src/assets/mail.png'
+import Toast from "react-native-toast-message";
+import { logoutUser } from "../../src/services/api";
 
 const FamilyMain = () => {
   const router = useRouter();
+
+  const logoutTry = async() => {
+    try{
+        const response = await logoutUser();
+        console.log(response)
+        Toast.show({
+          type: 'success',
+          text1: '로그아웃 성공!',
+          text2: '정상적으로 로그아웃 되었습니다'
+        })
+      router.push('/')
+  }
+  catch(error){
+      console.log(error)
+      Toast.show({
+          type: 'error',
+          text1: '로그아웃 실패',
+          text2: '정보를 다시 확인해주세요.'
+        })
+  }
+  }
 
   /*
   ★★★★★★추가해야 할 내용★★★★★★
@@ -91,7 +114,7 @@ const FamilyMain = () => {
                 {/* <View className='h-40'></View> */}
                 <TouchableOpacity 
                   className='w-24 h-8 m-5 rounded-3xl justify-center bg-gray-300'
-                  onPress={() => router.push('/')} 
+                  onPress={logoutTry} 
                   >
                 <Text className='text-center'>로그아웃</Text></TouchableOpacity>
             </View>
