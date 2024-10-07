@@ -30,7 +30,9 @@
         "NOTIFICATIONS",
         "MEDIA_LIBRARY"
       ],
-      "package" : "com.bexco12.pieceOfBank"
+      "package" : "com.bexco12.pieceOfBank",
+      "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -358,8 +358,18 @@ export const subscriptionRefusal= (data:Record<string,string>) => {
 }
 
 
+/* Token */
+export const sendToken = (userKey: string, token: string) => {
+    return axiosClient.post(`/token?userKey=${userKey}&token=${token}`, {});
+}
 
+export const getToken = (userKey : string) => {
+    return axiosClient.get(`/token?userKey=${userKey}`);
+}
 
+export const deleteToken = (userKey : string) => {
+    return axiosClient.delete(`/token?userKey=${userKey}`);
+}
 
 // 2. 보호 관계 순서 수정 - PUT
 export const subscriptionOrderUpdate = () => {
