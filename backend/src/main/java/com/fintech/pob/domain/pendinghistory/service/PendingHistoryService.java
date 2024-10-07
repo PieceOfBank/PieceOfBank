@@ -24,7 +24,7 @@ public class PendingHistoryService {
     private final ApplicationEventPublisher eventPublisher;
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void savePendingHistory(int notificationId, AccountTransferRequestDTO requestPayload) {
+    public void savePendingHistory(long notificationId, AccountTransferRequestDTO requestPayload) {
         String redisKey = "PendingHistory:" + notificationId;
 
         Map<String, String> pendingHistoryData = new HashMap<>();
@@ -43,7 +43,7 @@ public class PendingHistoryService {
         }
     }
 
-    public void acceptPendingHistory(int notificationId) {
+    public void acceptPendingHistory(long notificationId) {
         String redisKey = "PendingHistory:" + notificationId;
 
         try {
@@ -62,7 +62,7 @@ public class PendingHistoryService {
         }
     }
 
-    public void denyPendingHistory(int notificationId) {
+    public void denyPendingHistory(long notificationId) {
         String redisKey = "PendingHistory:" + notificationId;
         deletePendingHistory(redisKey);
     }

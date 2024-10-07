@@ -4,7 +4,6 @@ import com.fintech.pob.domain.account.dto.client.ClientAccountHistoryListRequest
 import com.fintech.pob.domain.account.dto.client.ClientAccountHistoryListResponseDTO;
 import com.fintech.pob.domain.account.dto.request.AccountHistoryListRequestDTO;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -13,13 +12,14 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class AccountHistoryListService {
-
+public class AccountHistoryListChecker {
     private final WebClient webClient;
-    private final HttpServletRequest request;
 
-    public Mono<ClientAccountHistoryListResponseDTO> getAccountHistoryList(AccountHistoryListRequestDTO requestPayload) {
-        HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
+    public Mono<ClientAccountHistoryListResponseDTO> getAccountHistoryList(AccountHistoryListRequestDTO requestPayload, HeaderRequestDTO header) {
+
+        System.out.println("-----------------HistoryListChecker-----------------");
+        System.out.println(header.toString());
+        System.out.println("----------------------------------------------------");
 
         ClientAccountHistoryListRequestDTO requestDTO = ClientAccountHistoryListRequestDTO.of(header, requestPayload);
 
@@ -30,4 +30,5 @@ public class AccountHistoryListService {
                 .retrieve()
                 .bodyToMono(ClientAccountHistoryListResponseDTO.class);
     }
+
 }

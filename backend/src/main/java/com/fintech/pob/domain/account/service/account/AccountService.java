@@ -5,6 +5,8 @@ import com.fintech.pob.domain.account.dto.request.*;
 import com.fintech.pob.domain.account.dto.transfer.TransferCheckDTO;
 import com.fintech.pob.domain.account.service.transfer.TransferCheckResult;
 import com.fintech.pob.domain.account.service.transfer.TransferCheckService;
+import com.fintech.pob.domain.account.service.transfer.TransferEnumMapper;
+import com.fintech.pob.domain.notification.service.notification.NotificationService;
 import com.fintech.pob.domain.pendinghistory.service.PendingHistoryService;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
@@ -31,6 +33,7 @@ public class AccountService {
     private final TransferCheckService transferCheckService;
     private final SubscriptionService subscriptionService;
     private final PendingHistoryService pendingHistoryService;
+    private final NotificationService notificationService;
 
     @EventListener
     public void handleAccountTransferEvent(AccountTransferEvent event) {
@@ -70,6 +73,21 @@ public class AccountService {
                 .bodyToMono(ClientAccountListResponseDTO.class);
     }
 
+    public Mono<ClientAccountHistoryListResponseDTO> getAccountHistoryList(AccountHistoryListRequestDTO requestPayload) {
+        HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
+        System.out.println(header.toString());
+        header.setApiName("inquireTransactionHistoryList");
+
+        ClientAccountHistoryListRequestDTO requestDTO = ClientAccountHistoryListRequestDTO.of(header, requestPayload);
+
+        return webClient.post()
+                .uri("demandDeposit/inquireTransactionHistoryList")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(requestDTO)
+                .retrieve()
+                .bodyToMono(ClientAccountHistoryListResponseDTO.class);
+    }
+
     public Mono<ClientAccountDetailResponseDTO> getAccountDetail(AccountDetailRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
 
@@ -102,30 +120,38 @@ public class AccountService {
                         ClientAccountDetailResponseDTO accountDeposit = tuple.getT1();
                         ClientAccountDetailResponseDTO accountWithdraw = tuple.getT2();
 
-                        TransferCheckDTO transferCheckDTO = TransferCheckDTO.of(requestPayload, accountDeposit, accountWithdraw);
+                        TransferCheckDTO transferCheckDTO = TransferCheckDTO.of(header, requestPayload, accountDeposit, accountWithdraw);
 
-                        TransferCheckResult checkResult = transferCheckService.checkTransfer(transferCheckDTO);
-                        if (checkResult != TransferCheckResult.SUCCESS) {
-                            // 알림 전송
-                            // int notiId = notificationService.sendNotification(checkResult);
+                        // 수정된 부분: checkTransfer 메서드를 리액티브하게 호출
+                        return transferCheckService.checkTransfer(transferCheckDTO)
+                                .flatMap(checkResult -> {
+                                    System.out.println("--------------------------------------");
+                                    System.out.println(checkResult);
+                                    System.out.println("--------------------------------------");
 
-                            if (checkResult == TransferCheckResult.LIMIT || checkResult == TransferCheckResult.INACTIVITY) {
-                                // pendingHistory 추가
-                                // pendingHistoryService.savePendingHistory(notiId, requestPayload);
-                            }
-                            return Mono.error(new RuntimeException("Transfer failed: " + checkResult));
-                        }
+                                    if (checkResult != TransferCheckResult.SUCCESS) {
+                                        // 알림 전송
+                                        String typeName = TransferEnumMapper.getNotificationMessage(checkResult);
+                                        long notiId = notificationService.sendNotification(UUID.fromString(header.getUserKey()), subscriptionOptional.get().getProtectUser().getUserKey(), typeName);
 
-                        header.setApiName("updateDemandDepositAccountTransfer");
+                                        if (checkResult == TransferCheckResult.LIMIT || checkResult == TransferCheckResult.INACTIVITY) {
+                                            // pendingHistory 추가
+                                            pendingHistoryService.savePendingHistory(notiId, requestPayload);
+                                        }
+                                        return Mono.error(new RuntimeException("Transfer failed: " + checkResult));
+                                    }
 
-                        ClientAccountTransferRequestDTO requestDTO = ClientAccountTransferRequestDTO.of(header, requestPayload);
+                                    header.setApiName("updateDemandDepositAccountTransfer");
 
-                        return webClient.post()
-                                .uri("demandDeposit/updateDemandDepositAccountTransfer")
-                                .accept(MediaType.APPLICATION_JSON)
-                                .bodyValue(requestDTO)
-                                .retrieve()
-                                .bodyToMono(ClientAccountTransferResponseDTO.class);
+                                    ClientAccountTransferRequestDTO requestDTO = ClientAccountTransferRequestDTO.of(header, requestPayload);
+
+                                    return webClient.post()
+                                            .uri("demandDeposit/updateDemandDepositAccountTransfer")
+                                            .accept(MediaType.APPLICATION_JSON)
+                                            .bodyValue(requestDTO)
+                                            .retrieve()
+                                            .bodyToMono(ClientAccountTransferResponseDTO.class);
+                                });
                     });
         }
 
