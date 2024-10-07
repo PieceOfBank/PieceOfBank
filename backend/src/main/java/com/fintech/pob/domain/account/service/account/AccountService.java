@@ -111,7 +111,7 @@ public class AccountService {
 
                             if (checkResult == TransferCheckResult.LIMIT || checkResult == TransferCheckResult.INACTIVITY) {
                                 // pendingHistory 추가
-                                pendingHistoryService.savePendingHistory(1, requestPayload);
+                                // pendingHistoryService.savePendingHistory(notiId, requestPayload);
                             }
                             return Mono.error(new RuntimeException("Transfer failed: " + checkResult));
                         }
