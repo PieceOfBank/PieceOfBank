@@ -14,7 +14,7 @@ public interface NotificationService {
     NotificationResponseDto getNotificationByNotificationId(Long notificationId);
     NotificationResponseDto updateNotificationStatusToRead(Long notificationId);
     NotificationResponseDto updateNotificationStatusToDelete(Long notificationId);
-    Long requestExceedTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto);
+    Long requestTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto, String typeName);
     TransactionApprovalResponseDto approveTransferRequest(Long transactionApprovalId);
     TransactionApprovalResponseDto refuseTransferRequest(Long transactionApprovalId);
     TransactionApprovalResponseDto expireTransferRequest(Long transactionApprovalId);

@@ -60,8 +60,8 @@ public class NotificationController {
     }
 
     @PostMapping("/transfers/request")
-    public ResponseEntity<Long> requestExceedTransfer(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto) {
-        Long transactionApprovalId = notificationService.requestExceedTransfer(transactionApprovalRequestDto);
+    public ResponseEntity<Long> requestTransfer(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto, @RequestParam("typeName") String typeName) {
+        Long transactionApprovalId = notificationService.requestTransfer(transactionApprovalRequestDto, typeName);
         return ResponseEntity.ok(transactionApprovalId);
     }
 

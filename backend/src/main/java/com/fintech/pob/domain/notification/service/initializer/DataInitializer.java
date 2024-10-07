@@ -12,16 +12,16 @@ public class DataInitializer {
     @Bean
     CommandLineRunner initNotificationTypes(NotificationTypeRepository notificationTypeRepository) {
         return args -> {
-            if (notificationTypeRepository.count() == 0) {  // 데이터가 없을 때만 추가
-                notificationTypeRepository.save(new NotificationType(null, "거래 수락 요청 알림"));
-                notificationTypeRepository.save(new NotificationType(null, "한도 변경 알림"));
-                notificationTypeRepository.save(new NotificationType(null, "거래 기한 알림"));
+            if (notificationTypeRepository.count() == 0) {
+                // (1) 구독 관계 관련 알림
                 notificationTypeRepository.save(new NotificationType(null, "구독 신청 알림"));
-                notificationTypeRepository.save(new NotificationType(null, "한도 초과 알림"));
-                notificationTypeRepository.save(new NotificationType(null, "잔액 부족 알림"));
-                notificationTypeRepository.save(new NotificationType(null, "계좌 비활성 알림"));
+                notificationTypeRepository.save(new NotificationType(null, "한도 변경 알림"));
+                // (2) 3일 동안 거래 내역 없을 때 보호자에게 알림
                 notificationTypeRepository.save(new NotificationType(null, "거래 내역 없음 알림"));
-                System.out.println("Notification types initialized.");
+                // (3) 계좌 이체할 때 보호자에게 알림
+                notificationTypeRepository.save(new NotificationType(null, "잔액 부족 알림"));
+                notificationTypeRepository.save(new NotificationType(null, "한도 초과 알림"));
+                notificationTypeRepository.save(new NotificationType(null, "계좌 비활성 알림"));
             }
         };
     }
