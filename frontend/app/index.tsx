@@ -25,8 +25,7 @@ const loginTry = async() => {
       password: password,
     }
     const response = await loginUser(JsonData);
-    console.log(response?.data)
-    console.log(AsyncStorage.getItem("userKey"))
+    
     Toast.show({
       type: 'success',
       text1: '로그인 성공!',

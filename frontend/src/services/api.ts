@@ -64,9 +64,7 @@ export const createUser = async (email: Record<string, string>) => {
     try {
         const response = await axiosClient.post(`/users/create`, email);
 
-        console.log("Hello" + response.data)
         const userKey = response.data.split(':')[1].trim();
-
         AsyncStorage.setItem('userKey', userKey);
         return response;
     }
@@ -80,6 +78,7 @@ export const createUser = async (email: Record<string, string>) => {
 export const registUser = async (newMember: Record<string, unknown>) => {
     try {
         const userKey = await AsyncStorage.getItem('userKey');
+        console.log("my userKey : --> " + userKey)
         newMember = { ...newMember, 'userKey': userKey };
         console.log(newMember)
         return axiosClient.post(`/users/register`, newMember);
