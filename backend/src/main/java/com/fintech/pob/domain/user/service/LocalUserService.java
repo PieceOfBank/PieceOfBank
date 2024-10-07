@@ -10,4 +10,6 @@ public interface LocalUserService {
     User authenticate(String userId, String password);
 
     User findByUserKey(String userKey);
+
+    void updateAccountNo(UUID userKey, String accountNo);
 }
