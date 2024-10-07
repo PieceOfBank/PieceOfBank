@@ -13,7 +13,7 @@ public interface SubscriptionService {
     Subscription create(SubscriptionRequestDto subscriptionRequestDto);
 
 
-    Subscription findByTargetUserKey(UUID userKey);
+    Optional<Subscription> findByTargetUserKey(UUID userKey);
 
     Subscription update(UUID userKey);
     List<Subscription> findAll();

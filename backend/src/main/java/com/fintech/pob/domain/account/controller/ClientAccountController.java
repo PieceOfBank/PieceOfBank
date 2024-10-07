@@ -2,7 +2,8 @@ package com.fintech.pob.domain.account.controller;
 
 import com.fintech.pob.domain.account.dto.client.*;
 import com.fintech.pob.domain.account.dto.request.*;
-import com.fintech.pob.domain.account.service.AccountService;
+import com.fintech.pob.domain.account.service.account.AccountHistoryListService;
+import com.fintech.pob.domain.account.service.account.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 public class ClientAccountController {
 
     private final AccountService accountService;
+    private final AccountHistoryListService accountHistoryListService;
 
     @PostMapping("/createDemandDepositAccount")
     public Mono<ResponseEntity<ClientAccountCreationResponseDTO>> createClientAccount(
@@ -45,7 +47,7 @@ public class ClientAccountController {
     @PostMapping("/inquireTransactionHistoryList")
     public Mono<ResponseEntity<ClientAccountHistoryListResponseDTO>> getClientAccountHistoryList(
             @RequestBody AccountHistoryListRequestDTO requestPayload) {
-        return accountService.getAccountHistoryList(requestPayload)
+        return accountHistoryListService.getAccountHistoryList(requestPayload)
                 .map(ResponseEntity::ok);
     }
 

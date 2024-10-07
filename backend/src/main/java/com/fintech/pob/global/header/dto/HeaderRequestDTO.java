@@ -18,6 +18,11 @@ public class HeaderRequestDTO {
     private String apiKey;
     private String userKey;
 
+    public void setApiName(String apiName) {
+        this.apiName = apiName;
+        this.apiServiceCode = apiName;
+    }
+
     @Override
     public String toString() {
         return "HeaderRequestDTO{" +

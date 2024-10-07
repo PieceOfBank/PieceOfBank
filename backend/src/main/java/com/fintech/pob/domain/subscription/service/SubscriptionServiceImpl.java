@@ -37,7 +37,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
 
     @Override
-    public Subscription findByTargetUserKey(UUID userKey) {
+    public Optional<Subscription> findByTargetUserKey(UUID userKey) {
         return subscriptionRepository.findByTargetUser_UserKey(userKey);
     }
 
