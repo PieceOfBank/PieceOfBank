@@ -1,7 +1,6 @@
 package com.fintech.pob.domain.subscription.controller;
 
 
-import com.fintech.pob.domain.directory.entity.DirectoryRequestDto;
 import com.fintech.pob.domain.subscription.dto.SubscriptionRequestDto;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
@@ -10,7 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -28,14 +27,14 @@ public class SubScriptionController {
     }
 
     @GetMapping("/find")
-    public ResponseEntity<Subscription> getSubscription(HttpSession session) {
+    public ResponseEntity<Optional<Subscription>> getSubscription(HttpSession session) {
         //  UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
 
         String key = (String) session.getAttribute("userKey");
         UUID userKey = UUID.fromString(key);
 
 
-        Subscription subscriptions = subscriptionService.findByTargetUserKey(userKey);
+        Optional<Subscription> subscriptions = subscriptionService.findByTargetUserKey(userKey);
 
 
         return ResponseEntity.ok(subscriptions);

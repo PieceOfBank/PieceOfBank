@@ -1,18 +1,27 @@
-package com.fintech.pob.domain.account.service;
+package com.fintech.pob.domain.account.service.account;
 
 import com.fintech.pob.domain.account.dto.client.*;
 import com.fintech.pob.domain.account.dto.request.*;
 import com.fintech.pob.domain.account.dto.transfer.TransferCheckDTO;
 import com.fintech.pob.domain.account.service.transfer.TransferCheckResult;
 import com.fintech.pob.domain.account.service.transfer.TransferCheckService;
+import com.fintech.pob.domain.pendinghistory.service.PendingHistoryService;
+import com.fintech.pob.domain.subscription.entity.Subscription;
+import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+import java.util.UUID;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccountService {
@@ -20,7 +29,17 @@ public class AccountService {
     private final WebClient webClient;
     private final HttpServletRequest request;
     private final TransferCheckService transferCheckService;
-    //private final SubscriptionService subscriptionService;
+    private final SubscriptionService subscriptionService;
+    private final PendingHistoryService pendingHistoryService;
+
+    @EventListener
+    public void handleAccountTransferEvent(AccountTransferEvent event) {
+        AccountTransferRequestDTO requestPayload = event.getRequestPayload();
+        updateAccountTransfer(requestPayload)
+                .doOnSuccess(response -> log.info("[Account Transfer Event] 계좌 이체 성공: " + response))
+                .doOnError(error -> log.error("[Account Transfer Event] 계좌 이체 중 오류 발생", error))
+                .subscribe();
+    }
 
     public Mono<ClientAccountCreationResponseDTO> createAccount(AccountCreationRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
@@ -71,9 +90,8 @@ public class AccountService {
     public Mono<ClientAccountTransferResponseDTO> updateAccountTransfer(AccountTransferRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
 
-        //Optional<Subscription> subscriptionOptional = subscriptionService.findByTargetUserKey(header.getUserKey());
-        //if (subscriptionOptional.isPresent()) {
-        if(true) {
+        Optional<Subscription> subscriptionOptional = subscriptionService.findByTargetUserKey(UUID.fromString(header.getUserKey()));
+        if (subscriptionOptional.isPresent()) {
             header.setApiName("inquireDemandDepositAccount");
 
             Mono<ClientAccountDetailResponseDTO> accountDepositMono = getAccountDetail(new AccountDetailRequestDTO(requestPayload.getDepositAccountNo()));
@@ -93,7 +111,7 @@ public class AccountService {
 
                             if (checkResult == TransferCheckResult.LIMIT || checkResult == TransferCheckResult.INACTIVITY) {
                                 // pendingHistory 추가
-                                // pendingHistoryService.addPendingHistory(requestPayload, notiId);
+                                pendingHistoryService.savePendingHistory(1, requestPayload);
                             }
                             return Mono.error(new RuntimeException("Transfer failed: " + checkResult));
                         }
@@ -111,7 +129,6 @@ public class AccountService {
                     });
         }
 
-        // subscription이 없을 경우 처리
         ClientAccountTransferRequestDTO requestDTO = ClientAccountTransferRequestDTO.of(header, requestPayload);
 
         return webClient.post()
@@ -120,19 +137,6 @@ public class AccountService {
                 .bodyValue(requestDTO)
                 .retrieve()
                 .bodyToMono(ClientAccountTransferResponseDTO.class);
-    }
-
-    public Mono<ClientAccountHistoryListResponseDTO> getAccountHistoryList(AccountHistoryListRequestDTO requestPayload) {
-        HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
-
-        ClientAccountHistoryListRequestDTO requestDTO = ClientAccountHistoryListRequestDTO.of(header, requestPayload);
-
-        return webClient.post()
-                .uri("demandDeposit/inquireTransactionHistoryList")
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(requestDTO)
-                .retrieve()
-                .bodyToMono(ClientAccountHistoryListResponseDTO.class);
     }
 
     public Mono<ClientAccountHistoryDetailResponseDTO> getAccountHistoryDetail(AccountHistoryDetailRequestDTO requestPayload) {
