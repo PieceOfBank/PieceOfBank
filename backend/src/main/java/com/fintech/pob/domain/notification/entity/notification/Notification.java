@@ -16,11 +16,11 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long notificationId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "sender_key")
     private User senderUser;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "receiver_key")
     private User receiverUser;
 
