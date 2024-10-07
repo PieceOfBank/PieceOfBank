@@ -64,6 +64,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         Subscription subscription  = subscriptionRepository.findByTargetUser_UserKey(userKey).orElse(null);
         subscription.setOneTimeTransferLimit(limit);
 
+        subscriptionRepository.save(subscription);
+
     }
 
     @Override
@@ -71,6 +73,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
         Subscription subscription  = subscriptionRepository.findByTargetUser_UserKey(userKey).orElse(null);
         subscription.setDailyTransferLimit(limit);
+        subscriptionRepository.save(subscription);
 
     }
 

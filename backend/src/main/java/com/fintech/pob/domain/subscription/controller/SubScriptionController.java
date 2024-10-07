@@ -44,6 +44,7 @@ public class SubScriptionController {
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
 
+        System.out.println(newLimit);
          subscriptionService.setOneTimeTransferLimit(userKey, newLimit);
         return ResponseEntity.ok(null);
 
