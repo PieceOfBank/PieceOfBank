@@ -29,11 +29,11 @@ public class SubScriptionController {
     }
 
     @GetMapping("/find")
-    public ResponseEntity<Subscription> getSubscription(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Optional<Subscription>> getSubscription(@RequestHeader("Authorization") String token) {
 
-        String key = (String) session.getAttribute("userKey");
+        String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
-        Subscription subscriptions = subscriptionService.findByTargetUserKey(userKey);
+        Optional<Subscription> subscriptions = Optional.ofNullable(subscriptionService.findByTargetUserKey(userKey).orElse(null));
         return ResponseEntity.ok(subscriptions);
     }
 
