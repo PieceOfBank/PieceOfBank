@@ -11,11 +11,23 @@ import mail from '../../src/assets/mail.png'
 const FamilyMain = () => {
   const router = useRouter();
 
+  /*
+  ★★★★★★추가해야 할 내용★★★★★★
+  1. 대표 계좌 조회 요청
+  - 있으면 보여주고, 없으면 대표 계좌 등록 메세지 보여주기
+
+  2. 피보호자 여부 확인하는 요청
+  
+  */
+
   /* 내가 보호자인 경우, 피보호자를 가져온다. */
   let flag: boolean = true;
 
   // 임시 피보호자 정보
   const wardInfo= { directoryId : 1, userKey: '1', accountNo: '123456789', institutionCode: 1, name: '엄마' }
+
+  // 대표 계좌 보여줄 지 확인하기
+  const [mainAccount, setMainAccount] = useState('1')
 
   return (
     <SafeAreaView>
@@ -29,11 +41,10 @@ const FamilyMain = () => {
             onPress={() => router.push('/family copy/reqSendMoney')} >
             <Image source={mail}  />
           </TouchableOpacity>
-          {/* <Text>hello my Header</Text> */}
         </View>
       </SafeAreaView>
       <View className="bg-gray-200 flex justify-center items-center">
-        {flag? (        
+        {(mainAccount=='1')? (        
           <Link className='h-6 rounded-3xl justify-center m-4 text-center font-bold' 
              href={
                 {pathname:'/family copy/totalAccount'}
@@ -98,12 +109,13 @@ const FamilyMain = () => {
               <TouchableOpacity className='m-2 py-1 px-4 bg-sky-400 rounded-3xl' onPress={() => router.push('/family copy/addWard')}>
                   <Text className='text-white'>피보호자 등록 신청</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
+          </View>
+          <TouchableOpacity 
                   className='w-24 h-8 m-5 rounded-3xl justify-center bg-gray-300'
                   onPress={() => router.push('/')} 
                   >
-              <Text className='text-center'>로그아웃</Text></TouchableOpacity>
-          </View>
+              <Text className='text-center'>로그아웃</Text>
+              </TouchableOpacity>
           </View>
         </View>
           )}

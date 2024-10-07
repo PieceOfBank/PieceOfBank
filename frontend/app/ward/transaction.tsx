@@ -14,16 +14,21 @@ const careTransaction = () => {
 
     // 카드 리스트에서 전달받은 이름, 계좌번호, 은행
     const {account, bank, name} = useLocalSearchParams()
-
+    const accounts = account 
+    const banks = bank
+    const names = name
+    
     // 화면 가로고정
     useEffect(() => {
         const screenChange = async() => {
             await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
         };
         screenChange();
-        return () => {
-            ScreenOrientation.unlockAsync()
-        }
+        console.log(accounts)
+        console.log
+        // return () => {
+        //     ScreenOrientation.unlockAsync()
+        // }
         },[]);
 
     return (
@@ -45,12 +50,12 @@ const careTransaction = () => {
         </View>
         <TouchableOpacity 
         className='m-2 p-1 border rounded-full w-8 h-8 bg-white justify-center items-center'
-        onPress={() => router.push('ward/main')}>
+        onPress={() => router.back()}>
           <Text>X</Text>
         </TouchableOpacity>
       </View>
 
-          <TransactionList />
+          <TransactionList account={accounts} bank={banks} name={names}/>
           <View className='h-4'></View>
         </View>
       </ImageBackground>

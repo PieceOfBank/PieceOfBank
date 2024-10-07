@@ -9,6 +9,8 @@ import TransferOk from "../../src/ui/components/TransferOk";
 import DirectoryTransfer from "../../src/ui/components/DirectoryTransfer";
 import Toast from "react-native-toast-message";
 import smallLogo from "../../src/assets/SmallLogo.png";
+import { accountTransfer } from "../../src/services/api";
+
 
 const careTransfer = () => {
 
@@ -88,6 +90,28 @@ const careTransfer = () => {
     
     const [inputPin, setInputPin] = useState<string>(''); // 핀번호    
 
+    const moneyGo = async(balance:number) => {
+      try {
+        const JsonData = {
+          depositAccountNo: account,
+          transactionBalance: balance,
+          withdrawalAccountNo: "0019730654868483", // 임시 - 내 계좌 정보 필요
+          depositTransactionSummary: "string", // 임시
+          withdrawalTransactionSummary: "string" // 임시
+        }
+        const response = await accountTransfer(JsonData);
+        console.log(response)
+      }
+      catch (error) {
+        console.log(`에러: ${error}`)
+        Toast.show({
+          type: 'error',
+          text1: '송금 실패!',
+          text2: '입력 정보를 다시 확인해주세요'
+        })
+      }
+    } 
+
 
     /* 1차 - 전체 대상 송금 (연락처 없는 경우) : 송금시 필요한 계좌, 은행, 금액 입력 받는 화면 */
     const firstChange = (account:string, bank:string, balance:string) => {
@@ -110,23 +134,26 @@ const careTransfer = () => {
       setStep('3')
     }
 
-    /* 3차 - 핀번호 입력 화면 */
+    /* 3차 - 핀번호 입력 화면 후 송금 요청*/
     const thirdChange = (inputPin:string) => {
       if (inputPin == nowPin){
 
         // 금액 한도 제한 확인해야 함
         const limitCheck = parseInt(nowLimit) // 한도 기준 숫자 변환
         const balanceCheck = parseInt(balance) // 송금 금액 숫자 변환
-        if (balanceCheck > limitCheck){
+        if (balanceCheck > limitCheck){          
           Toast.show({
             type: 'error',
             text1: '송금 실패 - 한도 초과!',
             text2: '기준 금액 초과로 승인 허락 요청이 들어갔습니다'
           })
+          /* pending history에 보내는 요청 추가 */
           setStep('4')
 
         }
         else {
+          /* 계좌 이체 보내는 요청 추가 */ 
+          moneyGo(balanceCheck)
           Toast.show({
             type: 'success',
             text1: '송금 성공!',

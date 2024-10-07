@@ -5,6 +5,8 @@ import { useRouter } from 'expo-router';
 import Checkbox from 'expo-checkbox';
 import Toast from "react-native-toast-message";
 import CancelButton from "../CancelButton";
+import { account } from "../../../types/account";
+import { getAccountList } from "../../../services/api";
 
 const FamilyAccountList = () => {
 
@@ -12,14 +14,26 @@ const FamilyAccountList = () => {
 
     // 임시 대표 계좌 정보
     const [mainAccount, setMainAccount] = useState('');
-    // 임시 전체 계좌 정보
-    interface AccountItem {
-        id: string;
-        bank: string;
-        number: string;
-      }
-    // 임시 전체 계좌
-    const accountList : AccountItem [] = [{id:'1', bank:'신한은행', number:'11111111111'}, {id:'2', bank:'하나은행', number:'2222222222'}, {id:'3', bank:'국민은행', number:'33333333333'}]
+
+    // 계좌 목록 정보
+    const [accountList, setAccountList] = useState<account[]>([])
+
+    // 계좌 목록 요청 보내기
+    const accountRequest = async() => {
+        try {
+          const response = await getAccountList();
+          const answer = response.data.REC// 계좌목록
+          setAccountList(answer)
+        }
+        catch (error) {
+          console.log(`에러: ${error}`)
+        }
+      } 
+
+    // 처음 접속 시 실행
+    useEffect(() => {
+        accountRequest() // 계좌 목록 요청
+    },[])
 
     // 체크박스 표시
     const [accountChecked, setAccountChecked] = useState(Array(accountList.length).fill(false));
@@ -31,7 +45,7 @@ const FamilyAccountList = () => {
         for (let i = 0; i < accountList.length; i++){
         if (i == index){
             updateCheck[i] = true
-            setMainAccount(accountList[i]['number'])
+            setMainAccount(accountList[i]['accountNo'])
         }
         else {
             updateCheck[i] = false
@@ -40,6 +54,7 @@ const FamilyAccountList = () => {
         setAccountChecked(updateCheck)
     }
 
+    // ★ 메인 계좌 등록 요청 (요청 구현해야 함)
     const mainSelect = () => {
         console.log(mainAccount)
         console.log(accountChecked)
@@ -69,8 +84,8 @@ const FamilyAccountList = () => {
                                     </View>
                                 </TouchableOpacity>
                         </View> 
-                        <Text>{list.bank}</Text>
-                        <Text>{list.number}</Text>
+                        <Text>{list.bankName}</Text>
+                        <Text>{list.accountNo}</Text>
      
                     </View>
              
@@ -91,3 +106,13 @@ const FamilyAccountList = () => {
 }
 
 export default FamilyAccountList
+
+
+    // 임시 전체 계좌 정보
+    // interface AccountItem {
+    //     id: string;
+    //     bank: string;
+    //     number: string;
+    //   }
+    // 임시 전체 계좌
+    // const accountList : AccountItem [] = [{id:'1', bank:'신한은행', number:'11111111111'}, {id:'2', bank:'하나은행', number:'2222222222'}, {id:'3', bank:'국민은행', number:'33333333333'}]

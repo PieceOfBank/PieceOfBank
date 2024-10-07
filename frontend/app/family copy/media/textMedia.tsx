@@ -3,6 +3,8 @@ import { View, Text, ImageBackground, TextInput, SafeAreaView, Alert, Button, To
 import React, { useState, useEffect } from 'react';
 import Toast from "react-native-toast-message";
 import MessageEx from "../../../src/ui/components/Temporary/MessageEx";
+import { mediaPost } from "../../../src/services/api";
+import Header from "../../../src/ui/components/Header";
 
 const textMedia = () => {
 
@@ -10,16 +12,45 @@ const textMedia = () => {
     const [message, setMessage] = useState('')
 
     const [useEx, setUseEx] = useState('1')
-
+    const { mediaNo } = useLocalSearchParams()
+    
     /* 샘플로 텍스트 내용 변경 */
     const textChange = (text:string) => {
         setMessage(text)
         setUseEx('1')
         }
+    
+    const textPost = async() => {
+        try{
+            const transNo = Number(mediaNo)
+            const type = 'VOICE'
+            const content = '컨텐츠'
+            const JsonData = {
+                file:message
+              }
+              const response = await mediaPost(transNo, type, content, JsonData);
+              console.log(response)
+              Toast.show({
+                type: 'success',
+                text1: '미디어 보내기 성공!',
+                text2: '미디어가 정상적으로 보내졌습니다'
+              })
+            router.push('/family copy/familyMain')
+        }
+        catch(error){
+            console.log(error)
+            Toast.show({
+                type: 'error',
+                text1: '미디어 보내기 실패',
+                text2: '전송에 실패했습니다. 다시 확인해주세요.'
+              })
+        }
+    }
 
     if (useEx == '1'){
         return(
             <View className='flex-1'>
+                <Header />
                 <View className='flex-1 items-center'>
                 <View className='mt-16 mb-16 p-2 h-16 w-56 rounded-3xl bg-gray-300'>
                     <Text className='text-xl m-2 text-center font-bold'>메세지를 작성해주세요</Text>
@@ -38,7 +69,7 @@ const textMedia = () => {
                     >
                     <Text className='text-center font-bold'>추천 메세지</Text></TouchableOpacity>
                     <View className='flex-row my-3'>
-                    <TouchableOpacity className='m-2 py-2 px-4 bg-sky-400 rounded-3xl w-20' onPress={() => router.push('/family copy/familyMain')}>
+                    <TouchableOpacity className='m-2 py-2 px-4 bg-sky-400 rounded-3xl w-20' onPress={textPost}>
                             <Text className='text-white text-center'>보내기</Text>
                             </TouchableOpacity>
                     <TouchableOpacity className='m-2 py-2 px-4 bg-red-400 rounded-3xl w-20' onPress={() => router.push('/family copy/familyMain')}>

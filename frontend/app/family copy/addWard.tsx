@@ -4,6 +4,7 @@ import { useState } from "react";
 import Toast from 'react-native-toast-message';
 import CancelButton from "../../src/ui/components/CancelButton";
 import { useRouter} from 'expo-router';
+import { subscriptionPost } from "../../src/services/api";
 
 
 const AddWard = () => {
@@ -13,13 +14,29 @@ const AddWard = () => {
   const router = useRouter()
 
   /* 알림팝업 Logic */
-  const handleBtn = () => {
-    Toast.show({
-      type: 'success',
-      text1: '피보호자 등록 요청 완료',
-      text2: '피보호자의 수락 후 메인 서비스를 이용하실 수 있습니다! 👋'
-    })
-    router.push('/family copy/familyMain')
+  const subRequest = async() => {
+    try{
+      const JsonData = {
+        senderKey: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        receiverId: wardId
+      }
+      const response = await subscriptionPost(JsonData);
+      console.log(response)
+      Toast.show({
+        type: 'success',
+        text1: '피보호자 등록 요청 완료',
+        text2: '피보호자의 수락 후 메인 서비스를 이용하실 수 있습니다! 👋'
+      })
+      router.push('/family copy/familyMain')
+    }catch(error){
+      console.log(error)
+      Toast.show({
+        type: 'error',
+        text1: '피보호자 등록 요청 실패',
+        text2: '입력한 아이디를 다시 확인해주세요'
+      })
+    }
+
   }
 
   return (
@@ -29,10 +46,10 @@ const AddWard = () => {
         <View className='border bg-white border-gray-300 rounded-2xl p-5 mt-10 h-60'>
           <SafeAreaView>
             <Text className="mt-6 mb-2 pl-2">피보호자 아이디</Text>
-            <TextInput className="mt-1 mb-10 w-56 bg-white border border-gray-200 rounded-3xl" onChangeText={(id) => setWardId(id)}></TextInput>
+            <TextInput className="my-3 pl-3 mb-10 w-56 bg-white border border-gray-200 rounded-3xl" onChangeText={(id) => setWardId(id)}></TextInput>
           </SafeAreaView>
           <View className='flex-row justify-center items-center'>
-            <TouchableOpacity className='m-2 py-2 px-4 bg-sky-400 rounded-3xl' onPress={handleBtn}>
+            <TouchableOpacity className='m-2 py-2 px-4 bg-sky-400 rounded-3xl' onPress={subRequest}>
               <Text className='text-white'>요청 보내기</Text>
             </TouchableOpacity>
             <CancelButton />
