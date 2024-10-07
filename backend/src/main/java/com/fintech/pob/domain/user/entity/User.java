@@ -35,6 +35,9 @@ public class User {
     @Column(name = "subscription_type", nullable = false)
     private int subscriptionType;
 
+    @Column(name = "account_number", nullable = true)
+    private String accountNo;
+
     @PrePersist
     protected void onCreate() {
         this.created = LocalDateTime.now();
