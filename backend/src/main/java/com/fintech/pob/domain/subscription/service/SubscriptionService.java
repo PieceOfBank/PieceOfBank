@@ -16,6 +16,6 @@ public interface SubscriptionService {
     Subscription findByTargetUserKey(UUID userKey);
 
     Subscription update(UUID userKey);
-
+    List<Subscription> findAll();
     void delete(UUID userKey);
 }
