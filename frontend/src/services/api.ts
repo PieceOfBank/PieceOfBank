@@ -103,6 +103,13 @@ export const loginUser = async (email: Record<string, string>) => {
     }
 }
 
+// 4. logout
+export const logoutUser = () => {
+    return axiosClient.post(`/auth/logout`, {
+        headers:{'Requires-Auth': true }
+    });
+}
+
 /* JWT 코드 */
 // Interceptor - JWT 로직 (AccessToken & RefreshToken)
 axiosClient.interceptors.request.use(
@@ -255,8 +262,8 @@ export const addMoney = (data: Record<string, unknown>) => {
 export const mediaPost = (transNo:number, type:string, content:string, data:Record<string, unknown>) => {
     return axiosClient.post(`/media/upload`, data, {
         headers:{
-            transactionUniqueNo:transNo, 
-            type:type, 
+            transactionUniqueNo:73869, 
+            type:'VOICE', 
             content:content}
     })
 }

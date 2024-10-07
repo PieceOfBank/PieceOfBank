@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { styled } from 'nativewind';
 import { loginUser } from "../src/services/api";
 import Toast from "react-native-toast-message";
-
+import { mediaPost } from "../src/services/api";
 // MainPage
 
 export default function LoginScreen() {
@@ -41,6 +41,32 @@ const loginTry = async() => {
     console.log(`에러: ${error}`)
   }
 } 
+const textPost = async() => {
+  try{
+      const transNo = 73869
+      const type = 'VOICE'
+      const content = '컨텐츠'
+      const JsonData = {
+          file:'Thankyou!'
+        }
+        const response = await mediaPost(transNo, type, content, JsonData);
+        console.log(response)
+        Toast.show({
+          type: 'success',
+          text1: '미디어 보내기 성공!',
+          text2: '미디어가 정상적으로 보내졌습니다'
+        })
+      router.push('/family copy/familyMain')
+  }
+  catch(error){
+      console.log(error)
+      Toast.show({
+          type: 'error',
+          text1: '미디어 보내기 실패',
+          text2: '전송에 실패했습니다. 다시 확인해주세요.'
+        })
+  }
+}
 
   return (
     <ImageBackground source={require('../src/assets/POBbackGround.png')}
@@ -75,6 +101,11 @@ const loginTry = async() => {
           <Text className='my-2 text-xl'> | </Text>
           <Link className="my-2 text-xl" href={`/family copy/familyMain`}>보호자</Link>
         </View>
+        <TouchableOpacity 
+            className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
+            onPress={textPost}>
+                <Text className='text-white'>회원가입</Text>
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
