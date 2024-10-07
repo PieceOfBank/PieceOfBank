@@ -29,16 +29,11 @@ public class SubScriptionController {
     }
 
     @GetMapping("/find")
-    public ResponseEntity<Optional<Subscription>> getSubscription(HttpSession session) {
-        //  UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
+    public ResponseEntity<Subscription> getSubscription(@RequestHeader("Authorization") String token) {
 
         String key = (String) session.getAttribute("userKey");
         UUID userKey = UUID.fromString(key);
-
-
-        Optional<Subscription> subscriptions = subscriptionService.findByTargetUserKey(userKey);
-
-
+        Subscription subscriptions = subscriptionService.findByTargetUserKey(userKey);
         return ResponseEntity.ok(subscriptions);
     }
 
