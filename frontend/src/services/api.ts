@@ -60,22 +60,36 @@ interface makeDirectory{
 
 /* Login API 구현 */
 // 1. create
-export const createUser = (email: Record<string, string>) => {
-    return axiosClient.post(`/users/create`, email);
-}
-// 2. regist
-export const registUser = (newMember: Record<string, unknown>) => {
-    return axiosClient.post(`/users/regist`, newMember);
-}
+export const createUser = async (email: Record<string, string>) => {
+    try {
+        const response = await axiosClient.post(`/users/create`, email);
+        const userKey = response.data.userKey;
 
+        AsyncStorage.setItem('userKey', userKey);
+    }
+    catch (error) {
+        console.error(error);
+     }
+    
+}
+// 2. regist - userKey 추가 입력 후 회원가입
+export const registUser = async (newMember: Record<string, unknown>) => {
+    try {
+        const userKey = await AsyncStorage.getItem('userKey');
+        newMember = { ...newMember, 'userKey': userKey };
+        return axiosClient.post(`/users/regist`, newMember);
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 /* JWT 코드 */
 // Interceptor - JWT 로직 (AccessToken & RefreshToken)
 axiosClient.interceptors.request.use(
     async (config) => {
-        const user = await AsyncStorage.getItem("userId");
+        const userKey = await AsyncStorage.getItem("userKey");
 
-        if (!user) return config;
+        if (!userKey) return config;
 
         const accessToken = await AsyncStorage.getItem("accessToken");
 
@@ -102,9 +116,8 @@ axiosClient.interceptors.response.use(
 
             try {
                 const refreshToken = await AsyncStorage.getItem("refreshToken");
-                const response = await axiosClient.post('/auth/reissue', {}, {
-                    headers: { 'refresh': refreshToken }
-                });
+                // 재설정
+                const response = await axiosClient.post('/auth/refresh', {'refresh': refreshToken});
 
                 const newAccessToken = response.headers['authorization'];
                 console.log(response.headers);
@@ -119,7 +132,7 @@ axiosClient.interceptors.response.use(
 
             } catch (error) {
                 // 에러 발생 시 저장된 정보 삭제
-                await AsyncStorage.removeItem('userId');
+                await AsyncStorage.removeItem('userKey');
                 await AsyncStorage.removeItem('accessToken');
                 await AsyncStorage.removeItem('refreshToken');
             }
