@@ -23,12 +23,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@TestPropertySource(properties = {
-        "spring.jpa.hibernate.ddl-auto=none"
-})
 @Transactional
-@Rollback(false)
 public class NotificationServiceTest {
 
     @Autowired
@@ -40,9 +35,11 @@ public class NotificationServiceTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private NotificationTypeRepository notificationTypeRepository;
+
     private User sender;
     private User receiver;
-    private NotificationType notificationType;
 
     @BeforeEach
     public void setUp() {
@@ -70,15 +67,16 @@ public class NotificationServiceTest {
 
         userRepository.save(sender);
         userRepository.save(receiver);
-
-        notificationType = new NotificationType(null, "한도 초과 알림");
     }
 
     @Test
     public void testSendNotification() {
+        NotificationType notificationType = notificationTypeRepository.findByTypeName("한도 초과 알림")
+                .orElseThrow(() -> new IllegalArgumentException("NotificationType not found"));
+
         notificationService.sendNotification(sender.getUserKey(), receiver.getUserKey(), notificationType.getTypeName());
 
-        Optional<Notification> savedNotification = notificationRepository.findById(1L); // ID가 1인 알림을 찾습니다.
+        Optional<Notification> savedNotification = notificationRepository.findById(1L);
         assertNotNull(savedNotification);
         assertNotNull(savedNotification.get().getNotificationId());
         assertNotNull(savedNotification.get().getSenderUser());
