@@ -84,8 +84,23 @@ export const registUser = async (newMember: Record<string, unknown>) => {
 }
 
 // 3. login
-export const loginUser = (email: Record<string, string>) => {
-    return axiosClient.post(`/auth/login`, email);
+export const loginUser = async (email: Record<string, string>) => {
+    try {
+        const response = await axiosClient.post(`/auth/login`, email);
+        
+        // 로그인 후 서버에서 받은 accessToken을 저장
+        const accessToken = response.data.accessToken;
+        await AsyncStorage.setItem('accessToken', accessToken);
+
+        // 만약 refreshToken도 받는다면 저장
+        const refreshToken = response.data.refreshToken;
+        await AsyncStorage.setItem('refreshToken', refreshToken);
+
+        return response;
+
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 /* JWT 코드 */
@@ -123,8 +138,8 @@ axiosClient.interceptors.response.use(
                 const refreshToken = await AsyncStorage.getItem("refreshToken");
                 // 재설정
                 const response = await axiosClient.post('/auth/refresh', {'refresh': refreshToken});
-
-                const newAccessToken = response.headers['authorization'];
+                // 오타인지 확인..
+                const newAccessToken = response.headers['Authorization'];
                 console.log(response.headers);
 
                 originalRequest.headers.Authorization = `${newAccessToken}`;
