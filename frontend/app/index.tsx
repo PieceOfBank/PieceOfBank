@@ -32,7 +32,15 @@ const loginTry = async() => {
       text1: '로그인 성공!',
       text2: '로그인에 성공하였습니다'
     })
-    router.push('/mainpage')
+    // 구독 관계 1이면 보호자 페이지로 이동
+    if (response?.data['subscriptionType'] == 1) {
+      router.push('/family copy/familyMain')
+
+    } 
+    // 구독 관계 2이면 피보호자 페이지 이동
+    else if (response?.data['subscriptionType'] == 2) {
+      router.push('/ward/main')
+    }
   }
   catch (error) {
     Toast.show({
