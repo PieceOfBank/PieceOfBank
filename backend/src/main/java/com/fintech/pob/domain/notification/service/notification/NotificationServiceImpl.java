@@ -239,5 +239,24 @@ public class NotificationServiceImpl implements NotificationService {
                 .protectKey(notification.getReceiverUser().getUserKey())
                 .build();
     }
+
+    @Override
+    public void sendNotification(UUID senderKey, UUID receiverKey, String typeName) {
+        User senderUser = userRepository.findByUserKey(senderKey)
+                .orElseThrow(() -> new IllegalArgumentException("보내는 유저를 찾을 수 없습니다: " + senderKey));
+        User receiverUser = userRepository.findByUserKey(receiverKey)
+                .orElseThrow(() -> new IllegalArgumentException("받는 유저를 찾을 수 없습니다: " + receiverKey));
+        NotificationType type = notificationTypeRepository.findByTypeName(typeName)
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 알림 유형입니다: " + typeName));
+
+        Notification notification = Notification.builder()
+                .senderUser(senderUser)
+                .receiverUser(receiverUser)
+                .type(type)
+                .notificationStatus(NotificationStatus.UNREAD)
+                .build();
+
+        notificationRepository.save(notification);
+    }
 }
 
