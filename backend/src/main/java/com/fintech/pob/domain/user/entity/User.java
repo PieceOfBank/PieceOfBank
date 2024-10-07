@@ -17,6 +17,9 @@ public class User {
     @Column(name = "user_key", unique = true, nullable = false, updatable = false)
     private UUID userKey;
 
+    @Column(name = "user_id", nullable = false, length = 50)
+    private String userId;
+
     @Column(name = "user_name", nullable = false, length = 50)
     private String userName;
 

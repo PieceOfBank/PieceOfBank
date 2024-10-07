@@ -68,13 +68,12 @@ public class MediaController {
 
         if (media.isPresent()) {
             try {
-                // 미디어 경로를 가져옵니다.
                 String mediaUrl = media.get().getUrl();
                 Path filePath = Paths.get(mediaUrl);
 
 
 
-                Resource        resource = (Resource) new UrlResource(filePath.toUri());
+                Resource resource = (Resource) new UrlResource(filePath.toUri());
                if (resource.exists() || resource.isReadable()) {
 
                     String contentType = Files.probeContentType(filePath);

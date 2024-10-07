@@ -1,6 +1,6 @@
-package com.fintech.pob.domain.notification.dto;
+package com.fintech.pob.domain.notification.dto.transaction;
 
-import com.fintech.pob.domain.notification.entity.TransactionApprovalStatus;
+import com.fintech.pob.domain.notification.entity.transaction.TransactionApprovalStatus;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,4 +1,4 @@
-package com.fintech.pob.domain.notification.dto;
+package com.fintech.pob.domain.notification.dto.fcm;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

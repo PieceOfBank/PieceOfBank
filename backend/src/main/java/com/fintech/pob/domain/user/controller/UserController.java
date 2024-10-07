@@ -42,13 +42,14 @@ public class UserController {
     @PostMapping("/regist")
     public ResponseEntity<String> registUser(@RequestBody UserRequest userReqeust, HttpSession session) {
         String userKeyString = (String) session.getAttribute("userKey");
+//        String userKeyString = "b2f01678-938e-4358-bf71-7b0bedb48f71";
 
         if (userKeyString == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효한 세션이 아닙니다.");
         }
         try {
             UUID userkey = UUID.fromString(userKeyString);
-            localUserService.saveUser(userkey, userReqeust.getUserName(), userReqeust.getUserPassword(), userReqeust.getUserSubscriptionType());
+            localUserService.saveUser(userkey, userReqeust.getUserId(), userReqeust.getUserName(), userReqeust.getUserPassword(), userReqeust.getUserSubscriptionType());
             return ResponseEntity.ok("사용자 정보 저장 성공");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("사용자 정보 저장 실패");

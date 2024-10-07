@@ -17,12 +17,13 @@ public class DirectoryServiceImpl implements  DirectoryService{
     private final DirectoryRepository directoryRepository;
     private final UserRepository userRepository;
     @Override
-    public DirectoryRequestDto createDirectory(DirectoryRequestDto directoryDTO,UUID userKey) {
+    public DirectoryRequestDto createDirectory(DirectoryRequestDto directoryDTO,UUID userKey,String url) {
 
         Directory directory = new Directory();
         directory.setAccountNo(directoryDTO.getAccountNo());
         directory.setInstitutionCode(directoryDTO.getInstitutionCode());
         directory.setName(directoryDTO.getName());
+        directory.setUrl(url);
         directory.setUser(userRepository.findByUserKey(userKey).orElse(null));
 
         Directory savedDirectory = directoryRepository.save(directory);
@@ -41,6 +42,7 @@ public class DirectoryServiceImpl implements  DirectoryService{
             dto.setAccountNo(directory.getAccountNo());
             dto.setInstitutionCode(directory.getInstitutionCode());
             dto.setName(directory.getName());
+            dto.setUrl(directory.getUrl());
 
 
             directoryDtos.add(dto);
