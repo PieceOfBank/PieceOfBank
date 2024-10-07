@@ -48,7 +48,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
     @Override
     public List<Subscription> findAll() {
-        return findAll();
+        return subscriptionRepository.findAll();
     }
 
     @Override
@@ -56,5 +56,35 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
 //        Subscription subscription = subscriptionRepository.findOne(userKey);
 //        subscriptionRepository.delete(subscription);
+    }
+
+    @Override
+    public void setOneTimeTransferLimit(UUID userKey,Long limit) {
+
+        Subscription subscription  = subscriptionRepository.findByTargetUser_UserKey(userKey).orElse(null);
+        subscription.setOneTimeTransferLimit(limit);
+
+    }
+
+    @Override
+    public void setDailyTransferLimit(UUID userKey,Long limit) {
+
+        Subscription subscription  = subscriptionRepository.findByTargetUser_UserKey(userKey).orElse(null);
+        subscription.setDailyTransferLimit(limit);
+
+    }
+
+@Override
+    public Long getOneTimeTransferLimit(UUID userKey) {
+        Subscription subscription = subscriptionRepository.findByTargetUser_UserKey(userKey)
+                .orElseThrow(() -> new IllegalArgumentException("Subscription not found for userKey: " + userKey));
+        return subscription.getOneTimeTransferLimit();
+    }
+
+    @Override
+    public Long getDailyTransferLimit(UUID userKey) {
+        Subscription subscription = subscriptionRepository.findByTargetUser_UserKey(userKey)
+                .orElseThrow(() -> new IllegalArgumentException("Subscription not found for userKey: " + userKey));
+        return subscription.getDailyTransferLimit();
     }
 }
