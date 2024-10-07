@@ -33,7 +33,7 @@ public class AuthController {
     // 로그인 할 때 access 랑 refresh 둘다 발급
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authResquest) {
-        User user = localUserService.authenticate(authResquest.getUserName(), authResquest.getPassword());
+        User user = localUserService.authenticate(authResquest.getUserId(), authResquest.getPassword());
 
         if (user != null) {
             // access 토큰 생성
