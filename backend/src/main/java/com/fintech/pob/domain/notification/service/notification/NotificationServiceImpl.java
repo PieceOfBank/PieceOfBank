@@ -89,9 +89,19 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public Long requestExceedTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto) {
-        NotificationType notificationType = notificationTypeRepository.findByTypeName("거래 수락 요청 알림")
-                .orElseThrow(() -> new IllegalArgumentException("Notification Type not found"));
+    public Long requestTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto, String typeName) {
+        NotificationType notificationType;
+        if (typeName.equals("한도 초과 알림")) {
+            notificationType = notificationTypeRepository.findByTypeName("한도 초과 알림")
+                    .orElseThrow(() -> new IllegalArgumentException("한도 초과 알림 타입이 없습니다."));
+        } else if (typeName.equals("계좌 비활성 알림")) {
+            notificationType = notificationTypeRepository.findByTypeName("계좌 비활성 알림")
+                    .orElseThrow(() -> new IllegalArgumentException("계좌 비활성 알림 타입이 없습니다."));
+        }
+        else {
+            throw new IllegalArgumentException("잘못된 알림 타입입니다: " + typeName);
+        }
+
         User sender = userRepository.findByUserKey(transactionApprovalRequestDto.getSenderKey())
                 .orElseThrow(() -> new IllegalArgumentException("Sender not found"));
         User receiver = userRepository.findByUserKey(transactionApprovalRequestDto.getReceiverKey())
