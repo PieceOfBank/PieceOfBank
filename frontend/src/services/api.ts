@@ -63,8 +63,10 @@ interface makeDirectory{
 export const createUser = async (email: Record<string, string>) => {
     try {
         const response = await axiosClient.post(`/users/create`, email);
+        console.log("Hello" + response.data)
         const userKey = response.data.userKey;
         AsyncStorage.setItem('userKey', userKey);
+        return response;
     }
     catch (error) {
         console.error(error);
@@ -90,6 +92,8 @@ export const loginUser = async (email: Record<string, string>) => {
         
         // 로그인 후 서버에서 받은 accessToken을 저장
         const accessToken = response.data.accessToken;
+        console.log("### --- ###")
+        console.log(response.data)
         await AsyncStorage.setItem('accessToken', accessToken);
 
         // 만약 refreshToken도 받는다면 저장

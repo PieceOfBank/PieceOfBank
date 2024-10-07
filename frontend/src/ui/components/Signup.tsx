@@ -60,7 +60,7 @@ const SignupForm = () => {
         console.log(error)
         Toast.show({
           type: 'error',
-          text1: '이메일 인증에 실패했습니다.',
+          text1: '이메일 인증에 실패했습니다. 중복 아이디일 수도 있습니다.',
           text2: ':cry:'
         })
       }
