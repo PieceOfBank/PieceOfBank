@@ -25,6 +25,8 @@ public class LocalUserServiceImpl implements LocalUserService {
         user.setUserKey(userKey);
         user.setUserName(userName);
         user.setUserId(userId);
+
+        System.out.println(userId);
         user.setUserPassword(userPassword);
         user.setSubscriptionType(userSubscriptionType);
 
