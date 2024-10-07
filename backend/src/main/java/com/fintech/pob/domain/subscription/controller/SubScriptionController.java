@@ -5,6 +5,7 @@ import com.fintech.pob.domain.directory.entity.DirectoryRequestDto;
 import com.fintech.pob.domain.subscription.dto.SubscriptionRequestDto;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
+import com.fintech.pob.global.auth.jwt.JwtUtil;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class SubScriptionController {
     private final SubscriptionService subscriptionService;
+    private final JwtUtil jwtUtil;
 
 
     @PostMapping("/create")
@@ -28,10 +30,10 @@ public class SubScriptionController {
     }
 
     @GetMapping("/find")
-    public ResponseEntity<Subscription> getSubscription(HttpSession session) {
+    public ResponseEntity<Subscription> getSubscription(@RequestHeader("Authorization") String token) {
         //  UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
 
-        String key = (String) session.getAttribute("userKey");
+        String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
 
 
@@ -42,15 +44,5 @@ public class SubScriptionController {
     }
 
 
-//    @PutMapping("/update")
-//    public ResponseEntity<Subscription> updateSubscription(HttpSession session) {
-//        //  UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
-//
-//        String key = (String) session.getAttribute("userKey");
-//        UUID userKey = UUID.fromString(key);
-//
-//        List<Subscription> subscriptions = subscriptionService.findAll();
-//
-//      //  return ResponseEntity.ok(subscriptions);
-//    }
+
 }
