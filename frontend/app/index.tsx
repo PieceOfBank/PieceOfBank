@@ -5,6 +5,7 @@ import { styled } from 'nativewind';
 import { loginUser } from "../src/services/api";
 import Toast from "react-native-toast-message";
 import { mediaPost } from "../src/services/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // MainPage
 
 export default function LoginScreen() {
@@ -20,11 +21,12 @@ const [password, setPassword] = useState('');
 const loginTry = async() => {
   try {
     const JsonData = {
-      userName: id,
+      userId: id,
       password: password,
     }
     const response = await loginUser(JsonData);
-    console.log(response)
+    console.log(response?.data)
+    console.log(AsyncStorage.getItem("userKey"))
     Toast.show({
       type: 'success',
       text1: '로그인 성공!',
