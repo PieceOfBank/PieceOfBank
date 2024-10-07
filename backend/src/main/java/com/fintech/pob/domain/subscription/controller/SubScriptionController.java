@@ -31,15 +31,10 @@ public class SubScriptionController {
 
     @GetMapping("/find")
     public ResponseEntity<Subscription> getSubscription(@RequestHeader("Authorization") String token) {
-        //  UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
 
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
-
-
         Subscription subscriptions = subscriptionService.findByTargetUserKey(userKey);
-
-
         return ResponseEntity.ok(subscriptions);
     }
 
