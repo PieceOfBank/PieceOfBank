@@ -37,6 +37,28 @@ public class SubScriptionController {
         return ResponseEntity.ok(subscriptions);
     }
 
+    @PutMapping("/setOneTime")
+    public ResponseEntity<Subscription> setOneTimeTransferLimit(
+            @RequestHeader("Authorization") String token, @RequestParam Long newLimit) {
+
+        String key = (String) jwtUtil.extractUserKey(token);
+        UUID userKey = UUID.fromString(key);
+
+         subscriptionService.setOneTimeTransferLimit(userKey, newLimit);
+        return ResponseEntity.ok(null);
+
+    }
 
 
+    @PutMapping("/setDaily")
+    public ResponseEntity<Subscription> setDailyTransferLimit(
+            @RequestHeader("Authorization") String token, @RequestParam Long newLimit) {
+
+        String key = (String) jwtUtil.extractUserKey(token);
+        UUID userKey = UUID.fromString(key);
+
+        subscriptionService.setDailyTransferLimit(userKey, newLimit);
+        return ResponseEntity.ok(null);
+
+    }
 }
