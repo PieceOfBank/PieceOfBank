@@ -1,11 +1,13 @@
 package com.fintech.pob.domain.notification.controller;
 
+import com.fintech.pob.domain.notification.dto.expo.ExpoNotificationRequestDto;
 import com.fintech.pob.domain.notification.dto.fcm.FCMRequestDto;
 import com.fintech.pob.domain.notification.dto.notification.NotificationResponseDto;
 import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalRequestDto;
 import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalResponseDto;
 import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalRequestDto;
 import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalResponseDto;
+import com.fintech.pob.domain.notification.service.expo.ExpoService;
 import com.fintech.pob.domain.notification.service.fcm.FCMService;
 import com.fintech.pob.domain.notification.service.notification.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +28,12 @@ public class NotificationController {
 
     private final NotificationService notificationService;
     private final FCMService fcmService;
+    private final ExpoService expoService;
 
-    public NotificationController(NotificationService notificationService, FCMService fcmService) {
+    public NotificationController(NotificationService notificationService, FCMService fcmService, ExpoService expoService) {
         this.notificationService = notificationService;
         this.fcmService = fcmService;
+        this.expoService = expoService;
     }
 
     @GetMapping
@@ -110,12 +114,22 @@ public class NotificationController {
         return ResponseEntity.ok(notificationId);
     }
 
-    @PostMapping("/message")
-    public Mono<ResponseEntity<Integer>> pushMessage(@RequestBody @Validated FCMRequestDto notificationRequestDto) throws IOException {
+    @PostMapping("/fcmMessage")
+    public Mono<ResponseEntity<Integer>> pushFcmMessage(@RequestBody @Validated FCMRequestDto notificationRequestDto) throws IOException {
         log.debug("[+] 푸시 메시지를 전송합니다.");
         return fcmService.sendMessageTo(notificationRequestDto)
                 .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
                 .doOnError(e -> log.error("푸시 메시지 전송 중 에러 발생: {}", e.getMessage()))
                 .onErrorResume(e -> Mono.just(new ResponseEntity<>(0, HttpStatus.INTERNAL_SERVER_ERROR))); // 실패 시 500 응답, 0 반환
+    }
+
+    @PostMapping("/expoMessage")
+    public ResponseEntity<String> pushExpoMessage(@RequestBody @Validated ExpoNotificationRequestDto expoNotificationRequestDto) throws IOException {
+        try {
+            expoService.sendPushNotification(expoNotificationRequestDto);
+            return ResponseEntity.ok("푸시 알림이 성공적으로 전송되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("푸시 알림 전송에 실패했습니다: " + e.getMessage());
+        }
     }
 }
