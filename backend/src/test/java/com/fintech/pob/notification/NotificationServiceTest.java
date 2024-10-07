@@ -65,8 +65,8 @@ public class NotificationServiceTest {
         receiver.setUpdated(LocalDateTime.now());
         receiver.setSubscriptionType(2);
 
-        userRepository.save(sender);
-        userRepository.save(receiver);
+//        userRepository.save(sender);
+//        userRepository.save(receiver);
     }
 
     @Test
