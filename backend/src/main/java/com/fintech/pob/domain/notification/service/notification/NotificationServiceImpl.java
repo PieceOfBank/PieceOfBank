@@ -16,7 +16,7 @@ import com.fintech.pob.domain.notification.repository.notification.NotificationR
 import com.fintech.pob.domain.notification.repository.notification.NotificationTypeRepository;
 import com.fintech.pob.domain.notification.repository.subscription.SubscriptionApprovalRepository;
 import com.fintech.pob.domain.notification.repository.transaction.TransactionApprovalRepository;
-import com.fintech.pob.domain.pendingHistory.service.PendingHistoryService;
+import com.fintech.pob.domain.pendinghistory.service.PendingHistoryService;
 import com.fintech.pob.domain.subscription.dto.SubscriptionRequestDto;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.domain.user.entity.User;

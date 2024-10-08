@@ -1,4 +1,4 @@
-package com.fintech.pob.domain.pendingHistory.service;
+package com.fintech.pob.domain.pendinghistory.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fintech.pob.domain.account.dto.request.AccountTransferRequestDTO;
@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
+@Component
 @RequiredArgsConstructor
 public class PendingHistoryService {
 
