@@ -1,5 +1,8 @@
 package com.fintech.pob.domain.notification.dto.transaction;
 
+import com.fintech.pob.domain.account.dto.client.ClientAccountHistoryListRequestDTO;
+import com.fintech.pob.domain.account.dto.request.AccountHistoryListRequestDTO;
+import com.fintech.pob.global.header.dto.HeaderRequestDTO;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,4 +22,14 @@ public class TransactionApprovalRequestDto {
     private UUID receiverKey; // 보호자
     private String receiverName; // 이체를 받는 타인
     private Long amount; // 이체 금액
+
+    public static TransactionApprovalRequestDto of(UUID senderKey, UUID receiverKey, String receiverName, Long amount) {
+        return TransactionApprovalRequestDto.builder()
+                .senderKey(senderKey)
+                .receiverKey(receiverKey)
+                .receiverName(receiverName)
+                .amount(amount)
+                .build();
+    }
+
 }

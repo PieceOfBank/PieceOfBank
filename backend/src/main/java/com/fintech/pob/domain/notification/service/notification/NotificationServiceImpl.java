@@ -16,6 +16,7 @@ import com.fintech.pob.domain.notification.repository.notification.NotificationR
 import com.fintech.pob.domain.notification.repository.notification.NotificationTypeRepository;
 import com.fintech.pob.domain.notification.repository.subscription.SubscriptionApprovalRepository;
 import com.fintech.pob.domain.notification.repository.transaction.TransactionApprovalRepository;
+import com.fintech.pob.domain.pendingHistory.service.PendingHistoryService;
 import com.fintech.pob.domain.subscription.dto.SubscriptionRequestDto;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.domain.user.entity.User;
@@ -44,6 +45,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final UserRepository userRepository;
     private final SubscriptionApprovalRepository subscriptionApprovalRepository;
     private final SubscriptionService subscriptionService;
+    private final PendingHistoryService pendingHistoryService;
 
     @Override
     public List<NotificationResponseDto> getAllNotificationsByReceiverKey(UUID receiverKey) {
@@ -145,6 +147,8 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
         notificationRepository.save(notification);
 
+        pendingHistoryService.approvePendingHistory(transactionApprovalId);
+
         return TransactionApprovalResponseDto.builder()
                 .senderKey(notification.getSenderUser().getUserKey())
                 .receiverKey(notification.getReceiverUser().getUserKey())
@@ -162,6 +166,8 @@ public class NotificationServiceImpl implements NotificationService {
         transactionApprovalRepository.save(transactionApproval);
 
         Notification notification = transactionApproval.getNotification();
+
+        pendingHistoryService.refusePendingHistory(notification.getNotificationId());
 
         return TransactionApprovalResponseDto.builder()
                 .senderKey(notification.getSenderUser().getUserKey())

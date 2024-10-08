@@ -6,8 +6,9 @@ import com.fintech.pob.domain.account.dto.transfer.TransferCheckDTO;
 import com.fintech.pob.domain.account.service.transfer.TransferCheckResult;
 import com.fintech.pob.domain.account.service.transfer.TransferCheckService;
 import com.fintech.pob.domain.account.service.transfer.TransferEnumMapper;
+import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalRequestDto;
 import com.fintech.pob.domain.notification.service.notification.NotificationService;
-import com.fintech.pob.domain.pendinghistory.service.PendingHistoryService;
+import com.fintech.pob.domain.pendingHistory.service.PendingHistoryService;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
@@ -40,7 +41,7 @@ public class AccountService {
     @EventListener
     public void handleAccountTransferEvent(AccountTransferEvent event) {
         AccountTransferRequestDTO requestPayload = event.getRequestPayload();
-        updateAccountTransfer(requestPayload)
+        handlePendingHistory(requestPayload)
                 .doOnSuccess(response -> log.info("[Account Transfer Event] 계좌 이체 성공: " + response))
                 .doOnError(error -> log.error("[Account Transfer Event] 계좌 이체 중 오류 발생", error))
                 .subscribe();
@@ -110,8 +111,6 @@ public class AccountService {
         requestDTO.setHeader(header);
         requestDTO.setAccountNo(requestPayload.getAccountNo());
 
-        System.out.println(header);
-
         return webClient.post()
                 .uri("demandDeposit/inquireDemandDepositAccount")
                 .accept(MediaType.APPLICATION_JSON)
@@ -145,18 +144,24 @@ public class AccountService {
 
                                     if (checkResult != TransferCheckResult.SUCCESS) {
                                         // 알림 전송
+                                        UUID senderKey = UUID.fromString(header.getUserKey());
+                                        UUID receiverKey = subscriptionOptional.get().getProtectUser().getUserKey();
                                         String typeName = TransferEnumMapper.getNotificationMessage(checkResult);
-                                        long notiId = notificationService.sendNotification(UUID.fromString(header.getUserKey()), subscriptionOptional.get().getProtectUser().getUserKey(), typeName);
 
                                         if (checkResult == TransferCheckResult.LIMIT || checkResult == TransferCheckResult.INACTIVITY) {
                                             // pendingHistory 추가
+                                            TransactionApprovalRequestDto transactionApprovalRequestDto =
+                                                    TransactionApprovalRequestDto.of(senderKey, receiverKey, "???", requestPayload.getTransactionBalance());
+                                            Long notiId = notificationService.requestTransfer(transactionApprovalRequestDto, typeName);
                                             pendingHistoryService.savePendingHistory(notiId, requestPayload);
+                                        }
+                                        else {
+                                            notificationService.sendNotification(senderKey, receiverKey, typeName);
                                         }
                                         return Mono.error(new RuntimeException("Transfer failed: " + checkResult));
                                     }
 
                                     header.setApiName("updateDemandDepositAccountTransfer");
-
                                     ClientAccountTransferRequestDTO requestDTO = ClientAccountTransferRequestDTO.of(header, requestPayload);
 
                                     return webClient.post()
@@ -168,6 +173,20 @@ public class AccountService {
                                 });
                     });
         }
+
+        ClientAccountTransferRequestDTO requestDTO = ClientAccountTransferRequestDTO.of(header, requestPayload);
+
+        return webClient.post()
+                .uri("demandDeposit/updateDemandDepositAccountTransfer")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(requestDTO)
+                .retrieve()
+                .bodyToMono(ClientAccountTransferResponseDTO.class);
+    }
+
+    public Mono<ClientAccountTransferResponseDTO> handlePendingHistory(AccountTransferRequestDTO requestPayload) {
+        String userKey = request.getHeader("userKey");
+        HeaderRequestDTO header = headerService.createCommonHeader("updateDemandDepositAccountTransfer", userKey);
 
         ClientAccountTransferRequestDTO requestDTO = ClientAccountTransferRequestDTO.of(header, requestPayload);
 
