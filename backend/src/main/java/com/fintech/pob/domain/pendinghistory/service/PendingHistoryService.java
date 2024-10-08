@@ -11,12 +11,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-@Component
 @Service
+@Component
 @RequiredArgsConstructor
 public class PendingHistoryService {
 
@@ -24,7 +26,7 @@ public class PendingHistoryService {
     private final ApplicationEventPublisher eventPublisher;
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void savePendingHistory(long notificationId, AccountTransferRequestDTO requestPayload) {
+    public void savePendingHistory(Long notificationId, AccountTransferRequestDTO requestPayload) {
         String redisKey = "PendingHistory:" + notificationId;
 
         Map<String, String> pendingHistoryData = new HashMap<>();
@@ -38,12 +40,48 @@ public class PendingHistoryService {
             String redisValue = objectMapper.writeValueAsString(pendingHistoryData);
             redisTemplate.opsForList().rightPush(redisKey, redisValue);
             redisTemplate.expire(redisKey, 24, TimeUnit.HOURS);
+            //showPendingData();
         } catch (Exception e) {
             log.error("[PendingHistory 저장] 직렬화 오류", e);
         }
     }
 
-    public void acceptPendingHistory(long notificationId) {
+    public void showPendingData() {
+        String pattern = "PendingHistory:*"; // 검색할 키의 패턴
+
+        try {
+            Set<String> keys = redisTemplate.keys(pattern);
+
+            if (keys != null && !keys.isEmpty()) {
+                for (String redisKey : keys) {
+                    List<String> pendingHistoryList = redisTemplate.opsForList().range(redisKey, 0, -1);
+
+                    if (pendingHistoryList != null && !pendingHistoryList.isEmpty()) {
+                        System.out.println("Data for key: " + redisKey);
+                        for (String redisValue : pendingHistoryList) {
+
+                            Map<String, String> pendingHistoryData = objectMapper.readValue(redisValue, Map.class);
+
+                            System.out.println("Deposit Account No: " + pendingHistoryData.get("depositAccountNo"));
+                            System.out.println("Transaction Balance: " + pendingHistoryData.get("transactionBalance"));
+                            System.out.println("Withdrawal Account No: " + pendingHistoryData.get("withdrawalAccountNo"));
+                            System.out.println("Deposit Transaction Summary: " + pendingHistoryData.get("depositTransactionSummary"));
+                            System.out.println("Withdrawal Transaction Summary: " + pendingHistoryData.get("withdrawalTransactionSummary"));
+                            System.out.println("--------------------------------------------");
+                        }
+                    } else {
+                        System.out.println("No data found for key: " + redisKey);
+                    }
+                }
+            } else {
+                System.out.println("No pending history data found.");
+            }
+        } catch (Exception e) {
+            log.error("[PendingHistory 조회] 직렬화 오류", e);
+        }
+    }
+
+    public void approvePendingHistory(Long notificationId) {
         String redisKey = "PendingHistory:" + notificationId;
 
         try {
@@ -62,7 +100,7 @@ public class PendingHistoryService {
         }
     }
 
-    public void denyPendingHistory(long notificationId) {
+    public void refusePendingHistory(Long notificationId) {
         String redisKey = "PendingHistory:" + notificationId;
         deletePendingHistory(redisKey);
     }

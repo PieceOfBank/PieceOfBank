@@ -1,7 +1,9 @@
 package com.fintech.pob.domain.account.service.account;
 
 import com.fintech.pob.domain.account.dto.request.AccountTransferRequestDTO;
+import lombok.Getter;
 
+@Getter
 public class AccountTransferEvent {
     private final AccountTransferRequestDTO requestPayload;
 
@@ -9,7 +11,4 @@ public class AccountTransferEvent {
         this.requestPayload = requestPayload;
     }
 
-    public AccountTransferRequestDTO getRequestPayload() {
-        return requestPayload;
-    }
 }
