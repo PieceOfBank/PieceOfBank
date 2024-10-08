@@ -24,9 +24,13 @@ public class SubscriptionApproval {
     @Column(nullable = false)
     private SubscriptionApprovalStatus status; // 승인 상태
 
+    @Column(nullable = false)
+    private String requesterName;
+
     @Builder
-    public SubscriptionApproval(Notification notification, SubscriptionApprovalStatus status) {
+    public SubscriptionApproval(Notification notification, SubscriptionApprovalStatus status, String requesterName) {
         this.notification = notification;
         this.status = status;
+        this.requesterName = requesterName;
     }
 }

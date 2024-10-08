@@ -1,6 +1,7 @@
 package com.fintech.pob.domain.notification.service.notification;
 
 import com.fintech.pob.domain.notification.dto.notification.NotificationResponseDto;
+import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalKeyDto;
 import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalRequestDto;
 import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalResponseDto;
 import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalRequestDto;
@@ -45,14 +46,14 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public List<NotificationResponseDto> getAllNotificationsByReceiverKey(UUID receiverKey) {
         List<Notification> notifications = notificationRepository.findByReceiverUser_UserKey(receiverKey);
-        return notifications.stream().map(this::convertToDto).collect(Collectors.toList());
+        return notifications.stream().map(this::convertToNotificationDto).collect(Collectors.toList());
     }
 
     @Override
     public NotificationResponseDto getNotificationByNotificationId(Long notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 알림 내역이 없습니다."));
-        return convertToDto(notification);
+        return convertToNotificationDto(notification);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setNotificationStatus(NotificationStatus.READ);
         notification.setRead_at(LocalDateTime.now());
         notificationRepository.save(notification);
-        return convertToDto(notification);
+        return convertToNotificationDto(notification);
     }
 
     @Override
@@ -72,10 +73,10 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setNotificationStatus(NotificationStatus.DELETED);
         notification.setRead_at(LocalDateTime.now());
         notificationRepository.save(notification);
-        return convertToDto(notification);
+        return convertToNotificationDto(notification);
     }
 
-    private NotificationResponseDto convertToDto(Notification notification) {
+    private NotificationResponseDto convertToNotificationDto(Notification notification) {
         return NotificationResponseDto.builder()
                 .notificationId(notification.getNotificationId())
                 .senderKey(notification.getSenderUser().getUserKey())
@@ -211,6 +212,7 @@ public class NotificationServiceImpl implements NotificationService {
         // SubscriptionApproval 생성
         SubscriptionApproval subscriptionApproval = SubscriptionApproval.builder()
                 .notification(notification)
+                .requesterName(sender.getUserName())
                 .status(SubscriptionApprovalStatus.PENDING).build();
         SubscriptionApproval savedApproval = subscriptionApprovalRepository.save(subscriptionApproval);
 
@@ -218,8 +220,18 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public SubscriptionApprovalResponseDto getSubscriptionApprovalBySubscriptionId(Long subscriptionId) {
+        SubscriptionApproval subscriptionApproval = subscriptionApprovalRepository.findById(subscriptionId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 알림 내역이 없습니다."));
+
+        return SubscriptionApprovalResponseDto.builder()
+                .requesterName(subscriptionApproval.getRequesterName())
+                .build();
+    }
+
+    @Override
     @Transactional
-    public SubscriptionApprovalResponseDto approveSubscriptionRequest(Long subscriptionApprovalId) {
+    public SubscriptionApprovalKeyDto approveSubscriptionRequest(Long subscriptionApprovalId) {
         SubscriptionApproval subscriptionApproval = subscriptionApprovalRepository.findById(subscriptionApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Subscription Approval not found"));
         subscriptionApproval.setStatus(SubscriptionApprovalStatus.APPROVED);
@@ -229,14 +241,14 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
         notificationRepository.save(notification);
 
-        return SubscriptionApprovalResponseDto.builder()
+        return SubscriptionApprovalKeyDto.builder()
                 .targetKey(notification.getSenderUser().getUserKey())
                 .protectKey(notification.getReceiverUser().getUserKey())
                 .build();
     }
 
     @Override
-    public SubscriptionApprovalResponseDto refuseSubscriptionRequest(Long subscriptionApprovalId) {
+    public SubscriptionApprovalKeyDto refuseSubscriptionRequest(Long subscriptionApprovalId) {
         SubscriptionApproval subscriptionApproval = subscriptionApprovalRepository.findById(subscriptionApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Subscription Approval not found"));
         subscriptionApproval.setStatus(SubscriptionApprovalStatus.REFUSED);
@@ -244,7 +256,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         Notification notification = subscriptionApproval.getNotification();
 
-        return SubscriptionApprovalResponseDto.builder()
+        return SubscriptionApprovalKeyDto.builder()
                 .targetKey(notification.getSenderUser().getUserKey())
                 .protectKey(notification.getReceiverUser().getUserKey())
                 .build();
