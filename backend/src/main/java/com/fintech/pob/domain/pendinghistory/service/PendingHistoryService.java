@@ -36,15 +36,11 @@ public class PendingHistoryService {
         pendingHistoryData.put("depositTransactionSummary", requestPayload.getDepositTransactionSummary());
         pendingHistoryData.put("withdrawalTransactionSummary", requestPayload.getWithdrawalTransactionSummary());
 
-        System.out.println("---------------savePendingHistory--------------");
-        System.out.println(notificationId);
-        System.out.println("-----------------------------------------------");
-
         try {
             String redisValue = objectMapper.writeValueAsString(pendingHistoryData);
             redisTemplate.opsForList().rightPush(redisKey, redisValue);
-            redisTemplate.expire(redisKey, 2, TimeUnit.MINUTES);
-            showPendingData();
+            redisTemplate.expire(redisKey, 24, TimeUnit.HOURS);
+            //showPendingData();
         } catch (Exception e) {
             log.error("[PendingHistory 저장] 직렬화 오류", e);
         }
