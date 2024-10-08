@@ -102,12 +102,11 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void sendPushMessage(UUID receiverKey, String typeName) {
         String to = userTokenService.getUserTokenByUserKey(receiverKey);
-        String title = typeName;
         String content = getNotificationContent(typeName);
 
         ExpoNotificationRequestDto expoNotificationRequestDto = ExpoNotificationRequestDto.builder()
                 .to(to)
-                .title(title)
+                .title(typeName)
                 .content(content)
                 .build();
 
@@ -115,14 +114,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private String getNotificationContent(String typeName) {
-        switch (typeName) {
-            case "거래 내역 없음 알림":
-                return "연락 또는 이체를 해보는 건 어떨까요?";
-            case "잔액 부족 알림":
-                return "용돈을 드리는 건 어떨까요?";
-            default:
-                return null;
-        }
+        return switch (typeName) {
+            case "거래 내역 없음 알림" -> "연락 또는 이체를 해보는 건 어떨까요?";
+            case "잔액 부족 알림" -> "용돈을 드리는 건 어떨까요?";
+            default -> null;
+        };
     }
 }
 

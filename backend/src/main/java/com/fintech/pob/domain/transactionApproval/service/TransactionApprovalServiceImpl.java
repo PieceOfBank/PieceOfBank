@@ -84,12 +84,11 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
 
     private void sendPushMessage(UUID receiverKey, String typeName) {
         String to = userTokenService.getUserTokenByUserKey(receiverKey);
-        String title = typeName;
         String content = "거래 승인 알림이 도착했습니다!";
 
         ExpoNotificationRequestDto expoNotificationRequestDto = ExpoNotificationRequestDto.builder()
                 .to(to)
-                .title(title)
+                .title(typeName)
                 .content(content)
                 .build();
         expoService.sendPushNotification(expoNotificationRequestDto);
