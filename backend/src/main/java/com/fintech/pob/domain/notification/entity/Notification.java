@@ -17,11 +17,11 @@ public class Notification {
     private Long notificationId;
 
     @ManyToOne
-    @JoinColumn(name = "sender_key")
+    @JoinColumn(name = "sender_key", unique = false)
     private User senderUser;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_key")
+    @JoinColumn(name = "receiver_key", unique = false)
     private User receiverUser;
 
     @ManyToOne
