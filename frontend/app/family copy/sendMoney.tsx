@@ -7,6 +7,8 @@ import PinInfo from "../../src/ui/components/Temporary/PinCheck";
 import MediaConfirm from "../../src/ui/components/Temporary/MediaConfirm";
 import { accountTransfer } from "../../src/services/api";
 import Header from "../../src/ui/components/Header";
+import { useSelector } from "react-redux";
+import { RootState } from "../../src/store/store";
 
 /*
 일반 송금 후 미디어 송금 추가 요청 -> 송금 후 거래고유번호 받아와서 변수로 넘기기
@@ -14,7 +16,8 @@ import Header from "../../src/ui/components/Header";
 const sendMoney = () => {
 
   const params = useLocalSearchParams()
-  const {sendAccount, sendBank, sendName} = params
+  const { sendAccount, sendBank, sendName } = params
+  const myUserKey = useSelector((state: RootState) => state.getUserKey.userKey);
 
 
     /* 요청 보낼 정보 */
@@ -29,6 +32,7 @@ const sendMoney = () => {
   const pinInfo = () => {
     try{
       /* ★ 핀 번호 요청 보내는 내용 추가하기 ★ */
+
       setNowPin('111111') // 임시 핀번호
 
     } catch(error){

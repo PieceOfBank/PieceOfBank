@@ -33,7 +33,7 @@ const familyAdd = () => {
 
         
         // 알림 전체 조회
-        const notifyView = async() =>{
+        const notifyView = async() => {
             try{
                 const keyGet = await AsyncStorage.getItem("myKey");
 
@@ -45,6 +45,7 @@ const familyAdd = () => {
                 }
                 const response = await notifyList(data);
                 setConnectList(response.data)
+                console.log("관계 List")
                 console.log(response.data)
                 try{
                     setNameList(prevList => {
@@ -156,14 +157,19 @@ const familyAdd = () => {
         }
 
 
+    if (connectList == null || connectList == undefined)
+        return null;
+    
     return (
         <ImageBackground source={require('../../src/assets/POBbackGround.png')}
         className="flex-1">
         <Header />
         <View className='justify-center items-center h-4/5'>
               <Text className='text-2xl text-white font-bold my-2'>관계 맺기</Text>
+            
             <ScrollView className='flex-1'>
-                {connectList.map((list, index) => (
+                    {
+                        connectList.map((list, index) => (
                     <View key={index} className='w-80 h-12 p-2 m-2 flex-row bg-white justify-between rounded-3xl'>
                         <View className='m-1 ml-3'>
                             <Text>{list.created}</Text>
@@ -178,8 +184,9 @@ const familyAdd = () => {
                             >
                             <Text className='text-white text-center font-bold'>거절</Text></TouchableOpacity>
                         </View>
-                    </View>
-                ))}          
+                            </View>      
+                        ))
+                    }          
           </ScrollView>
           <CancelButton />
 

@@ -14,15 +14,22 @@ import { loginUser, sendExpoNotification, sendToken } from "../src/services/api"
 import Toast from "react-native-toast-message";
 import { mediaPost, createAccount, getAccount } from "../src/services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../src/store/store";
+import { setUserKey } from "../src/store/userKeySlice";
+import { login, setID, setPWD } from "../src/store/userSlice";
 // MainPage
 
 export default function LoginScreen() {
   const router = useRouter();
 
+  const dispatch = useDispatch();
   const myExpoToken = useSelector((state: RootState) => state.getToken.expoToken); // Store에서 token 가져오기
   const myUserKey = useSelector((state: RootState) => state.getUserKey.userKey);
+  
+  const myUserID = useSelector((state: RootState) => state.getUser.ID);
+  const myUserPWD = useSelector((state: RootState) => state.getUser.password);
+  
 
   // 로그인 요청 보낼 정보
   const [id, setId] = useState("");
@@ -38,8 +45,19 @@ export default function LoginScreen() {
         userId: id,
         password: password,
       };
+      
       const response = await loginUser(JsonData);
-      // const responseTwo = await sendToken(myUserKey!, myExpoToken!);
+
+      dispatch(setID(id));
+      dispatch(setPWD(password));
+      dispatch(login());
+      
+      const keyGet = await AsyncStorage.getItem("myKey");
+      const myKey = JSON.parse(keyGet!)
+      dispatch(setUserKey(myKey));
+      
+      await sendToken(myKey, myExpoToken!);
+
 
       Toast.show({
         type: "success",
@@ -88,35 +106,6 @@ export default function LoginScreen() {
       });
     }
   };
-
-  const sendNotifications = async () => {
-    try {
-
-      const testJSON = {
-        to: "ExponentPushToken[y-WvDPKcLDRWMk_i3egC76]",
-        title: "Test용 알림",
-        content : "안녕하세요",
-      }
-
-      const response = await sendExpoNotification(testJSON);
-
-      console.log(response);
-      Toast.show({
-        type: "success",
-        text1: "알림 보내기 성공!",
-        text2: "알림이 정상적으로 보내졌습니다",
-      });
-      
-    } catch (error) {
-      console.log(error);
-      Toast.show({
-        type: "error",
-        text1: "알람 보내기 실패",
-        text2: "알람 전송에 실패했습니다. 다시 확인해주세요.",
-      });
-    }
-  }
-
 
 const accountGo = async() => {
   try{
@@ -218,14 +207,6 @@ const moneyCheck = async() => {
           onPress={textPost}
         >
           <Text className="text-white">회원가입</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
-          onPress={sendNotifications}
-        >
-          <Text className="text-white">알람전송</Text>
-
         </TouchableOpacity>
         </TouchableOpacity>
       </View>
