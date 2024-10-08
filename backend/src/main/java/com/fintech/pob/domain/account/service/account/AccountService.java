@@ -11,6 +11,7 @@ import com.fintech.pob.domain.pendinghistory.service.PendingHistoryService;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
+import com.fintech.pob.global.header.service.HeaderService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ public class AccountService {
     private final SubscriptionService subscriptionService;
     private final PendingHistoryService pendingHistoryService;
     private final NotificationService notificationService;
+    private final HeaderService headerService;
 
     @EventListener
     public void handleAccountTransferEvent(AccountTransferEvent event) {
@@ -87,8 +89,9 @@ public class AccountService {
 
     public Mono<ClientAccountHistoryListResponseDTO> getAccountHistoryList(AccountHistoryListRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
-        System.out.println(header.toString());
-        header.setApiName("inquireTransactionHistoryList");
+        if(header.getApiName() != "inquireTransactionHistoryList") {
+            header = headerService.createCommonHeader("inquireTransactionHistoryList", header.getUserKey());
+        }
 
         ClientAccountHistoryListRequestDTO requestDTO = ClientAccountHistoryListRequestDTO.of(header, requestPayload);
 
@@ -132,9 +135,8 @@ public class AccountService {
                         ClientAccountDetailResponseDTO accountDeposit = tuple.getT1();
                         ClientAccountDetailResponseDTO accountWithdraw = tuple.getT2();
 
-                        TransferCheckDTO transferCheckDTO = TransferCheckDTO.of(header, requestPayload, accountDeposit, accountWithdraw);
-
-                        // 수정된 부분: checkTransfer 메서드를 리액티브하게 호출
+                        TransferCheckDTO transferCheckDTO = TransferCheckDTO.of(header.getUserKey(), requestPayload, accountDeposit, accountWithdraw);
+                        
                         return transferCheckService.checkTransfer(transferCheckDTO)
                                 .flatMap(checkResult -> {
                                     System.out.println("--------------------------------------");

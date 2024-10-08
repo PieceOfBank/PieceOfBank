@@ -8,6 +8,7 @@ import com.fintech.pob.domain.account.service.account.AccountHistoryListChecker;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
+import com.fintech.pob.global.header.service.HeaderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -22,10 +23,11 @@ public class TransferLimitChecker implements TransferChecker {
 
     private final SubscriptionService subscriptionService;
     private final AccountHistoryListChecker accountService;
+    private final HeaderService headerService;
 
     @Override
     public Mono<TransferCheckResult> check(TransferCheckDTO transferCheckDTO) {
-        String userKey = transferCheckDTO.getHeaderRequestDTO().getUserKey();
+        String userKey = transferCheckDTO.getUserKey();
         Optional<Subscription> subscriptionOptional = subscriptionService.findByTargetUserKey(UUID.fromString(userKey));
 
         AccountTransferRequestDTO requestPayload = transferCheckDTO.getRequestPayload();
@@ -49,8 +51,7 @@ public class TransferLimitChecker implements TransferChecker {
                     "DESC"
             );
 
-            HeaderRequestDTO header = transferCheckDTO.getHeaderRequestDTO();
-            header.setApiName("inquireTransactionHistoryList");
+            HeaderRequestDTO header = headerService.createCommonHeader("inquireTransactionHistoryList", userKey);
 
             return accountService.getAccountHistoryList(historyRequest, header)
                     .map(response -> {
