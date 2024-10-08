@@ -1,5 +1,6 @@
 package com.fintech.pob.domain.user.controller;
 
+import com.fintech.pob.domain.account.dto.request.AccountUpdateRequestDTO;
 import com.fintech.pob.domain.user.dto.request.CreateUserRequest;
 import com.fintech.pob.domain.user.dto.request.UserRequest;
 import com.fintech.pob.domain.user.service.LocalUserService;
@@ -7,10 +8,7 @@ import com.fintech.pob.domain.user.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -48,4 +46,14 @@ public class UserController {
         }
     }
 
+    @PatchMapping("/setPrimaryAccount")
+    public ResponseEntity<String> setPrimaryAccount(@RequestBody AccountUpdateRequestDTO request) {
+        try {
+            UUID userKey = UUID.fromString(request.getUserKey());
+            localUserService.updateAccountNo(userKey, request.getAccountNo());
+            return ResponseEntity.ok("대표 계좌 업데이트 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("대표 계좌 업데이트 실패: " + e.getMessage());
+        }
+    }
 }
