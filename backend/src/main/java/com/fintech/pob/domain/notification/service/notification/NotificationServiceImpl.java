@@ -16,6 +16,8 @@ import com.fintech.pob.domain.notification.repository.notification.NotificationR
 import com.fintech.pob.domain.notification.repository.notification.NotificationTypeRepository;
 import com.fintech.pob.domain.notification.repository.subscription.SubscriptionApprovalRepository;
 import com.fintech.pob.domain.notification.repository.transaction.TransactionApprovalRepository;
+import com.fintech.pob.domain.subscription.dto.SubscriptionRequestDto;
+import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.domain.user.entity.User;
 import com.fintech.pob.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationTypeRepository notificationTypeRepository;
     private final UserRepository userRepository;
     private final SubscriptionApprovalRepository subscriptionApprovalRepository;
+    private final SubscriptionService subscriptionService;
 
     @Override
     public List<NotificationResponseDto> getAllNotificationsByReceiverKey(UUID receiverKey) {
@@ -225,7 +228,18 @@ public class NotificationServiceImpl implements NotificationService {
         subscriptionApproval.setStatus(SubscriptionApprovalStatus.APPROVED);
         subscriptionApprovalRepository.save(subscriptionApproval);
 
+
+
+
+
         Notification notification = subscriptionApproval.getNotification();
+
+        // 수락시 저장하는 로직 - 정민
+        SubscriptionRequestDto subscriptionRequestDto = new SubscriptionRequestDto();
+        subscriptionRequestDto.setTargetKey(notification.getSenderUser().getUserKey());
+        subscriptionRequestDto.setUserKey(notification.getReceiverUser().getUserKey());
+        subscriptionService.create(subscriptionRequestDto);
+        
         notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
         notificationRepository.save(notification);
 
