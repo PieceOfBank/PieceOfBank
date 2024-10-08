@@ -45,7 +45,7 @@ const SignupForm = () => {
         email : email,
       }
       const response = await createUser(JsonData);
-      // console.log(response)
+      console.log(response)
       // const emailAnswer = response.data.split(':')[1].trim() // 응답값에서 토큰만 가져오기
       // console.log(emailAnswer)
       Toast.show({

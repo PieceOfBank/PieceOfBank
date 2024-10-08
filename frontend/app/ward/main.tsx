@@ -6,6 +6,8 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import WardListForm from "../../src/ui/components/WardList";
 import NowAccount from "../../src/ui/components/NowAccount";
 import SmallLogo from "../../src/assets/SmallLogo.png";
+import { mediaPost, createAccount, logoutUser } from "../../src/services/api";
+import Toast from "react-native-toast-message";
 
 
 interface CareItem {
@@ -16,6 +18,50 @@ interface CareItem {
 const caregiver = () => {
 
     const router = useRouter()
+
+    const accountGo = async() => {
+        try{
+      
+            const JsonData = {
+              "accountTypeUniqueNo": "001-1-e7e3f77e997c46"
+            }
+              const response = await createAccount(JsonData);
+              console.log(response)
+              Toast.show({
+                type: 'success',
+                text1: '계좌 생성 성공!',
+              })
+            // router.push('/family copy/familyMain')
+        }
+        catch(error){
+            console.log(error)
+            Toast.show({
+                type: 'error',
+                text1: '실패',
+              })
+        }
+      }
+
+      const logoutTry = async() => {
+        try{
+            const response = await logoutUser();
+            console.log(response)
+            Toast.show({
+              type: 'success',
+              text1: '로그아웃 성공!',
+              text2: '정상적으로 로그아웃 되었습니다'
+            })
+          router.push('/')
+      }
+      catch(error){
+          console.log(error)
+          Toast.show({
+              type: 'error',
+              text1: '로그아웃 실패',
+              text2: '정보를 다시 확인해주세요.'
+            })
+      }
+      }
 
     // 화면 가로고정
     useEffect(() => {
@@ -36,7 +82,7 @@ const caregiver = () => {
             <NowAccount />
             <TouchableOpacity 
                   className='w-24 h-8 m-5 rounded-3xl justify-center bg-gray-500'
-                  onPress={() => router.push('/')} 
+                  onPress={logoutTry} 
                   >
                 <Text className='text-center text-white'>로그아웃</Text></TouchableOpacity>
             </View>
@@ -47,6 +93,11 @@ const caregiver = () => {
             onPress={() => router.push('/ward/noticeCheck')}>
                 <Text className='text-white'>알림함</Text>
             </TouchableOpacity>
+            <TouchableOpacity 
+            className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
+            onPress={accountGo}>
+                <Text className='text-white'>계좌생성</Text>
+        </TouchableOpacity>
         </View>
         <View className='flex-1 items-center justify-center'>
             <WardListForm />

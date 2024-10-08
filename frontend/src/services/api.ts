@@ -2,6 +2,7 @@ import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { axiosClient } from './axios';
 import { account } from "../types/account";
+import { jwtDecode } from 'jwt-decode';
 
 /* Interface 명시 */
 
@@ -96,12 +97,18 @@ export const loginUser = async (email: Record<string, string>) => {
         // 로그인 후 서버에서 받은 accessToken을 저장
         const accessToken = response.data.accessToken;
         console.log("### --- ###")
-        console.log(response.data)
+        // console.log(response.data)
         await AsyncStorage.setItem('accessToken', accessToken);
 
         // 만약 refreshToken도 받는다면 저장
         const refreshToken = response.data.refreshToken;
         await AsyncStorage.setItem('refreshToken', refreshToken);
+        /* 유저정보 받아오기 */
+        const decoded = jwtDecode(accessToken);
+        const myKey = decoded.sub
+        // console.log('DDD')
+        // console.log(decoded)
+        await AsyncStorage.setItem('myKey', JSON.stringify(myKey))
 
         return response;
 
@@ -188,9 +195,29 @@ export const updateDirectory = (id: number) => {
         headers:{id:id}
     })
 }
+
+
+interface UserInfo {
+    userKey: string,
+    accountNo: string,
+    institutionCode: number,
+    name: string,
+    url: string
+  }
+  
+  interface UserDirectory {
+    directory: UserInfo;
+    file: string;
+  }
+
+
 // 2. 계좌 저장소 등록 - POST
-export const createDirectory = (data: Record<string, string>) => {
-    return axiosClient.post(`/directory/create`,)
+export const createDirectory = (data:any) => {
+    const accessToken = AsyncStorage.getItem("accessToken");
+    console.log(accessToken)
+    return axiosClient.post(`/directory/create`, data,{
+        headers:{ Authorization : `${accessToken}`}
+})
 }
 // 3. 계좌 저장소 조회 - GET
 export const getDirectory = (data: Record<string, string>) => {
@@ -224,21 +251,30 @@ export const deleteDirectory = (id: number) => {
 /* Account API */
 // 1. 계좌 생성 - POST @@@
 export const createAccount = (data: Record<string, string>) => {
+    const accessToken = AsyncStorage.getItem("accessToken");
+    console.log(accessToken)
     return axiosClient.post(`/account/client/createDemandDepositAccount`, data,{
-        headers:{userKey:"1cf012ec-c2bc-4d96-96c8-f311c883a3e7"}
+        
+            headers:{ Authorization : `${accessToken}`}
+        
     })
 }
 // 2. 계좌 목록 조회 ★★ - 빈 객체 넣어줘야 요청 잘 들어감
 export const getAccountList = () => {
-    return axiosClient.post(`/account/client/inquireDemandDepositAccountList`, {}, {
-        headers:{userKey:'ecef4aeb-27f7-4c5c-9e70-3d7fbfc9a1ad'}
-    })
+    const accessToken = AsyncStorage.getItem("accessToken");
+    console.log(accessToken)
+    return axiosClient.post(`/account/client/inquireDemandDepositAccountList`, {}, 
+        {
+            headers:{ Authorization : `${accessToken}`}
+        }
+
+)
 }
 
 // 3. 계좌 조회(단건) @@@
 export const getAccount = (data: Record<string, string>) => {
     return axiosClient.post(`/account/client/inquireDemandDepositAccount`, data, {
-        headers:{userKey:"ecef4aeb-27f7-4c5c-9e70-3d7fbfc9a1ad"}
+        headers:{userKey:"6d49bc32-c5ea-4ea7-9e62-a87e905a1a97"}
     })
 }
 // 4. 계좌 이체 
@@ -344,7 +380,7 @@ export const transferExpiry= () => {
 // 1. 보호 관계 요청 (보호자 → 피보호자)
 export const subscriptionPost = (data:Record<string,string>) => {
     return axiosClient.post(`/notification/subscriptions/request`, 
-        {params: data})
+        data)
 }
 
 // 2. 보호 관계 수락 (피보호자 → 보호자)
@@ -356,6 +392,24 @@ export const subscriptionApproval = (data:Record<string,string>) => {
 export const subscriptionRefusal= (data:Record<string,string>) => {
     return axiosClient.post(`/notification/subscriptions/refusal`, 
         {params: data})
+}
+// 4. 보호 관계 조회 
+export const subscriptionCheck= () => {
+    const accessToken = AsyncStorage.getItem("accessToken");
+    console.log(accessToken)
+    return axiosClient.get(`/subscriptions/find`,
+        {
+            headers:{ Authorization : `${accessToken}`}
+        }
+        
+    )
+}
+// 4. 보호 관계 생성 
+export const subscriptionCreate= (data:Record<string,string>) => {
+    const accessToken = AsyncStorage.getItem("accessToken");
+    console.log(accessToken)
+    return axiosClient.post(`/subscriptions/create`,data,
+    )
 }
 
 
@@ -374,7 +428,4 @@ export const subscriptionDelete = () => {
 export const subscriptionUpdate = () => {
     
 }
-// 5. 보호 관계 조회 - GET
-export const subscriptionGet = () => {
 
-}

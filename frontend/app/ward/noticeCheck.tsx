@@ -8,6 +8,7 @@ import Toast from "react-native-toast-message";
 import smallLogo from "../../src/assets/SmallLogo.png";
 import Header from "../../src/ui/components/Header";
 import CancelButton from "../../src/ui/components/CancelButton";
+import { notifyList } from "../../src/services/api";
 
 const noticeCheck = () => {
 
@@ -17,6 +18,7 @@ const noticeCheck = () => {
             await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
         };
         screenChange();
+
         return () => {
             ScreenOrientation.unlockAsync()
         }

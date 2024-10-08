@@ -2,9 +2,9 @@ import { Link, useRouter } from "expo-router";
 import { View, Text, ImageBackground, TextInput, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { styled } from 'nativewind';
-import { loginUser } from "../src/services/api";
+import { getAccount, loginUser } from "../src/services/api";
 import Toast from "react-native-toast-message";
-import { mediaPost } from "../src/services/api";
+import { mediaPost, createAccount } from "../src/services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // MainPage
 
@@ -78,6 +78,53 @@ const textPost = async() => {
   }
 }
 
+
+const accountGo = async() => {
+  try{
+
+      const JsonData = {
+        "accountTypeUniqueNo": "001-1-e7e3f77e997c46"
+      }
+        const response = await createAccount(JsonData);
+        console.log(response)
+        Toast.show({
+          type: 'success',
+          text1: '계좌 생성 성공!',
+        })
+      // router.push('/family copy/familyMain')
+  }
+  catch(error){
+      console.log(error)
+      Toast.show({
+          type: 'error',
+          text1: '실패',
+        })
+  }
+}
+
+const moneyCheck = async() => {
+  try{
+
+      const JsonData = {
+        "accountNo": "0013863865815253"
+      }
+        const response = await getAccount(JsonData);
+        console.log(response)
+        Toast.show({
+          type: 'success',
+          text1: '계좌 조회 성공!',
+        })
+      // router.push('/family copy/familyMain')
+  }
+  catch(error){
+      console.log(error)
+      Toast.show({
+          type: 'error',
+          text1: '실패',
+        })
+  }
+}
+
   return (
     <ImageBackground source={require('../src/assets/POBbackGround.png')}
       className="flex-1"
@@ -113,8 +160,13 @@ const textPost = async() => {
         </View>
         <TouchableOpacity 
             className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
-            onPress={textPost}>
-                <Text className='text-white'>회원가입</Text>
+            onPress={accountGo}>
+                <Text className='text-white'>계좌생성</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+            className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
+            onPress={moneyCheck}>
+                <Text className='text-white'>계좌확인</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>

@@ -5,7 +5,7 @@ import CancelButton from '../CancelButton';
 
 interface existsInfo {
     onChange: (inputBalance:string) => void;
-    name?: string
+    name: string | string[]
 }
 
 const TransferInput = ({ onChange, name } : existsInfo) => { 

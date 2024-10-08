@@ -95,7 +95,7 @@ const careTransfer = () => {
         const JsonData = {
           depositAccountNo: account,
           transactionBalance: balance,
-          withdrawalAccountNo: "0019730654868483", // 임시 - 내 계좌 정보 필요
+          withdrawalAccountNo: "0017290024363250", // 임시 - 내 계좌 정보 필요
           depositTransactionSummary: "string", // 임시
           withdrawalTransactionSummary: "string" // 임시
         }

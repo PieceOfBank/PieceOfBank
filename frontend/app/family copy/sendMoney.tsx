@@ -13,6 +13,10 @@ import Header from "../../src/ui/components/Header";
 */
 const sendMoney = () => {
 
+  const params = useLocalSearchParams()
+  const {sendAccount, sendBank, sendName} = params
+
+
     /* 요청 보낼 정보 */
     const [account, setAccount] = useState<string>(''); // 계좌번호
     const [bank, setBank] = useState<string>(''); // 은행  
@@ -37,9 +41,12 @@ const sendMoney = () => {
 
   /* 이체 */
   const moneyGo = async(balance:number) => {
+    console.log(sendAccount)
+    console.log(sendName)
+    console.log(sendBank)
   try {
     const JsonData = {
-      depositAccountNo: "0012224552208245",  // 임시 - 받는 계좌 정보
+      depositAccountNo: sendAccount,  // 임시 - 받는 계좌 정보
       transactionBalance: balance,
       withdrawalAccountNo: "0011474303166137", // 임시 - 내 계좌 정보 필요
       depositTransactionSummary: "string", // 임시
@@ -68,7 +75,7 @@ useEffect(() => {
     pinInfo()
 }, [])
     
-    const nowName = '임시이름'
+    const nowName = sendName
 
     /* 1차 - 연락처 대상 송금 : 송금시 필요한 금액 입력 받는 화면 & 계좌, 은행은 전달받은 정보 활용 */
     const existChange = (balance:string) => {

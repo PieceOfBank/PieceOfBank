@@ -3,7 +3,7 @@ import { View, Text, ImageBackground, TextInput, SafeAreaView, TouchableOpacity,
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { subscriptionGet } from "../../services/api";
+import { subscriptionCheck } from "../../services/api";
 import { directory } from "../../types/directory";
 
 const WardListForm = () => {
@@ -19,22 +19,44 @@ const WardListForm = () => {
     // }
 
     // 보호자 연결 상태 확인 - 1 : 연결 전 (보호자 요청 수락 페이지) / 2 : 연결 후 (기본 메인)
-    const [connect, setConnect] = useState(1);
+    const [connect, setConnect] = useState(false);
 
     // 보호자 연결 조회 (GET)
-    const connectCheck = async () => {
+    // const connectCheck = async () => {
 
-        try{
-            const response = await subscriptionGet();
-            // // ★ api 요청 & 응답 추가 - 보호자 연결 되어있으면 setConnect(2)
-            // if (response) {
-            //     setConnect(2)
-            // }
-        }catch (error){
+    //     try{
+    //         const response = await subscriptionCheck();
+    //         // // ★ api 요청 & 응답 추가 - 보호자 연결 되어있으면 setConnect(2)
+    //         // if (response) {
+    //         //     setConnect(2)
+    //         // }
+    //     }catch (error){
+    //         console.log(error)
+    //     }
+    // }
+
+    useEffect(() => {
+
+        // 구독 관계 있는지 확인
+        const subCheck = async() => {
+            try{
+            const response = await subscriptionCheck()
+            const checking = response.data
+            console.log('322')
+            console.log(response)
+            if (checking == null){
+                setConnect(false) // 없으면 등록 화면 보여주기
+            } else{
+                setConnect(true) // 있으면 관계 보여주기
+            }
+            } catch(error){
             console.log(error)
+            }
         }
-    }
-
+        subCheck() // 구독 관계 요청
+        
+        return () => {}
+        },[]);
     
      // 현재 페이지 기준
      const [nowPage, setNowPage] = useState(0)
@@ -69,14 +91,14 @@ const WardListForm = () => {
      const addList: directory = {userKey: "99", accountNo: "", institutionCode: 0, name: "전체 기록", url: "string"}
  
      // 임시 리스트 (전체 연락처 + 고정)
-     const allList : directory [] = (connect==2) 
+     const allList : directory [] = (connect==true) 
                                         ? [...careList, addList] 
                                         : [{userKey: "9999", accountNo: "", institutionCode: 0, name: "관계 맺기", url: "string"},
                                             addList
                                         ]
 
-     // 버튼 클릭시 이동 - 1이면 관계 등록 페이지 2이면 거래 내역 확인 페이지
-     const connectAdd = connect == 2 
+     // 버튼 클릭시 이동 - false면 관계 등록 페이지 true면 거래 내역 확인 페이지
+     const connectAdd = connect == true
      ? '/ward/transaction' 
      : '/ward/addFamily'
         
@@ -101,7 +123,7 @@ const WardListForm = () => {
              <Image className="w-[120px] sm:w-[90px] lg:w-[150px] h-[120px] sm:h-[90px] lg:h-[150px]" source={require('../../../assets/smile.png')}></Image>
              {/* <Image className="w-28 h-28 bg-teal-400 mt-4" source={require('../../../assets/smile.png')}></Image> */}
              {
-                (connect == 1)
+                (connect == false)
                 ?
                     (item.name == '전체 기록')
                     ?             

@@ -8,8 +8,15 @@ import Toast from "react-native-toast-message";
 import smallLogo from "../../src/assets/SmallLogo.png";
 import Header from "../../src/ui/components/Header";
 import CancelButton from "../../src/ui/components/CancelButton";
+import { notifyList, subscriptionCreate } from "../../src/services/api";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const familyAdd = () => {
+
+
+
+    const [connectList, setConnectList] = useState<ConnectItem[]>([]);
 
     // 화면 가로고정
     useEffect(() => {
@@ -17,6 +24,30 @@ const familyAdd = () => {
             await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
         };
         screenChange();
+
+        // 알림 전체 조회
+        const notifyView = async() =>{
+            try{
+                const keyGet = await AsyncStorage.getItem("myKey");
+
+                const myKey = JSON.parse(keyGet!)
+          
+                const data = {
+                // 나중에 userkey 어떻게 받아와서 넣어야 할까요? authorization 으로 되는지 확인하기
+                'receiverKey':myKey 
+                }
+                const response = await notifyList(data);
+                setConnectList(response.data)
+                console.log(response.data)
+            }
+            catch(error){
+                console.log(`에러: ${error}`)
+            }
+            }
+    
+            notifyView()
+
+
         return () => {
             ScreenOrientation.unlockAsync()
         }
@@ -29,19 +60,51 @@ const familyAdd = () => {
 
     // 임시 관계 요청자
     interface ConnectItem {
-        id: string;
-        name: string;
+        created: string, 
+        notificationId: number, 
+        notificationStatus: string, 
+        notificationType: string, 
+        readAt: null, 
+        receiverKey: string, 
+        senderKey: string
     }
 
-    // 임시 관계 요청 목록
-    const connectList : ConnectItem [] = [{id:'1', name:'영숙'}, {id:'2', name:'미숙'}, {id:'3', name:'정숙'}]
+    const subCreate = async() => {
 
+    }
+/*
+[{"created": "2024-10-07T17:32:38.286974", "notificationId": 11, "notificationStatus": "UNREAD", "notificationType": "구독  
+신청 알림", "readAt": null, "receiverKey": "c86cb677-4e29-4ede-9b0d-b159101a8cc5", "senderKey": "0573c1ee-0953-493c-a015-8905a524bfbe"}]
+*/
+    // 임시 관계 요청 목록
+    // const connectList : ConnectItem [] = [{id:'1', name:'영숙'}, {id:'2', name:'미숙'}, {id:'3', name:'정숙'}]
     // 요청 수락
     const checkAccept = (index:number, name:string) => {
         for (let i = 0; i < connectList.length; i++){
         if (i == index){
-            const familyName : string = connectList[i]['name']
+            const userKey : string = connectList[i]['receiverKey']
+            const targetKey : string = connectList[i]['senderKey']
             // 요청 보내기
+            
+
+            const subCreate = async() => {
+                try{
+                // 나중에 userkey 어떻게 받아와서 넣어야 할까요? authorization 으로 되는지 확인하기
+                
+                
+                const JsonData = {
+                    "userKey": userKey,
+                    "targetKey": targetKey
+                }
+                const response = await subscriptionCreate(JsonData);
+                console.log(response)
+                } catch(error){
+                    console.log(error)
+                }
+            }
+            subCreate()
+
+
             Toast.show({
                 type: 'success',
                 text1: `${name}님과의 관계 설정이 완료되었습니다.`,
@@ -56,7 +119,7 @@ const familyAdd = () => {
     const checkReject = (index:number, name:string) => {
         for (let i = 0; i < connectList.length; i++){
         if (i == index){
-            const familyName : string = connectList[i]['name']
+            const familyName : string = connectList[i]['created']
             // 요청 보내기
             Toast.show({
                 type: 'info',
@@ -78,15 +141,15 @@ const familyAdd = () => {
                 {connectList.map((list, index) => (
                     <View key={index} className='w-80 h-12 p-2 m-2 flex-row bg-white justify-between rounded-3xl'>
                         <View className='m-1 ml-3'>
-                            <Text>{list.name}</Text>
+                            <Text>{list.created}</Text>
                         </View>
                         <View className='flex-row mx-2'>
                             <TouchableOpacity className='w-16 h-8 mx-1 rounded-3xl justify-center bg-sky-500'
-                            onPress={()=> checkAccept(index, list.name)} 
+                            onPress={()=> checkAccept(index, list.created)} 
                             >
                             <Text className='text-white text-center font-bold'>수락</Text></TouchableOpacity>
                             <TouchableOpacity className='w-16 h-8 mx-1 rounded-3xl justify-center bg-red-500'
-                            onPress={() => checkReject(index, list.name)}
+                            onPress={() => checkReject(index, list.created)}
                             >
                             <Text className='text-white text-center font-bold'>거절</Text></TouchableOpacity>
                         </View>

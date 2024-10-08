@@ -7,6 +7,7 @@ import Toast from "react-native-toast-message";
 import CancelButton from "./CancelButton";
 import { account } from "../../types/account";
 import { getAccountList } from "../../services/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const WardAllAccount = () => {
 
@@ -23,6 +24,7 @@ const WardAllAccount = () => {
         try {
           const response = await getAccountList();
           const answer = response.data.REC // 계좌목록
+          console.log(response)
           setAccountList(answer)
         }
         catch (error) {

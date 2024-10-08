@@ -2,6 +2,7 @@ import { View, Text, Button, ImageBackground, Alert, TextInput, TouchableOpacity
 import { useRouter, Link, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import CancelButton from '../CancelButton';
+import { createDirectory } from '../../../services/api';
 
 interface existsInfo {
     onChange: (inputBalance:string) => void;
@@ -16,6 +17,52 @@ const ObjectInput = () => {
     const [account, setAccount] = useState('')
 
     const router = useRouter()
+
+    const directoryGo = async() => {
+      try{
+        // 나중에 userkey 어떻게 받아와서 넣어야 할까요? authorization 으로 되는지 확인하기
+        
+        // interface UserInfo {
+        //   userKey: string,
+        //   accountNo: string,
+        //   institutionCode: number,
+        //   name: string,
+        //   url: string
+        // }
+        
+        // interface UserDirectory {
+        //   directory: UserInfo;
+        //   file: string;
+        // }
+
+        const userInfo = {
+          userKey: "aaf1e84e-ba2d-4263-a581-b9a7e5582982",
+          accountNo: "0016893582615978",
+          institutionCode: 0,
+          name: "test",
+          url: "test"
+        }
+
+        // const imageInfo = {
+
+        // }
+        const JsonData = {
+          directory: {
+            userKey: "aaf1e84e-ba2d-4263-a581-b9a7e558298",
+            accountNo: "0019312432084644",
+            institutionCode: 0,
+            name: "qkqkqk",
+            url: "test"
+          },
+          file: "string"
+        }
+        console.log(JsonData)
+        const response = await createDirectory(JsonData);
+        console.log(response)
+        } catch(error){
+            console.log(error)
+        }
+    }
     
      return(
         <View className='justify-center items-center p-4'>
@@ -53,7 +100,7 @@ const ObjectInput = () => {
         <View className='flex-row mt-2'>
           <TouchableOpacity 
             className='m-2 py-2 px-4 bg-red-400 rounded-3xl bg-sky-500'
-            onPress={() => router.push('/family copy/DirectoryList')} 
+            onPress={directoryGo} 
             >
             <Text className='text-white text-center font-bold'>설정 완료</Text></TouchableOpacity>
             <CancelButton />

@@ -5,7 +5,7 @@ import Toast from 'react-native-toast-message';
 import CancelButton from "../../src/ui/components/CancelButton";
 import { useRouter} from 'expo-router';
 import { subscriptionPost } from "../../src/services/api";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddWard = () => {
   const [wardId, setWardId] = useState<string>("");
@@ -16,8 +16,14 @@ const AddWard = () => {
   /* 알림팝업 Logic */
   const subRequest = async() => {
     try{
+      const keyGet = await AsyncStorage.getItem("myKey");
+
+      const myKey = JSON.parse(keyGet!)
+
+
+      // 나중에 userkey 어떻게 받아와서 넣어야 할까요? authorization 으로 되는지 확인하기
       const JsonData = {
-        senderKey: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        senderKey: myKey, 
         receiverId: wardId
       }
       const response = await subscriptionPost(JsonData);
