@@ -6,11 +6,12 @@ import com.fintech.pob.domain.account.dto.transfer.TransferCheckDTO;
 import com.fintech.pob.domain.account.service.transfer.TransferCheckResult;
 import com.fintech.pob.domain.account.service.transfer.TransferCheckService;
 import com.fintech.pob.domain.account.service.transfer.TransferEnumMapper;
-import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalRequestDto;
-import com.fintech.pob.domain.notification.service.notification.NotificationService;
+import com.fintech.pob.domain.notification.service.NotificationService;
 import com.fintech.pob.domain.pendinghistory.service.PendingHistoryService;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
+import com.fintech.pob.domain.transactionApproval.dto.TransactionApprovalRequestDto;
+import com.fintech.pob.domain.transactionApproval.service.TransactionApprovalService;
 import com.fintech.pob.domain.user.entity.User;
 import com.fintech.pob.domain.user.service.LocalUserService;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
@@ -41,6 +42,7 @@ public class AccountService {
     private final HeaderService headerService;
     private final AccountClientService accountClientService;
     private final LocalUserService localUserService;
+    private final TransactionApprovalService transactionApprovalService;
 
     @EventListener
     public void handleAccountTransferEvent(AccountTransferEvent event) {
@@ -164,7 +166,7 @@ public class AccountService {
                                             User receiver = accountClientService.findByAccountNo(requestPayload.getDepositAccountNo()).getUser();
                                             TransactionApprovalRequestDto transactionApprovalRequestDto =
                                                     TransactionApprovalRequestDto.of(senderKey, receiverKey, receiver.getUserName(), requestPayload.getTransactionBalance());
-                                            Long notiId = notificationService.requestTransfer(transactionApprovalRequestDto, typeName);
+                                            Long notiId = transactionApprovalService.requestTransfer(transactionApprovalRequestDto, typeName);
                                             pendingHistoryService.savePendingHistory(notiId, requestPayload);
                                         }
                                         else {

@@ -28,10 +28,11 @@ public class HeaderInterceptor implements HandlerInterceptor {
         }
         request.setAttribute("accessInterceptor", true);
 
-        String token = request.getHeader("Authorization");
+        //String token = request.getHeader("Authorization");
         String apiName = request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/") + 1);
 
-        String userKey = jwtUtil.extractUserKey(token);
+        //String userKey = jwtUtil.extractUserKey(token);
+        String userKey = request.getHeader("userKey");
 
         HeaderRequestDTO header = headerService.createCommonHeader(apiName, userKey);
         request.setAttribute("header", header);
