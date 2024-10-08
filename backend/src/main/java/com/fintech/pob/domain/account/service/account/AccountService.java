@@ -6,7 +6,7 @@ import com.fintech.pob.domain.account.dto.transfer.TransferCheckDTO;
 import com.fintech.pob.domain.account.service.transfer.TransferCheckResult;
 import com.fintech.pob.domain.account.service.transfer.TransferCheckService;
 import com.fintech.pob.domain.account.service.transfer.TransferEnumMapper;
-import com.fintech.pob.domain.notification.service.notification.NotificationService;
+import com.fintech.pob.domain.notification.service.NotificationService;
 import com.fintech.pob.domain.pendinghistory.service.PendingHistoryService;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
