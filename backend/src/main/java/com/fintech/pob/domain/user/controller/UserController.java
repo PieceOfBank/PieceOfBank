@@ -37,7 +37,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/register")
+    @PostMapping("/regist")
     public ResponseEntity<String> registerUser(@RequestBody UserRequest userRequest) {
         try {
             UUID userKey = UUID.fromString(userRequest.getUserKey());
