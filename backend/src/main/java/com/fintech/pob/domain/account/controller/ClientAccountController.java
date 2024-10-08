@@ -56,7 +56,6 @@ public class ClientAccountController {
         return accountService.getAccountList()
                 .map(accountListResponse -> {
                     List<ClientAccountListResponseDTO.Record> sortedAccountList;
-
                     if (accountNo != null && !accountNo.isEmpty()) {
                         sortedAccountList = accountListResponse.getRec().stream()
                                 .sorted((record1, record2) -> {
