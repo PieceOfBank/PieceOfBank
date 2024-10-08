@@ -8,6 +8,8 @@ import NowAccount from "../../src/ui/components/NowAccount";
 import SmallLogo from "../../src/assets/SmallLogo.png";
 import { mediaPost, createAccount, logoutUser } from "../../src/services/api";
 import Toast from "react-native-toast-message";
+import { useDispatch } from "react-redux";
+import { logout } from "../../src/store/userSlice";
 
 
 interface CareItem {
@@ -18,6 +20,8 @@ interface CareItem {
 const caregiver = () => {
 
     const router = useRouter()
+    const dispatch = useDispatch();
+
 
     const accountGo = async() => {
         try{
@@ -45,7 +49,10 @@ const caregiver = () => {
       const logoutTry = async() => {
         try{
             const response = await logoutUser();
+
             console.log(response)
+            dispatch(logout());
+            
             Toast.show({
               type: 'success',
               text1: '로그아웃 성공!',

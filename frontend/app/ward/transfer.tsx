@@ -99,7 +99,7 @@ const careTransfer = () => {
   const moneyGo = async (balance: number) => {
     try {
       const JsonData = {
-        depositAccountNo: account,
+        depositAccountNo: account, // 상대방 계좌
         transactionBalance: balance,
         withdrawalAccountNo: "0019730654868483", // 임시 - 내 계좌 정보 필요
         depositTransactionSummary: "string", // 임시
@@ -171,7 +171,7 @@ const careTransfer = () => {
       } else {
         /* 계좌 이체 보내는 요청 추가 */
         moneyGo(balanceCheck);
-        const remainderMoney = await getMoney();
+        const remainderMoney = await getMoney(); 
         checkBalanceAndNotify(remainderMoney);
         Toast.show({
           type: "success",

@@ -9,9 +9,12 @@ import smallLogo from "../../src/assets/SmallLogo.png";
 import mail from '../../src/assets/mail.png'
 import Toast from "react-native-toast-message";
 import { logoutUser, subscriptionCheck } from "../../src/services/api";
+import { useDispatch } from "react-redux";
+import { logout } from "../../src/store/userSlice";
 
 const FamilyMain = () => {
 
+  const dispatch = useDispatch();
 
   /* 내가 보호자인 경우, 피보호자를 가져온다. */
   const [flag, setFlag] = useState(false)
@@ -20,8 +23,11 @@ const FamilyMain = () => {
 
   const logoutTry = async() => {
     try{
-        const response = await logoutUser();
-        console.log(response)
+      const response = await logoutUser();
+      
+      console.log(response)
+      dispatch(logout());
+      
         Toast.show({
           type: 'success',
           text1: '로그아웃 성공!',
