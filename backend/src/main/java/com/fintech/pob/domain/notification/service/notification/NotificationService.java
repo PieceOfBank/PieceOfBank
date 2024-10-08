@@ -1,6 +1,7 @@
 package com.fintech.pob.domain.notification.service.notification;
 
 import com.fintech.pob.domain.notification.dto.notification.NotificationResponseDto;
+import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalKeyDto;
 import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalRequestDto;
 import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalResponseDto;
 import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalRequestDto;
@@ -19,7 +20,8 @@ public interface NotificationService {
     TransactionApprovalResponseDto refuseTransferRequest(Long transactionApprovalId);
     TransactionApprovalResponseDto expireTransferRequest(Long transactionApprovalId);
     Long requestSubscription(SubscriptionApprovalRequestDto subscriptionApprovalRequestDto);
-    SubscriptionApprovalResponseDto approveSubscriptionRequest(Long subscriptionApprovalId);
-    SubscriptionApprovalResponseDto refuseSubscriptionRequest(Long subscriptionApprovalId);
+    SubscriptionApprovalResponseDto getSubscriptionApprovalBySubscriptionId(Long subscriptionId);
+    SubscriptionApprovalKeyDto approveSubscriptionRequest(Long subscriptionApprovalId);
+    SubscriptionApprovalKeyDto refuseSubscriptionRequest(Long subscriptionApprovalId);
     Long sendNotification(UUID senderKey, UUID receiverKey, String typeName);
 }

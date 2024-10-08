@@ -3,6 +3,7 @@ package com.fintech.pob.domain.notification.controller;
 import com.fintech.pob.domain.notification.dto.expo.ExpoNotificationRequestDto;
 import com.fintech.pob.domain.notification.dto.fcm.FCMRequestDto;
 import com.fintech.pob.domain.notification.dto.notification.NotificationResponseDto;
+import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalKeyDto;
 import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalRequestDto;
 import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalResponseDto;
 import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalRequestDto;
@@ -93,15 +94,21 @@ public class NotificationController {
         return ResponseEntity.ok(subscriptionApprovalId);
     }
 
-    @PatchMapping("/subscriptions/approval")
-    public ResponseEntity<SubscriptionApprovalResponseDto> approveSubscriptionRequest(@RequestBody Long subscriptionApprovalId) {
-        SubscriptionApprovalResponseDto subscriptionApprovalResponseDto = notificationService.approveSubscriptionRequest(subscriptionApprovalId);
+    @GetMapping("subscriptions/{subscriptionId}")
+    public ResponseEntity<SubscriptionApprovalResponseDto> getSubscriptionApprovalBySubscriptionId(@PathVariable("subscriptionId") Long subscriptionId) {
+        SubscriptionApprovalResponseDto subscriptionApprovalResponseDto = notificationService.getSubscriptionApprovalBySubscriptionId(subscriptionId);
         return ResponseEntity.ok(subscriptionApprovalResponseDto);
     }
 
+    @PatchMapping("/subscriptions/approval")
+    public ResponseEntity<SubscriptionApprovalKeyDto> approveSubscriptionRequest(@RequestBody Long subscriptionApprovalId) {
+        SubscriptionApprovalKeyDto subscriptionApprovalKeyDto = notificationService.approveSubscriptionRequest(subscriptionApprovalId);
+        return ResponseEntity.ok(subscriptionApprovalKeyDto);
+    }
+
     @PatchMapping("/subscriptions/refusal")
-    public ResponseEntity<SubscriptionApprovalResponseDto> refuseSubscriptionRequest(@RequestBody Long subscriptionApprovalId) {
-        SubscriptionApprovalResponseDto subscriptionApprovalResponseDto = notificationService.refuseSubscriptionRequest(subscriptionApprovalId);
+    public ResponseEntity<SubscriptionApprovalKeyDto> refuseSubscriptionRequest(@RequestBody Long subscriptionApprovalId) {
+        SubscriptionApprovalKeyDto subscriptionApprovalResponseDto = notificationService.refuseSubscriptionRequest(subscriptionApprovalId);
         return ResponseEntity.ok(subscriptionApprovalResponseDto);
     }
 

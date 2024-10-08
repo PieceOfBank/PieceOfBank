@@ -10,6 +10,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SubscriptionApprovalResponseDto {
-    private String requesterName;
+public class SubscriptionApprovalKeyDto {
+    private UUID targetKey;
+    private UUID protectKey;
 }
