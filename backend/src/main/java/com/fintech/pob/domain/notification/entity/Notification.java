@@ -1,4 +1,4 @@
-package com.fintech.pob.domain.notification.entity.notification;
+package com.fintech.pob.domain.notification.entity;
 
 import com.fintech.pob.domain.user.entity.User;
 import jakarta.persistence.*;

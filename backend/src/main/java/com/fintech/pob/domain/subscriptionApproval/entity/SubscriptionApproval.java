@@ -1,7 +1,7 @@
-package com.fintech.pob.domain.notification.entity.subscription;
+package com.fintech.pob.domain.subscriptionApproval.entity;
 
 
-import com.fintech.pob.domain.notification.entity.notification.Notification;
+import com.fintech.pob.domain.notification.entity.Notification;
 import jakarta.persistence.*;
 import lombok.*;
 

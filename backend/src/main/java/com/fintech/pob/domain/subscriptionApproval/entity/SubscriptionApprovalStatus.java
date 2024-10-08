@@ -1,4 +1,4 @@
-package com.fintech.pob.domain.notification.entity.subscription;
+package com.fintech.pob.domain.subscriptionApproval.entity;
 
 public enum SubscriptionApprovalStatus {
     PENDING,

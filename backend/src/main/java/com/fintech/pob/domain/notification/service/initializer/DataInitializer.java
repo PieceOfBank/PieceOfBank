@@ -1,6 +1,6 @@
 package com.fintech.pob.domain.notification.service.initializer;
 
-import com.fintech.pob.domain.notification.entity.notification.NotificationType;
+import com.fintech.pob.domain.notification.entity.NotificationType;
 import com.fintech.pob.domain.notification.repository.notification.NotificationTypeRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

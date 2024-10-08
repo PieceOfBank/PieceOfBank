@@ -2,12 +2,10 @@ package com.fintech.pob.domain.notification.controller;
 
 import com.fintech.pob.domain.notification.dto.expo.ExpoNotificationRequestDto;
 import com.fintech.pob.domain.notification.dto.fcm.FCMRequestDto;
-import com.fintech.pob.domain.notification.dto.notification.NotificationResponseDto;
-import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalKeyDto;
-import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalRequestDto;
-import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalResponseDto;
-import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalRequestDto;
-import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalResponseDto;
+import com.fintech.pob.domain.notification.dto.NotificationResponseDto;
+import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalKeyDto;
+import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalRequestDto;
+import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalResponseDto;
 import com.fintech.pob.domain.notification.service.expo.ExpoService;
 import com.fintech.pob.domain.notification.service.fcm.FCMService;
 import com.fintech.pob.domain.notification.service.notification.NotificationService;
@@ -62,30 +60,6 @@ public class NotificationController {
     public ResponseEntity<NotificationResponseDto> updateNotificationStatusToDelete(@PathVariable("notificationId") Long notificationId) {
         NotificationResponseDto updatedNotification = notificationService.updateNotificationStatusToDelete(notificationId);
         return ResponseEntity.ok(updatedNotification);
-    }
-
-    @PostMapping("/transfers/request")
-    public ResponseEntity<Long> requestTransfer(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto, @RequestParam("typeName") String typeName) {
-        Long transactionApprovalId = notificationService.requestTransfer(transactionApprovalRequestDto, typeName);
-        return ResponseEntity.ok(transactionApprovalId);
-    }
-
-    @PatchMapping("/transfers/approval")
-    public ResponseEntity<TransactionApprovalResponseDto> approveTransferRequest(@RequestBody Long transactionApprovalId) {
-        TransactionApprovalResponseDto transactionApprovalResponseDto = notificationService.approveTransferRequest(transactionApprovalId);
-        return ResponseEntity.ok(transactionApprovalResponseDto);
-    }
-
-    @PatchMapping("/transfers/refusal")
-    public ResponseEntity<TransactionApprovalResponseDto> refuseTransferRequest(@RequestBody Long transactionApprovalId) {
-        TransactionApprovalResponseDto transactionApprovalResponseDto = notificationService.refuseTransferRequest(transactionApprovalId);
-        return ResponseEntity.ok(transactionApprovalResponseDto);
-    }
-
-    @PatchMapping("/transfers/expiry")
-    public ResponseEntity<TransactionApprovalResponseDto> expireTransferRequest(@RequestBody Long transactionApprovalId) {
-        TransactionApprovalResponseDto transactionApprovalResponseDto = notificationService.expireTransferRequest(transactionApprovalId);
-        return ResponseEntity.ok(transactionApprovalResponseDto);
     }
 
     @PostMapping("/subscriptions/request")
