@@ -11,14 +11,14 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class TransferCheckDTO {
-    private HeaderRequestDTO headerRequestDTO;
+    private String userKey;
     private AccountTransferRequestDTO requestPayload;
     private ClientAccountDetailResponseDTO accountDeposit;
     private ClientAccountDetailResponseDTO accountWithdraw;
 
-    public static TransferCheckDTO of(HeaderRequestDTO headerRequestDTO, AccountTransferRequestDTO requestPayload, ClientAccountDetailResponseDTO accountDeposit, ClientAccountDetailResponseDTO accountWithdraw) {
+    public static TransferCheckDTO of(String userKey, AccountTransferRequestDTO requestPayload, ClientAccountDetailResponseDTO accountDeposit, ClientAccountDetailResponseDTO accountWithdraw) {
         return TransferCheckDTO.builder()
-                .headerRequestDTO(headerRequestDTO)
+                .userKey(userKey)
                 .requestPayload(requestPayload)
                 .accountDeposit(accountDeposit)
                 .accountWithdraw(accountWithdraw)
