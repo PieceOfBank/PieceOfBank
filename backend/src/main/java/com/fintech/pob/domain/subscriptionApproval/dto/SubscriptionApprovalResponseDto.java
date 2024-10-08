@@ -10,4 +10,5 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SubscriptionApprovalResponseDto {
     private String requesterName;
+    private Long subscriptionId;
 }
