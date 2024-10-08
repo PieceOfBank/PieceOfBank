@@ -1,14 +1,15 @@
+
 import { Stack } from "expo-router";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { setToken } from '../src/store/tokenSlice';
-import { Provider } from 'react-redux';
 
 import Toast from "react-native-toast-message";
 import { registerForPushNotificationsAsync } from "../src/utils/NotificationToken";
 import * as Notifications from 'expo-notifications';
+import store from "../src/store/store";
 
-export default function Layout() {
+const LayoutContent = () => {
 
   const dispatch = useDispatch();
   
@@ -34,9 +35,19 @@ export default function Layout() {
   }, []);
 
   return (
+    
     <>
-      <Stack screenOptions={{headerShown:false}}/>
-      <Toast />
+        <Stack screenOptions={{headerShown:false}}/>
+        <Toast />
     </>
+  );
+}
+
+// Provider로 LayoutContent를 감싸는 구조
+export default function Layout () {
+  return (
+    <Provider store={store}>
+      <LayoutContent />
+    </Provider>
   );
 }

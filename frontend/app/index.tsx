@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { styled } from "nativewind";
-import { loginUser, sendToken } from "../src/services/api";
+import { loginUser, sendExpoNotification, sendToken } from "../src/services/api";
 import Toast from "react-native-toast-message";
 import { mediaPost } from "../src/services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,7 +20,7 @@ import { RootState } from "../src/store/store";
 
 export default function LoginScreen() {
   const router = useRouter();
-  
+
   const myExpoToken = useSelector((state: RootState) => state.getToken.expoToken); // Store에서 token 가져오기
   const myUserKey = useSelector((state: RootState) => state.getUserKey.userKey);
 
@@ -89,6 +89,34 @@ export default function LoginScreen() {
     }
   };
 
+  const sendNotifications = async () => {
+    try {
+
+      const testJSON = {
+        to: "ExponentPushToken[y-WvDPKcLDRWMk_i3egC76]",
+        title: "Test용 알림",
+        content : "안녕하세요",
+      }
+
+      const response = await sendExpoNotification(testJSON);
+
+      console.log(response);
+      Toast.show({
+        type: "success",
+        text1: "알림 보내기 성공!",
+        text2: "알림이 정상적으로 보내졌습니다",
+      });
+      
+    } catch (error) {
+      console.log(error);
+      Toast.show({
+        type: "error",
+        text1: "알람 보내기 실패",
+        text2: "알람 전송에 실패했습니다. 다시 확인해주세요.",
+      });
+    }
+  }
+
   return (
     <ImageBackground source={require("../src/assets/POBbackGround.png")} className="flex-1">
       <View className="flex-1 justify-center items-center">
@@ -133,6 +161,13 @@ export default function LoginScreen() {
           onPress={textPost}
         >
           <Text className="text-white">회원가입</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
+          onPress={sendNotifications}
+        >
+          <Text className="text-white">알람전송</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>

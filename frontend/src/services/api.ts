@@ -337,6 +337,9 @@ export const transferRefusal= () => {
 export const transferExpiry= () => {
     return axiosClient.patch(`api/notification/transfers/expiry`,)
 }
+export const sendExpoNotification = (data : Record<string, string>) => {
+    return axiosClient.post(`/notification/expoMessage`, data)
+}
 
 /* Subscription API */
 
