@@ -43,8 +43,8 @@ public class TransactionHistoryChecker implements ScheduledChecker {
 
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-                    if (lastTransactionDate == null || LocalDate.parse(lastTransactionDate, formatter).isEqual(LocalDate.now())) {
-                    //if (lastTransactionDate == null || LocalDate.parse(lastTransactionDate, formatter).isBefore(LocalDate.now().minusDays(3))) {
+                    //if (lastTransactionDate == null || LocalDate.parse(lastTransactionDate, formatter).isEqual(LocalDate.now())) {
+                    if (lastTransactionDate == null || LocalDate.parse(lastTransactionDate, formatter).isBefore(LocalDate.now().minusDays(3))) {
                         System.out.println("[ScheduledChecker]: " + accountNo + ", " + subscription.getTargetUser());
                         notificationService.sendNotification(UUID.fromString(header.getUserKey()), subscription.getProtectUser().getUserKey(), "거래 내역 없음 알림");
                         break;
