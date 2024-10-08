@@ -34,7 +34,9 @@ public class SubScriptionController {
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
         Optional<Subscription> subscriptions = Optional.ofNullable(subscriptionService.findByTargetUserKey(userKey).orElse(null));
-        return ResponseEntity.ok(subscriptions);
+
+        //System.out.println();
+        return ResponseEntity.ok(Optional.of(subscriptions.get()));
     }
 
     @PutMapping("/setOneTime")
