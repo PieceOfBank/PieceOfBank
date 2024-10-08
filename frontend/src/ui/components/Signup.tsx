@@ -6,10 +6,14 @@ import Toast from "react-native-toast-message";
 import { createUser, registUser } from "../../services/api";
 import PinModal from './PinModal';
 import PinReModal from './PinReModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserKey } from "../../store/userKeySlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignupForm = () => {
     
   const router = useRouter();
+  const dispatch = useDispatch();
 
   // 회원가입 정보 저장
   const [email, setEmail] = useState(''); // 이메일
@@ -45,7 +49,12 @@ const SignupForm = () => {
         email : email,
       }
       const response = await createUser(JsonData);
+
       console.log(response)
+
+      dispatch(setUserKey(await AsyncStorage.getItem('userKey')));
+      // console.log(response)
+
       // const emailAnswer = response.data.split(':')[1].trim() // 응답값에서 토큰만 가져오기
       // console.log(emailAnswer)
       Toast.show({

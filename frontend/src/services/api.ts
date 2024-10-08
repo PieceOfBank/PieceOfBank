@@ -65,9 +65,7 @@ export const createUser = async (email: Record<string, string>) => {
     try {
         const response = await axiosClient.post(`/users/create`, email);
 
-        console.log("Hello" + response.data)
         const userKey = response.data.split(':')[1].trim();
-
         AsyncStorage.setItem('userKey', userKey);
         return response;
     }
@@ -81,6 +79,7 @@ export const createUser = async (email: Record<string, string>) => {
 export const registUser = async (newMember: Record<string, unknown>) => {
     try {
         const userKey = await AsyncStorage.getItem('userKey');
+        console.log("my userKey : --> " + userKey)
         newMember = { ...newMember, 'userKey': userKey };
         console.log(newMember)
         return axiosClient.post(`/users/register`, newMember);
@@ -374,6 +373,9 @@ export const transferRefusal= () => {
 export const transferExpiry= () => {
     return axiosClient.patch(`api/notification/transfers/expiry`,)
 }
+export const sendExpoNotification = (data : Record<string, string>) => {
+    return axiosClient.post(`/notification/expoMessage`, data)
+}
 
 /* Subscription API */
 
@@ -413,8 +415,18 @@ export const subscriptionCreate= (data:Record<string,string>) => {
 }
 
 
+/* Token */
+export const sendToken = (userKey: string, token: string) => {
+    return axiosClient.post(`/token?userKey=${userKey}&token=${token}`, {});
+}
 
+export const getToken = (userKey : string) => {
+    return axiosClient.get(`/token?userKey=${userKey}`);
+}
 
+export const deleteToken = (userKey : string) => {
+    return axiosClient.delete(`/token?userKey=${userKey}`);
+}
 
 // 2. 보호 관계 순서 수정 - PUT
 export const subscriptionOrderUpdate = () => {
