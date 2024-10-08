@@ -24,20 +24,20 @@ public class SubscriptionApprovalController {
         return ResponseEntity.ok(subscriptionApprovalId);
     }
 
-    @GetMapping("/{subscriptionId}")
-    public ResponseEntity<SubscriptionApprovalResponseDto> getSubscriptionApprovalBySubscriptionId(@PathVariable("subscriptionId") Long subscriptionId) {
-        SubscriptionApprovalResponseDto subscriptionApprovalResponseDto = subscriptionApprovalService.getSubscriptionApprovalBySubscriptionId(subscriptionId);
+    @GetMapping("/{notificationId}")
+    public ResponseEntity<SubscriptionApprovalResponseDto> getSubscriptionApprovalByNotificationId(@PathVariable("notificationId") Long notificationId) {
+        SubscriptionApprovalResponseDto subscriptionApprovalResponseDto = subscriptionApprovalService.getSubscriptionApprovalByNotificationId(notificationId);
         return ResponseEntity.ok(subscriptionApprovalResponseDto);
     }
 
-    @PatchMapping("/approval")
-    public ResponseEntity<SubscriptionApprovalKeyDto> approveSubscriptionRequest(@RequestBody Long subscriptionApprovalId) {
+    @PatchMapping("/approval/{subscriptionApprovalId}")
+    public ResponseEntity<SubscriptionApprovalKeyDto> approveSubscriptionRequest(@PathVariable("subscriptionApprovalId") Long subscriptionApprovalId) {
         SubscriptionApprovalKeyDto subscriptionApprovalKeyDto = subscriptionApprovalService.approveSubscriptionRequest(subscriptionApprovalId);
         return ResponseEntity.ok(subscriptionApprovalKeyDto);
     }
 
-    @PatchMapping("/refusal")
-    public ResponseEntity<SubscriptionApprovalKeyDto> refuseSubscriptionRequest(@RequestBody Long subscriptionApprovalId) {
+    @PatchMapping("/refusal/{subscriptionApprovalId}")
+    public ResponseEntity<SubscriptionApprovalKeyDto> refuseSubscriptionRequest(@PathVariable("subscriptionApprovalId") Long subscriptionApprovalId) {
         SubscriptionApprovalKeyDto subscriptionApprovalResponseDto = subscriptionApprovalService.refuseSubscriptionRequest(subscriptionApprovalId);
         return ResponseEntity.ok(subscriptionApprovalResponseDto);
     }

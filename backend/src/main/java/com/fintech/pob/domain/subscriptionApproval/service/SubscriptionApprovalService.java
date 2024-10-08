@@ -6,7 +6,7 @@ import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalRespo
 
 public interface SubscriptionApprovalService {
     Long requestSubscription(SubscriptionApprovalRequestDto subscriptionApprovalRequestDto);
-    SubscriptionApprovalResponseDto getSubscriptionApprovalBySubscriptionId(Long subscriptionId);
+    SubscriptionApprovalResponseDto getSubscriptionApprovalByNotificationId(Long notificationId);
     SubscriptionApprovalKeyDto approveSubscriptionRequest(Long subscriptionApprovalId);
     SubscriptionApprovalKeyDto refuseSubscriptionRequest(Long subscriptionApprovalId);
 }
