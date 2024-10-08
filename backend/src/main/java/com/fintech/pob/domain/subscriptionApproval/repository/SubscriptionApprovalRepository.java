@@ -1,4 +1,4 @@
-package com.fintech.pob.domain.notification.repository.subscription;
+package com.fintech.pob.domain.subscriptionApproval.repository;
 
 import com.fintech.pob.domain.subscriptionApproval.entity.SubscriptionApproval;
 import org.springframework.data.jpa.repository.JpaRepository;

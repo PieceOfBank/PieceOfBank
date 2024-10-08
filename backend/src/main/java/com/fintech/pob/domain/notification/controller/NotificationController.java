@@ -3,12 +3,9 @@ package com.fintech.pob.domain.notification.controller;
 import com.fintech.pob.domain.notification.dto.expo.ExpoNotificationRequestDto;
 import com.fintech.pob.domain.notification.dto.fcm.FCMRequestDto;
 import com.fintech.pob.domain.notification.dto.NotificationResponseDto;
-import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalKeyDto;
-import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalRequestDto;
-import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalResponseDto;
 import com.fintech.pob.domain.notification.service.expo.ExpoService;
 import com.fintech.pob.domain.notification.service.fcm.FCMService;
-import com.fintech.pob.domain.notification.service.notification.NotificationService;
+import com.fintech.pob.domain.notification.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,30 +57,6 @@ public class NotificationController {
     public ResponseEntity<NotificationResponseDto> updateNotificationStatusToDelete(@PathVariable("notificationId") Long notificationId) {
         NotificationResponseDto updatedNotification = notificationService.updateNotificationStatusToDelete(notificationId);
         return ResponseEntity.ok(updatedNotification);
-    }
-
-    @PostMapping("/subscriptions/request")
-    public ResponseEntity<Long> requestSubscription(@RequestBody SubscriptionApprovalRequestDto subscriptionApprovalRequestDto) {
-        Long subscriptionApprovalId = notificationService.requestSubscription(subscriptionApprovalRequestDto);
-        return ResponseEntity.ok(subscriptionApprovalId);
-    }
-
-    @GetMapping("subscriptions/{subscriptionId}")
-    public ResponseEntity<SubscriptionApprovalResponseDto> getSubscriptionApprovalBySubscriptionId(@PathVariable("subscriptionId") Long subscriptionId) {
-        SubscriptionApprovalResponseDto subscriptionApprovalResponseDto = notificationService.getSubscriptionApprovalBySubscriptionId(subscriptionId);
-        return ResponseEntity.ok(subscriptionApprovalResponseDto);
-    }
-
-    @PatchMapping("/subscriptions/approval")
-    public ResponseEntity<SubscriptionApprovalKeyDto> approveSubscriptionRequest(@RequestBody Long subscriptionApprovalId) {
-        SubscriptionApprovalKeyDto subscriptionApprovalKeyDto = notificationService.approveSubscriptionRequest(subscriptionApprovalId);
-        return ResponseEntity.ok(subscriptionApprovalKeyDto);
-    }
-
-    @PatchMapping("/subscriptions/refusal")
-    public ResponseEntity<SubscriptionApprovalKeyDto> refuseSubscriptionRequest(@RequestBody Long subscriptionApprovalId) {
-        SubscriptionApprovalKeyDto subscriptionApprovalResponseDto = notificationService.refuseSubscriptionRequest(subscriptionApprovalId);
-        return ResponseEntity.ok(subscriptionApprovalResponseDto);
     }
 
     @PostMapping()
