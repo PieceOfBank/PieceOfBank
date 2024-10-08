@@ -2,7 +2,7 @@ package com.fintech.pob.domain.account.service.schedule;
 
 import com.fintech.pob.domain.account.dto.client.ClientAccountListResponseDTO;
 import com.fintech.pob.domain.account.service.account.AccountService;
-import com.fintech.pob.domain.notification.service.notification.NotificationService;
+import com.fintech.pob.domain.notification.service.NotificationService;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
