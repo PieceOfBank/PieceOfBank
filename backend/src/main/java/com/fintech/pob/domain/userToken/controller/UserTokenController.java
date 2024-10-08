@@ -26,10 +26,13 @@ public class UserTokenController {
     }
 
     @GetMapping("/{userKey}")
-    public ResponseEntity<?> getToken(@PathVariable("userKey") UUID userKey) {
-        return userTokenService.getUserTokenByUserKey(userKey)
-                .map(userToken -> ResponseEntity.ok(userToken.getToken()))
-                .orElse(ResponseEntity.badRequest().body("해당 유저에게 토큰이 없습니다." + userKey));
+    public ResponseEntity<String> getToken(@PathVariable("userKey") UUID userKey) {
+        try {
+            String token = userTokenService.getUserTokenByUserKey(userKey);
+            return ResponseEntity.ok(token);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{userKey}")

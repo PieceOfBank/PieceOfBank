@@ -1,10 +1,12 @@
 package com.fintech.pob.domain.transactionApproval.service;
 
+import com.fintech.pob.domain.notification.dto.expo.ExpoNotificationRequestDto;
 import com.fintech.pob.domain.notification.entity.Notification;
 import com.fintech.pob.domain.notification.entity.NotificationStatus;
 import com.fintech.pob.domain.notification.entity.NotificationType;
 import com.fintech.pob.domain.notification.repository.NotificationRepository;
 import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
+import com.fintech.pob.domain.notification.service.expo.ExpoService;
 import com.fintech.pob.domain.transactionApproval.repository.TransactionApprovalRepository;
 import com.fintech.pob.domain.transactionApproval.dto.TransactionApprovalRequestDto;
 import com.fintech.pob.domain.transactionApproval.dto.TransactionApprovalResponseDto;
@@ -12,6 +14,7 @@ import com.fintech.pob.domain.transactionApproval.entity.TransactionApproval;
 import com.fintech.pob.domain.transactionApproval.entity.TransactionApprovalStatus;
 import com.fintech.pob.domain.user.entity.User;
 import com.fintech.pob.domain.user.repository.UserRepository;
+import com.fintech.pob.domain.userToken.service.UserTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -30,6 +34,8 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
     private final NotificationRepository notificationRepository;
     private final NotificationTypeRepository notificationTypeRepository;
     private final TransactionApprovalRepository transactionApprovalRepository;
+    private final UserTokenService userTokenService;
+    private final ExpoService expoService;
 
     @Override
     @Transactional
@@ -70,8 +76,23 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
                 .build();
         TransactionApproval savedApproval = transactionApprovalRepository.save(transactionApproval);
 
-        // 푸시 알림 전송 처리 예정
+        // 푸시 알림 보내기
+        sendPushMessage(receiver.getUserKey(), typeName);
+
         return savedApproval.getTransactionApprovalId();
+    }
+
+    private void sendPushMessage(UUID receiverKey, String typeName) {
+        String to = userTokenService.getUserTokenByUserKey(receiverKey);
+        String title = typeName;
+        String content = "거래 승인 알림이 도착했습니다!";
+
+        ExpoNotificationRequestDto expoNotificationRequestDto = ExpoNotificationRequestDto.builder()
+                .to(to)
+                .title(title)
+                .content(content)
+                .build();
+        expoService.sendPushNotification(expoNotificationRequestDto);
     }
 
     @Override

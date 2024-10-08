@@ -10,13 +10,14 @@ import java.util.UUID;
 @Table
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private UUID userKey; // userKey로 푸시 토큰을 관리
+    private UUID userKey;
 
     @Column(nullable = false)
     private String token;
@@ -24,7 +25,6 @@ public class UserToken {
     @Column(nullable = false)
     private LocalDateTime created;
 
-    // 생성자, getter, setter 추가
     public UserToken(UUID userKey, String token) {
         this.userKey = userKey;
         this.token = token;
