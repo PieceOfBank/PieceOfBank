@@ -8,15 +8,21 @@ import Toast from "react-native-toast-message";
 import smallLogo from "../../src/assets/SmallLogo.png";
 import Header from "../../src/ui/components/Header";
 import CancelButton from "../../src/ui/components/CancelButton";
-import { notifyList, subscriptionCreate } from "../../src/services/api";
+import { notifyList, subscriptionCreate, subscriptionApproval, subscriptionName } from "../../src/services/api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const familyAdd = () => {
 
 
-
+    // 요청리스트
     const [connectList, setConnectList] = useState<ConnectItem[]>([]);
+
+    // 요청 이름 리스트
+    const [nameList, setNameList] = useState<number[]>([]);
+
+    // 요청 이름 리스트
+    const [go, setGo] = useState<string[]>([]);
 
     // 화면 가로고정
     useEffect(() => {
@@ -25,6 +31,7 @@ const familyAdd = () => {
         };
         screenChange();
 
+        
         // 알림 전체 조회
         const notifyView = async() =>{
             try{
@@ -39,14 +46,32 @@ const familyAdd = () => {
                 const response = await notifyList(data);
                 setConnectList(response.data)
                 console.log(response.data)
+                try{
+                    setNameList(prevList => {
+                        const items  = []
+                        for (let i=0; i<response.data.length; i++){
+                            // 이름 요청
+                            const abc = subscriptionName(response.data[i]['notificationId'])
+                            items.push(response.data[i]['notificationId']);
+                            console.log('!!')
+                            console.log(abc)
+                            console.log(items)
+                        }
+                        return [...prevList, ...items]
+                    })
+                    console.log()
+                }catch(error){
+                    console.log(error)
+                }
             }
             catch(error){
                 console.log(`에러: ${error}`)
             }
             }
-    
-            notifyView()
 
+            
+
+        notifyView()
 
         return () => {
             ScreenOrientation.unlockAsync()
@@ -92,12 +117,12 @@ const familyAdd = () => {
                 // 나중에 userkey 어떻게 받아와서 넣어야 할까요? authorization 으로 되는지 확인하기
                 
                 
-                const JsonData = {
-                    "userKey": userKey,
-                    "targetKey": targetKey
-                }
-                const response = await subscriptionCreate(JsonData);
-                console.log(response)
+                // const JsonData = {
+                //     "userKey": userKey,
+                //     "targetKey": targetKey
+                // }
+                // const response = await subscriptionCreate(JsonData);
+                // console.log(response)
                 } catch(error){
                     console.log(error)
                 }

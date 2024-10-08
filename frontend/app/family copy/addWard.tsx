@@ -27,7 +27,7 @@ const AddWard = () => {
         receiverId: wardId
       }
       const response = await subscriptionPost(JsonData);
-      console.log(response)
+      console.log(response.data)
       Toast.show({
         type: 'success',
         text1: '피보호자 등록 요청 완료',

@@ -12,7 +12,7 @@ import Header from "../../../src/ui/components/Header";
 
 const imageMedia = () => {
     const [image, setImage] = useState('')
-    const { mediaNo } = useLocalSearchParams()
+  const { mediaNo } = useLocalSearchParams()
   const [imageUri, setImageUri] = useState<string | null>(null);
 
   /* 이미지 선택 */

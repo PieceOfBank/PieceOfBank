@@ -3,6 +3,9 @@ import { useRouter, Link, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import CancelButton from '../CancelButton';
 import { createDirectory } from '../../../services/api';
+import * as FileSystem from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
+
 
 interface existsInfo {
     onChange: (inputBalance:string) => void;
@@ -15,8 +18,34 @@ const ObjectInput = () => {
     const [phone, setPhone] = useState('')
     const [bank, setBank] = useState('')
     const [account, setAccount] = useState('')
+    const [imageUri, setImageUri] = useState<string | null>(null);
 
     const router = useRouter()
+
+     /* 이미지 선택 */
+  const selectImage = async () => {
+    
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync(); // 접근 권한 요청 알림
+  
+    // 권한 없을 경우 종료시킴
+    if (status !== 'granted') {
+      console.log('미디어 권한이 부여되지 않았습니다.');
+      return;
+    } 
+  
+    // 이미지 선택기 열기
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, // 선택 유형 이미지로 제한
+      allowsEditing: true, // 이미지 편집 허용
+      aspect: [4, 3], // 편집할 이미지 비율 설정
+      quality: 1, // 편집할 이미지 품질 설정
+    });
+  
+    // 이미지 선택 완료하면 IamgeUri에 저장됨
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    } 
+  };
 
     const directoryGo = async() => {
       try{
@@ -36,7 +65,7 @@ const ObjectInput = () => {
         // }
 
         const userInfo = {
-          userKey: "aaf1e84e-ba2d-4263-a581-b9a7e5582982",
+          userKey: "234532543",
           accountNo: "0016893582615978",
           institutionCode: 0,
           name: "test",
@@ -46,16 +75,42 @@ const ObjectInput = () => {
         // const imageInfo = {
 
         // }
+        // const fileInput = document.querySelector('#fileInput'); 
+        // const formData = new FormData();
+        // formData.append('directory', new Blob([JSON.stringify(directoryData)], { type: "application/json" }))
+
+      //   formData.append('file', 
+      //     {
+      //     uri: image,
+      //     type: 'image/png',
+      //     name: 'image.png',
+      // } 
+      // as any)
+
+      const formData = new FormData();
+        
+        // FormData에 이미지 추가
+        formData.append('file', {
+            uri: imageUri, // 선택된 이미지 URI
+            type: 'image/jpeg', // MIME 타입 (상황에 따라 조정 가능)
+            name: 'image.jpg', // 파일 이름
+        } as any);
+
+      // const formData = new FormData();
         const JsonData = {
           directory: {
-            userKey: "aaf1e84e-ba2d-4263-a581-b9a7e558298",
             accountNo: "0019312432084644",
-            institutionCode: 0,
+            institutionCode: 100,
             name: "qkqkqk",
-            url: "test"
-          },
-          file: "string"
+          }
         }
+
+      //   formData.append('directory', JSON.stringify(JsonData.directory));
+      //   formData.append('file', {
+      //     uri: image.uri,
+      //     type: 'image.type',
+      //     name: 'image.fileName',
+      // });
         console.log(JsonData)
         const response = await createDirectory(JsonData);
         console.log(response)

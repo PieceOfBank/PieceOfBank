@@ -39,7 +39,7 @@ export default function LoginScreen() {
         password: password,
       };
       const response = await loginUser(JsonData);
-      const responseTwo = await sendToken(myUserKey!, myExpoToken!);
+      // const responseTwo = await sendToken(myUserKey!, myExpoToken!);
 
       Toast.show({
         type: "success",
