@@ -14,6 +14,7 @@ import com.fintech.pob.domain.transactionApproval.dto.TransactionApprovalRequest
 import com.fintech.pob.domain.transactionApproval.service.TransactionApprovalService;
 import com.fintech.pob.domain.user.entity.User;
 import com.fintech.pob.domain.user.service.LocalUserService;
+import com.fintech.pob.global.auth.jwt.JwtUtil;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
 import com.fintech.pob.global.header.service.HeaderService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,8 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -42,6 +45,7 @@ public class AccountService {
     private final HeaderService headerService;
     private final AccountClientService accountClientService;
     private final LocalUserService localUserService;
+    private final JwtUtil jwtUtil;
     private final TransactionApprovalService transactionApprovalService;
 
     @EventListener
@@ -87,6 +91,52 @@ public class AccountService {
                 .bodyValue(requestDTO)
                 .retrieve()
                 .bodyToMono(ClientAccountListResponseDTO.class);
+    }
+
+    public Mono<ClientAccountListResponseDTO> getSortedAccountList() {
+        String token = request.getHeader("Authorization");
+
+        // 유저 키 추출
+        String userKeyString;
+        try {
+            userKeyString = jwtUtil.extractUserKey(token);
+        } catch (Exception e) {
+            return Mono.error(new RuntimeException("Unauthorized"));
+        }
+
+        if (userKeyString == null) {
+            return Mono.error(new RuntimeException("Unauthorized"));
+        }
+
+        // 유저 정보 조회
+        User user = localUserService.findByUserKey(userKeyString);
+        String accountNo = user.getAccountNo();
+
+        // 계좌 리스트 조회 및 정렬
+        return getAccountList().map(accountListResponse -> {
+            List<ClientAccountListResponseDTO.Record> sortedAccountList;
+
+            if (accountNo != null && !accountNo.isEmpty()) {
+                sortedAccountList = accountListResponse.getRec().stream()
+                        .sorted((record1, record2) -> {
+                            if (record1.getAccountNo().equals(accountNo)) {
+                                return -1;
+                            } else if (record2.getAccountNo().equals(accountNo)) {
+                                return 1;
+                            }
+                            return 0;
+                        })
+                        .collect(Collectors.toList());
+            } else {
+                sortedAccountList = accountListResponse.getRec();
+            }
+
+            ClientAccountListResponseDTO sortedResponse = new ClientAccountListResponseDTO();
+            sortedResponse.setHeader(accountListResponse.getHeader());
+            sortedResponse.setRec(sortedAccountList);
+
+            return sortedResponse;
+        });
     }
 
     public Mono<ClientAccountListResponseDTO> getAccountList(HeaderRequestDTO header) {
