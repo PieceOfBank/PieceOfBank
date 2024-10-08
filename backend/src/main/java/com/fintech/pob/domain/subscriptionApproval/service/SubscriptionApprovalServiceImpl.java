@@ -68,7 +68,7 @@ public class SubscriptionApprovalServiceImpl implements SubscriptionApprovalServ
 
     @Override
     public SubscriptionApprovalResponseDto getSubscriptionApprovalByNotificationId(Long notificationId) {
-        SubscriptionApproval subscriptionApproval = subscriptionApprovalRepository.findById(notificationId)
+        SubscriptionApproval subscriptionApproval = subscriptionApprovalRepository.findByNotification_NotificationId(notificationId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 알림 내역이 없습니다: " + notificationId));
 
         return SubscriptionApprovalResponseDto.builder()
