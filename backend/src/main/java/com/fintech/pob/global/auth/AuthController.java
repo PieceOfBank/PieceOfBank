@@ -74,10 +74,11 @@ public class AuthController {
     // 로그아웃 처리
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+        System.out.println("Received Authorization Header: " + token); // 로그로 확인
+
         try {
-            String jwtToken = token.replace("Bearer", "");
-            long expirationTime = jwtUtil.getExpirationTime(jwtToken);
-            logoutService.logout(jwtToken, expirationTime);
+            long expirationTime = jwtUtil.getExpirationTime(token);
+            logoutService.logout(token, expirationTime);
             return ResponseEntity.ok("로그아웃 성공");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("로그아웃 실패");
