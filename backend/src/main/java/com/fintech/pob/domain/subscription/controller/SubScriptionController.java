@@ -28,7 +28,7 @@ public class SubScriptionController {
         return ResponseEntity.ok(newSubscription);
     }
 
-    @GetMapping("/find")
+    @GetMapping("/findbytarget")
     public ResponseEntity<Optional<Subscription>> getSubscription(@RequestHeader("Authorization") String token) {
 
         String key = (String) jwtUtil.extractUserKey(token);
@@ -38,6 +38,19 @@ public class SubScriptionController {
         //System.out.println();
         return ResponseEntity.ok(Optional.of(subscriptions.get()));
     }
+
+    @GetMapping("/findbyprotect")
+    public ResponseEntity<Subscription> getSubscriptionByProtectUserKey(@RequestHeader("Authorization") String token) {
+        String key = (String) jwtUtil.extractUserKey(token);
+        UUID userKey = UUID.fromString(key);
+        Subscription subscription = subscriptionService.getSubscriptionByProtectUserKey(userKey);
+        if (subscription != null) {
+            return ResponseEntity.ok(subscription);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @PutMapping("/setOneTime")
     public ResponseEntity<Subscription> setOneTimeTransferLimit(
@@ -64,4 +77,6 @@ public class SubScriptionController {
         return ResponseEntity.ok(null);
 
     }
+
+
 }

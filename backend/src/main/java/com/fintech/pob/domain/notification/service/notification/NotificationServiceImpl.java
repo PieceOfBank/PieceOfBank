@@ -245,7 +245,7 @@ public class NotificationServiceImpl implements NotificationService {
         subscriptionRequestDto.setTargetKey(notification.getSenderUser().getUserKey());
         subscriptionRequestDto.setUserKey(notification.getReceiverUser().getUserKey());
         subscriptionService.create(subscriptionRequestDto);
-        
+
         notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
         notificationRepository.save(notification);
 

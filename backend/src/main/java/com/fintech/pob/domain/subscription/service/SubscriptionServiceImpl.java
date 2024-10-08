@@ -90,4 +90,10 @@ public class SubscriptionServiceImpl implements SubscriptionService{
                 .orElseThrow(() -> new IllegalArgumentException("Subscription not found for userKey: " + userKey));
         return subscription.getDailyTransferLimit();
     }
+
+    @Override
+    public Subscription getSubscriptionByProtectUserKey(UUID userKey) {
+        return subscriptionRepository.findByProtectUserUserKey(userKey);
+    }
+
 }

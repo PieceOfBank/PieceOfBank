@@ -12,5 +12,6 @@ import java.util.UUID;
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
     Optional<Subscription> findByTargetUser_UserKey(UUID userKey);
 
+    Subscription findByProtectUserUserKey(UUID userKey);
 
 }
