@@ -63,6 +63,13 @@ public class ClientAccountController {
                 .map(ResponseEntity::ok);
     }
 
+    @PostMapping("/updateDemandDepositAccountDeposit")
+    public Mono<ResponseEntity<ClientAccountDepositResponseDTO>> updateClientAccountDeposit(
+            @RequestBody AccountDepositRequestDTO requestPayload) {
+        return accountService.updateAccountDeposit(requestPayload)
+                .map(ResponseEntity::ok);
+    }
+
     @PatchMapping("/setPrimaryAccount")
     public ResponseEntity<String> setPrimaryAccount(@RequestBody AccountUpdateRequestDTO request) {
         try {

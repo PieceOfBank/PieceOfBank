@@ -275,5 +275,18 @@ public class AccountService {
                 .retrieve()
                 .bodyToMono(ClientAccountHistoryDetailResponseDTO.class);
     }
+
+    public Mono<ClientAccountDepositResponseDTO> updateAccountDeposit(AccountDepositRequestDTO requestPayload) {
+        HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
+
+        ClientAccountDepositRequestDTO requestDTO = ClientAccountDepositRequestDTO.of(header, requestPayload);
+
+        return webClient.post()
+                .uri("demandDeposit/updateDemandDepositAccountDeposit")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(requestDTO)
+                .retrieve()
+                .bodyToMono(ClientAccountDepositResponseDTO.class);
+    }
 }
 
