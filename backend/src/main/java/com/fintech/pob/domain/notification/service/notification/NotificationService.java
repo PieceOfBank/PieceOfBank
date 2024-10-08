@@ -1,11 +1,11 @@
 package com.fintech.pob.domain.notification.service.notification;
 
-import com.fintech.pob.domain.notification.dto.notification.NotificationResponseDto;
-import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalKeyDto;
-import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalRequestDto;
-import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalResponseDto;
-import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalRequestDto;
-import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalResponseDto;
+import com.fintech.pob.domain.notification.dto.NotificationResponseDto;
+import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalKeyDto;
+import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalRequestDto;
+import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalResponseDto;
+import com.fintech.pob.domain.transactionApproval.dto.TransactionApprovalRequestDto;
+import com.fintech.pob.domain.transactionApproval.dto.TransactionApprovalResponseDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,10 +15,6 @@ public interface NotificationService {
     NotificationResponseDto getNotificationByNotificationId(Long notificationId);
     NotificationResponseDto updateNotificationStatusToRead(Long notificationId);
     NotificationResponseDto updateNotificationStatusToDelete(Long notificationId);
-    Long requestTransfer(TransactionApprovalRequestDto transactionApprovalRequestDto, String typeName);
-    TransactionApprovalResponseDto approveTransferRequest(Long transactionApprovalId);
-    TransactionApprovalResponseDto refuseTransferRequest(Long transactionApprovalId);
-    TransactionApprovalResponseDto expireTransferRequest(Long transactionApprovalId);
     Long requestSubscription(SubscriptionApprovalRequestDto subscriptionApprovalRequestDto);
     SubscriptionApprovalResponseDto getSubscriptionApprovalBySubscriptionId(Long subscriptionId);
     SubscriptionApprovalKeyDto approveSubscriptionRequest(Long subscriptionApprovalId);

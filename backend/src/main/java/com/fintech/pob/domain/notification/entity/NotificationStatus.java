@@ -1,4 +1,4 @@
-package com.fintech.pob.domain.notification.entity.notification;
+package com.fintech.pob.domain.notification.entity;
 
 public enum NotificationStatus {
     UNREAD,

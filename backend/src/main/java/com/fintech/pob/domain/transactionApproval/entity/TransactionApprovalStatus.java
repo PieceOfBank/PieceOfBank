@@ -1,4 +1,4 @@
-package com.fintech.pob.domain.notification.entity.transaction;
+package com.fintech.pob.domain.transactionApproval.entity;
 
 public enum TransactionApprovalStatus {
     PENDING,

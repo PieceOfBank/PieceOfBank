@@ -1,4 +1,4 @@
-package com.fintech.pob.domain.notification.dto.transaction;
+package com.fintech.pob.domain.transactionApproval.dto;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
