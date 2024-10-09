@@ -21,6 +21,7 @@ const ObjectInput = () => {
     const [imageUri, setImageUri] = useState<string | null>(null);
 
     const router = useRouter()
+    const myUserKey = useSelector((state: RootState) => state.getUserKey.userKey);
 
      /* 이미지 선택 */
   const selectImage = async () => {
