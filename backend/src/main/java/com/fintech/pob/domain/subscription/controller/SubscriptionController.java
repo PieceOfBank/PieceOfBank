@@ -30,13 +30,11 @@ public class SubscriptionController {
         return ResponseEntity.ok(newSubscription);
     }
 
-    @GetMapping("/findbytarget")
+    @GetMapping("/findByTarget")
     public ResponseEntity<Subscription> getSubscriptionByTargetUserKey(@RequestHeader("Authorization") String token) {
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
-        Subscription subscription = subscriptionService.getSubscriptionByProtectUserKey(userKey);
-
-
+        Subscription subscription = subscriptionService.getSubscriptionByTargetUserKey(userKey);
         if (subscription != null) {
             return ResponseEntity.ok(subscription);
         } else {
@@ -44,20 +42,11 @@ public class SubscriptionController {
         }
     }
 
-    @GetMapping("/findbyprotect")
+    @GetMapping("/findByProtect")
     public ResponseEntity<Subscription> getSubscriptionByProtectUserKey(@RequestHeader("Authorization") String token) {
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
         Subscription subscription = subscriptionService.getSubscriptionByProtectUserKey(userKey);
-        //  UUID k= subscription.getTargetUser().getUserKey();
-
-        //  User user = userLocalService.findByUserKey(k.toString());
-        //   String accountNo= user.getAccountNo();
-
-        //  System.out.println(user);
-        //     System.out.println(user.getAccountNo());
-
-
         if (subscription != null) {
             return ResponseEntity.ok(subscription);
         } else {
