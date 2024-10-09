@@ -34,8 +34,8 @@ public class SubscriptionController {
     public ResponseEntity<Subscription> getSubscriptionByTargetUserKey(@RequestHeader("Authorization") String token) {
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
-        Subscription subscription = subscriptionService.getSubscriptionByTargetUserKey(userKey);
-
+        Subscription subscription = subscriptionService.getSubscriptionByProtectUserKey(userKey);
+       
 
         if (subscription != null) {
             return ResponseEntity.ok(subscription);
