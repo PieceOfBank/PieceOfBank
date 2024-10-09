@@ -8,7 +8,6 @@ import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
 import com.fintech.pob.global.header.service.HeaderService;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;

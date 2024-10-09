@@ -27,6 +27,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -153,7 +154,7 @@ public class AccountService {
 
     public Mono<ClientAccountHistoryListResponseDTO> getAccountHistoryList(AccountHistoryListRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
-        if (header.getApiName() != "inquireTransactionHistoryList") {
+        if (!Objects.equals(header.getApiName(), "inquireTransactionHistoryList")) {
             header = headerService.createCommonHeader("inquireTransactionHistoryList", header.getUserKey());
         }
 
@@ -186,8 +187,9 @@ public class AccountService {
     }
 
     public Mono<ClientAccountDetailResponseDTO> getAccountDetail(AccountDetailRequestDTO requestPayload, HeaderRequestDTO header) {
-        log.info("-------------------[GET ACCOUNT DETAIL]-------------------%n {} " +
-                "%n ----------------------------------------------------------", header.toString());
+        log.info("-------------------[GET ACCOUNT DETAIL]-------------------%n");
+        log.info(header.toString());
+        log.info("%n----------------------------------------------------------");
 
         ClientAccountDetailRequestDTO requestDTO = new ClientAccountDetailRequestDTO();
         requestDTO.setHeader(header);

@@ -4,16 +4,11 @@ import com.fintech.pob.domain.directory.entity.Directory;
 import com.fintech.pob.domain.directory.entity.DirectoryRequestDto;
 import com.fintech.pob.domain.directory.repository.DirectoryRepository;
 import com.fintech.pob.domain.directory.service.DirectoryService;
-import com.fintech.pob.domain.media.entity.Media;
 import com.fintech.pob.domain.media.service.MediaService;
 import com.fintech.pob.domain.media.service.MediaUploadService;
 import com.fintech.pob.domain.user.service.UserServiceImpl;
 import com.fintech.pob.global.auth.jwt.JwtUtil;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -41,9 +36,7 @@ public class DirectoryController {
 
     private final DirectoryService directoryService;
     private final MediaUploadService mediaUploadService;
-    private final MediaService mediaService;
     private final DirectoryRepository directoryRepository;
-    private final UserServiceImpl userServiceImpl;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/create")

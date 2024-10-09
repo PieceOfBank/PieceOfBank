@@ -2,7 +2,6 @@ package com.fintech.pob.domain.media.service;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,7 +18,7 @@ public class MediaUploadService {
     private final String uploadDir = "/app/uploads"; // 파일 저장 경로 설정
 
     public String uploadFile(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
         log.info("filename= {}", fileName);
         Path filePath = Paths.get(uploadDir, fileName);
         log.info("file path= {}", filePath);

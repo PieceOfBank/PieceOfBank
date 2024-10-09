@@ -1,14 +1,12 @@
 package com.fintech.pob.domain.media.controller;
 
 import com.fintech.pob.domain.media.entity.Media;
-import com.fintech.pob.domain.media.entity.MediaDto;
 import com.fintech.pob.domain.media.entity.MediaTypeENUM;
 import com.fintech.pob.domain.media.service.MediaService;
 import com.fintech.pob.domain.media.service.MediaUploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -68,7 +66,6 @@ public class MediaController {
             try {
                 String mediaUrl = media.get().getUrl();
                 Path filePath = Paths.get(mediaUrl);
-
 
                 Resource resource = (Resource) new UrlResource(filePath.toUri());
                 if (resource.exists() || resource.isReadable()) {
