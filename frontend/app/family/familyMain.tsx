@@ -10,7 +10,10 @@ import mail from '../../src/assets/mail.png'
 import Toast from "react-native-toast-message";
 import { logoutUser, subTargetCheck } from "../../src/services/api";
 import { useDispatch } from "react-redux";
-import { logout, setNickName } from "../../src/store/userSlice";
+import { logout } from "../../src/store/userSlice";
+import { createAccount } from "../../src/services/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { addMoney, getAccountList } from "../../src/services/api";
 
 const FamilyMain = () => {
 
@@ -27,7 +30,7 @@ const FamilyMain = () => {
       
       console.log(response)
       dispatch(logout());
-
+      
         Toast.show({
           type: 'success',
           text1: '로그아웃 성공!',
@@ -85,13 +88,12 @@ const FamilyMain = () => {
       try{
         const response = await subTargetCheck()
         const checking = response.data
-        console.log(response)
+        console.log(response.data)
         if (checking == null){
           setFlag(false) // 없으면 등록 화면 보여주기
         } else{
           const Info = response.data.protectUser
           setWardInfo(Info)
-          dispatch(setNickName(wardInfo.userName));
           setFlag(true) // 있으면 관계 보여주기
         }
       } catch(error){
@@ -100,8 +102,87 @@ const FamilyMain = () => {
     }
     subCheck() // 구독 관계 요청
 
+    const mainRequest = async() => {
+      try{
+          const response = await getAccountList();
+          console.log(response.data.REC[0].accountNo)
+          const mainGo = response.data.REC[0].accountNo
+          await AsyncStorage.setItem("mainAccount", mainGo);
+          // setMainAc('1')
+      }
+      catch(error){
+          console.log(error)
+          // setMainAc('2')
+      }
+  }
+  mainRequest()
+
     return () => {}
     },[]);
+
+    const accountGo = async() => {
+      try{
+    
+          const JsonData = {
+            "accountTypeUniqueNo": "001-1-e7e3f77e997c46"
+          }
+            const response = await createAccount(JsonData);
+            console.log(response)
+            Toast.show({
+              type: 'success',
+              text1: '계좌 생성 성공!',
+            })
+          // router.push('/family copy/familyMain')
+      }
+      catch(error){
+          console.log(error)
+          Toast.show({
+              type: 'error',
+              text1: '실패',
+            })
+      }
+    }
+    const moneyAdd = async() => {
+      try{
+          const myMoney = await AsyncStorage.getItem("mainAccount");
+          console.log(myMoney)
+          // const myAcc = myAc.toSring()
+          // console.log(typeof myAc)
+          // console.log(typeof myAcc)
+          const JsonData = {
+            "accountNo": myMoney,
+            "transactionBalance":10000000,
+            "transactionSummary": "string"
+          }
+            const response = await addMoney(JsonData);
+            console.log(response.data)
+            Toast.show({
+              type: 'success',
+              text1: '입금 성공!',
+            })
+          // router.push('/family copy/familyMain')
+      }
+      catch(error){
+          console.log(error)
+          Toast.show({
+              type: 'error',
+              text1: '실패',
+            })
+      }
+    }
+  // 임시 피보호자 정보
+  // const wardInfo= {
+  //   accountNo: null , 
+  //   created: "2024-10-07T18:27:43.507606", 
+  //   subscriptionType: 2, 
+  //   updated: "2024-10-07T18:27:43.507646", 
+  //   userId: "kkkkkk", 
+  //   userKey: "e3ebc95d-99ad-4314-8e34-9703423a1885", 
+  //   userName: "kkkkkk", 
+  //   userPassword: "111111"}
+
+  // 임시 피보호자 정보
+  // const wardInfo= { directoryId : 1, userKey: '1', accountNo: '123456789', institutionCode: 1, name: '엄마' }
 
   // 대표 계좌 보여줄 지 확인하기
   const [mainAccount, setMainAccount] = useState('1')
@@ -121,6 +202,16 @@ const FamilyMain = () => {
         </View>
       </SafeAreaView>
       <View className="bg-gray-200 flex justify-center items-center">
+      <TouchableOpacity 
+            className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
+            onPress={accountGo}>
+                <Text className='text-white'>계좌생성</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+            className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
+            onPress={moneyAdd}>
+                <Text className='text-white'>입금</Text>
+            </TouchableOpacity>
         {(mainAccount=='1')? (        
           <Link className='h-6 rounded-3xl justify-center m-4 text-center font-bold' 
              href={
@@ -130,6 +221,12 @@ const FamilyMain = () => {
                 href={
                    {pathname:'/family/totalAccount'}
                    }>계좌 등록하기</Link>}
+
+        {/* <TouchableOpacity 
+          className='w-48 h-8 mx-1 rounded justify-center bg-gray-500'
+          onPress={() => router.push('/family copy/reqSendMoney')} 
+          >
+          <Text className='text-white text-center font-bold'>알림함</Text></TouchableOpacity> */}
       </View>
 
       {/* 피보호자 존재 - 메인 레이아웃 / 아니면 추가할 수 있는 레이아웃 구성 */}
