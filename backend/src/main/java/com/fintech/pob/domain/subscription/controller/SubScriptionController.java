@@ -39,19 +39,19 @@ public class SubScriptionController {
         UUID userKey = UUID.fromString(key);
         Optional<Subscription> subscriptions = Optional.ofNullable(subscriptionService.findByTargetUserKey(userKey).orElse(null));
 
-        String k= String.valueOf(subscriptions.get().getProtectUser().getUserKey());
+       // String k= String.valueOf(subscriptions.get().getProtectUser().getUserKey());
 
-        User user = userLocalService.findByUserKey(k);
+       // User user = userLocalService.findByUserKey(k);
 
-        System.out.println(user);
-        System.out.println(user.getAccountNo());
+        //System.out.println(user);
+        //System.out.println(user.getAccountNo());
 
         
-        String accountNo= user.getAccountNo();
+        //String accountNo= user.getAccountNo();
 
 
 
-        return ResponseEntity.ok(Optional.of(subscriptions.get())+accountNo);
+        return ResponseEntity.ok(Optional.of(subscriptions.get()));
     }
 
     @GetMapping("/findbyprotect")
@@ -59,17 +59,17 @@ public class SubScriptionController {
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
         Subscription subscription = subscriptionService.getSubscriptionByProtectUserKey(userKey);
-        UUID k= subscription.getTargetUser().getUserKey();
+      //  UUID k= subscription.getTargetUser().getUserKey();
 
-        User user = userLocalService.findByUserKey(k.toString());
-        String accountNo= user.getAccountNo();
+      //  User user = userLocalService.findByUserKey(k.toString());
+     //   String accountNo= user.getAccountNo();
 
-        System.out.println(user);
-        System.out.println(user.getAccountNo());
+      //  System.out.println(user);
+   //     System.out.println(user.getAccountNo());
 
 
         if (subscription != null) {
-            return ResponseEntity.ok(subscription+accountNo);
+            return ResponseEntity.ok(subscription);
         } else {
             return ResponseEntity.notFound().build();
         }
