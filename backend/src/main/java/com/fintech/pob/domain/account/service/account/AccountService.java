@@ -186,15 +186,35 @@ public class AccountService {
                 .bodyToMono(ClientAccountDetailResponseDTO.class);
     }
 
+    public Mono<ClientAccountDetailResponseDTO> getAccountDetail(AccountDetailRequestDTO requestPayload, HeaderRequestDTO header) {
+        System.out.println("-------------------[GET ACCOUNT DETAIL]-------------------");
+        System.out.println(header.toString());
+        System.out.println("----------------------------------------------------------");
+
+        ClientAccountDetailRequestDTO requestDTO = new ClientAccountDetailRequestDTO();
+        requestDTO.setHeader(header);
+        requestDTO.setAccountNo(requestPayload.getAccountNo());
+
+        return webClient.post()
+                .uri("demandDeposit/inquireDemandDepositAccount")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(requestDTO)
+                .retrieve()
+                .bodyToMono(ClientAccountDetailResponseDTO.class);
+    }
+
     public Mono<ClientAccountTransferResponseDTO> updateAccountTransfer(AccountTransferRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
 
         Optional<Subscription> subscriptionOptional = subscriptionService.findByTargetUserKey(UUID.fromString(header.getUserKey()));
         if (subscriptionOptional.isPresent()) {
-            header.setApiName("inquireDemandDepositAccount");
+            UUID depositUserToken = accountClientService.findByAccountNo(requestPayload.getDepositAccountNo()).getUser().getUserKey();
+            HeaderRequestDTO depositHeader = headerService.createCommonHeader("inquireDemandDepositAccount", depositUserToken.toString());
+            Mono<ClientAccountDetailResponseDTO> accountDepositMono = getAccountDetail(new AccountDetailRequestDTO(requestPayload.getDepositAccountNo()), depositHeader);
 
-            Mono<ClientAccountDetailResponseDTO> accountDepositMono = getAccountDetail(new AccountDetailRequestDTO(requestPayload.getDepositAccountNo()));
-            Mono<ClientAccountDetailResponseDTO> accountWithdrawMono = getAccountDetail(new AccountDetailRequestDTO(requestPayload.getWithdrawalAccountNo()));
+            UUID withdrawalUserToken = accountClientService.findByAccountNo(requestPayload.getWithdrawalAccountNo()).getUser().getUserKey();
+            HeaderRequestDTO withdrawalHeader = headerService.createCommonHeader("inquireDemandDepositAccount", withdrawalUserToken.toString());
+            Mono<ClientAccountDetailResponseDTO> accountWithdrawMono = getAccountDetail(new AccountDetailRequestDTO(requestPayload.getWithdrawalAccountNo()), withdrawalHeader);
 
             return Mono.zip(accountDepositMono, accountWithdrawMono)
                     .flatMap(tuple -> {
