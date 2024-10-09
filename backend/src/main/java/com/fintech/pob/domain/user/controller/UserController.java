@@ -3,6 +3,7 @@ package com.fintech.pob.domain.user.controller;
 import com.fintech.pob.domain.account.dto.request.AccountUpdateRequestDTO;
 import com.fintech.pob.domain.user.dto.request.CreateUserRequest;
 import com.fintech.pob.domain.user.dto.request.UserRequest;
+import com.fintech.pob.domain.user.entity.User;
 import com.fintech.pob.domain.user.service.LocalUserService;
 import com.fintech.pob.domain.user.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,4 +58,15 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("대표 계좌 업데이트 실패: " + e.getMessage());
         }
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUserByUserId(@PathVariable String userId) {
+        Optional<User> user = localUserService.getUserByUserId(userId);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
