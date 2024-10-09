@@ -29,6 +29,7 @@ public class LocalUserServiceImpl implements LocalUserService {
         user.setUserId(userId);
         user.setUserPassword(userPassword);
         user.setSubscriptionType(userSubscriptionType);
+        user.setAccountNo(null);
 
 
         userRepository.save(user);
@@ -57,7 +58,6 @@ public class LocalUserServiceImpl implements LocalUserService {
     public Optional<User> getUserByUserId(String userId) {
         return userRepository.findByUserId(userId);
     }
-
 
 
 }
