@@ -4,6 +4,9 @@ package com.fintech.pob.domain.subscription.controller;
 import com.fintech.pob.domain.subscription.dto.SubscriptionRequestDto;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
+import com.fintech.pob.domain.user.entity.User;
+import com.fintech.pob.domain.user.service.LocalUserService;
+import com.fintech.pob.domain.user.service.UserService;
 import com.fintech.pob.global.auth.jwt.JwtUtil;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
@@ -19,33 +22,47 @@ import java.util.UUID;
 public class SubScriptionController {
     private final SubscriptionService subscriptionService;
     private final JwtUtil jwtUtil;
-
-
+    private final UserService userService;
+    private final LocalUserService userLocalService;
     @PostMapping("/create")
     public ResponseEntity<Subscription> createSubscription(@RequestBody SubscriptionRequestDto dto) {
 
         Subscription newSubscription = subscriptionService.create(dto);
+
         return ResponseEntity.ok(newSubscription);
     }
 
     @GetMapping("/findbytarget")
-    public ResponseEntity<Optional<Subscription>> getSubscription(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getSubscription(@RequestHeader("Authorization") String token) {
 
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
         Optional<Subscription> subscriptions = Optional.ofNullable(subscriptionService.findByTargetUserKey(userKey).orElse(null));
 
-        //System.out.println();
-        return ResponseEntity.ok(Optional.of(subscriptions.get()));
+        UUID k= subscriptions.get().getProtectUser().getUserKey();
+
+        User user = userLocalService.findByUserKey(k.toString());
+
+
+        String accountNo= user.getAccountNo();
+
+
+
+        return ResponseEntity.ok(Optional.of(subscriptions.get())+accountNo);
     }
 
     @GetMapping("/findbyprotect")
-    public ResponseEntity<Subscription> getSubscriptionByProtectUserKey(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getSubscriptionByProtectUserKey(@RequestHeader("Authorization") String token) {
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
         Subscription subscription = subscriptionService.getSubscriptionByProtectUserKey(userKey);
+        UUID k= subscription.getTargetUser().getUserKey();
+
+        User user = userLocalService.findByUserKey(k.toString());
+        String accountNo= user.getAccountNo();
+
         if (subscription != null) {
-            return ResponseEntity.ok(subscription);
+            return ResponseEntity.ok(subscription+accountNo);
         } else {
             return ResponseEntity.notFound().build();
         }
