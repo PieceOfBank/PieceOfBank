@@ -1,5 +1,6 @@
 package com.fintech.pob.domain.subscriptionApproval.service;
 
+import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalKeyDto;
 import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalRequestDto;
 import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalResponseDto;
@@ -7,6 +8,6 @@ import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalRespo
 public interface SubscriptionApprovalService {
     Long requestSubscription(SubscriptionApprovalRequestDto subscriptionApprovalRequestDto);
     SubscriptionApprovalResponseDto getSubscriptionApprovalByNotificationId(Long notificationId);
-    SubscriptionApprovalKeyDto approveSubscriptionRequest(Long subscriptionApprovalId);
+    Subscription approveSubscriptionRequest(Long subscriptionApprovalId);
     SubscriptionApprovalKeyDto refuseSubscriptionRequest(Long subscriptionApprovalId);
 }

@@ -6,6 +6,7 @@ import com.fintech.pob.domain.notification.entity.NotificationType;
 import com.fintech.pob.domain.notification.repository.NotificationRepository;
 import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
 import com.fintech.pob.domain.subscription.dto.SubscriptionRequestDto;
+import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalKeyDto;
 import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalRequestDto;
@@ -48,7 +49,7 @@ public class SubscriptionApprovalServiceImpl implements SubscriptionApprovalServ
 
         // Notification 생성
         Notification notification = Notification.builder()
-                .senderUser(sender)
+                .senderUser(sender) // 자식이 구독 신청을 요청함
                 .receiverUser(receiver)
                 .type(notificationType)
                 .created(LocalDateTime.now())
@@ -79,28 +80,22 @@ public class SubscriptionApprovalServiceImpl implements SubscriptionApprovalServ
 
     @Override
     @Transactional
-    public SubscriptionApprovalKeyDto approveSubscriptionRequest(Long subscriptionApprovalId) {
+    public Subscription approveSubscriptionRequest(Long subscriptionApprovalId) {
         SubscriptionApproval subscriptionApproval = subscriptionApprovalRepository.findById(subscriptionApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Subscription Approval not found"));
         subscriptionApproval.setStatus(SubscriptionApprovalStatus.APPROVED);
         subscriptionApprovalRepository.save(subscriptionApproval);
 
-
         Notification notification = subscriptionApproval.getNotification();
-
-        // 수락시 저장하는 로직 - 정민
         SubscriptionRequestDto subscriptionRequestDto = new SubscriptionRequestDto();
-        subscriptionRequestDto.setTargetKey(notification.getSenderUser().getUserKey());
-        subscriptionRequestDto.setUserKey(notification.getReceiverUser().getUserKey());
-        subscriptionService.create(subscriptionRequestDto);
+        subscriptionRequestDto.setUserKey(notification.getSenderUser().getUserKey());
+        subscriptionRequestDto.setTargetKey(notification.getReceiverUser().getUserKey());
+        Subscription subscription = subscriptionService.create(subscriptionRequestDto);
 
         notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
         notificationRepository.save(notification);
 
-        return SubscriptionApprovalKeyDto.builder()
-                .targetKey(notification.getSenderUser().getUserKey())
-                .protectKey(notification.getReceiverUser().getUserKey())
-                .build();
+        return subscription;
     }
 
     @Override
@@ -113,8 +108,8 @@ public class SubscriptionApprovalServiceImpl implements SubscriptionApprovalServ
         Notification notification = subscriptionApproval.getNotification();
 
         return SubscriptionApprovalKeyDto.builder()
-                .targetKey(notification.getSenderUser().getUserKey())
-                .protectKey(notification.getReceiverUser().getUserKey())
+                .protectKey(notification.getSenderUser().getUserKey())
+                .targetKey(notification.getReceiverUser().getUserKey())
                 .build();
     }
 
