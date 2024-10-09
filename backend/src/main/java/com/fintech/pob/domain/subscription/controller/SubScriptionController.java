@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,11 +39,14 @@ public class SubScriptionController {
         UUID userKey = UUID.fromString(key);
         Optional<Subscription> subscriptions = Optional.ofNullable(subscriptionService.findByTargetUserKey(userKey).orElse(null));
 
-        UUID k= subscriptions.get().getProtectUser().getUserKey();
+        String k= String.valueOf(subscriptions.get().getProtectUser().getUserKey());
 
-        User user = userLocalService.findByUserKey(k.toString());
+        User user = userLocalService.findByUserKey(k);
 
+        System.out.println(user);
+        System.out.println(user.getAccountNo());
 
+        
         String accountNo= user.getAccountNo();
 
 
@@ -61,6 +63,10 @@ public class SubScriptionController {
 
         User user = userLocalService.findByUserKey(k.toString());
         String accountNo= user.getAccountNo();
+
+        System.out.println(user);
+        System.out.println(user.getAccountNo());
+
 
         if (subscription != null) {
             return ResponseEntity.ok(subscription+accountNo);
