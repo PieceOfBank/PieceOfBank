@@ -47,23 +47,22 @@ const sendMoney = () => {
   /* 이체 */
   const moneyGo = async(balance:number) => {
   try {
-    const keyGet = await AsyncStorage.getItem("myKey");
-    const myKey = JSON.parse(keyGet!)
+    // const keyGet = await AsyncStorage.getItem("myKey");
+    // const myKey = JSON.parse(keyGet!)
 
     const accountMy = await AsyncStorage.getItem("mainAccount");
 
-    console.log(myKey)
-    console.log(accountMy)
+    // console.log(myKey)
+    // console.log(accountMy)
     const JsonData = {
-      depositAccountNo: "0017906285245167",  // 임시 - 받는 계좌 정보 *구독 정보에서 가져오기*
+      depositAccountNo: "0019002625083250",  // 임시 - 받는 계좌 정보 *구독 정보에서 가져오기*
       transactionBalance: 10000,
-      withdrawalAccountNo: "0011274394443090", // 내 계좌
+      withdrawalAccountNo: accountMy, // 내 계좌
       depositTransactionSummary: "string", // 임시
       withdrawalTransactionSummary: "string" // 임시
     }
-    if (accountMy != null){
-      try{
-        const response = await accountTransfer(JsonData);
+
+      const response = await accountTransfer(JsonData);
         console.log(response)
         setStep('3')
         Toast.show({
@@ -71,12 +70,6 @@ const sendMoney = () => {
           text1: '송금 완료',
           text2: '송금이 완료되었습니다'
         })
-      }catch(error){
-        console.log('nnnn')
-      }
-
-    }
-
     // const transNo = response.data.REC[0]["transactionUniqueNo"] // 거래번호 맞게 가져오는지 확인해봐야 함
     // setMediaNo(transNo)
   }
@@ -114,14 +107,9 @@ useEffect(() => {
         if (inputPin == nowPin){
   
           const balanceCheck = parseInt(balance) // 송금 금액 숫자 변환
-          await moneyGo(balanceCheck)
+          moneyGo(balanceCheck)
 
-            setStep('3')
-            Toast.show({
-              type: 'success',
-              text1: '송금 완료',
-              text2: '송금이 완료되었습니다'
-            })
+      
           }
 
           else {
