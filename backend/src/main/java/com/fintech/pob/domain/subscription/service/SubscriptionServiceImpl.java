@@ -66,7 +66,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     @Transactional
     public void setOneTimeTransferLimit(UUID userKey,Long limit) {
 
-        Subscription subscription  = subscriptionRepository.findByTargetUserUserKey(userKey);
+        Subscription subscription  = subscriptionRepository.findByProtectUserUserKey(userKey);
         subscription.setOneTimeTransferLimit(limit);
 
         subscriptionRepository.save(subscription);
