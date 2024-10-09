@@ -94,7 +94,7 @@ export const loginUser = async (email: Record<string, string>) => {
     // 로그인 후 서버에서 받은 accessToken을 저장
     const accessToken = response.data.accessToken;
     console.log("### --- ###");
-    // console.log(response.data)
+    console.log(accessToken)
     await AsyncStorage.setItem("accessToken", accessToken);
 
     // 만약 refreshToken도 받는다면 저장
@@ -212,8 +212,9 @@ export const createDirectory = (data: any) => {
 };
 // 3. 계좌 저장소 조회 - GET
 export const getDirectory = (data: Record<string, string>) => {
+  const accessToken = AsyncStorage.getItem("accessToken");
   return axiosClient.get(`/directory/find`, {
-    headers: { userKey: "ecef4aeb-27f7-4c5c-9e70-3d7fbfc9a1ad" },
+    headers: { Authorization: `${accessToken}` },
   });
 };
 // 4. 계좌 저장소 삭제 - DELETE
@@ -222,17 +223,6 @@ export const deleteDirectory = (id: number) => {
     headers: { id: id },
   });
 };
-
-/* user API */
-// 1. 로그아웃 - POST
-
-// 2. 보호자 / 피보호자 조회 - GET
-
-// 3. 대표 계좌 등록 - POST
-
-// 4. PIN 등록 - POST
-
-// 5. PIN 조회 - GET
 
 /* Account API */
 // 1. 계좌 생성 - POST @@@
@@ -268,6 +258,7 @@ export const accountTransfer = (data: Record<string, unknown>) => {
     const accessToken = AsyncStorage.getItem("accessToken");
     return axiosClient.post(`/account/client/updateDemandDepositAccountTransfer`, data, {
         // headers:{userKey:'1bf84ad8-160e-4b31-b6ae-73ea4064cfad'}
+        headers: { Authorization: `${accessToken}` },
     } )
 }
 // 5. 거래 내역 조회
@@ -275,6 +266,7 @@ export const getHistoryList = (data: Record<string, unknown>) => {
     const accessToken = AsyncStorage.getItem("accessToken");
     return axiosClient.post(`/account/client/inquireTransactionHistoryList`, data, {
         // headers:{userKey:'1bf84ad8-160e-4b31-b6ae-73ea4064cfad'}
+        headers: { Authorization: `${accessToken}` },
     })
 }
 // 6. 거래 내역 조회(단건)
@@ -289,17 +281,16 @@ export const addMoney = (data: Record<string, unknown>) => {
     const accessToken = AsyncStorage.getItem("accessToken");
 
     return axiosClient.post(`/account/client/updateDemandDepositAccountDeposit`, data, {
-        // headers:{userKey:'1bf84ad8-160e-4b31-b6ae-73ea4064cfad'}
+        headers:{ Authorization: `${accessToken}` },
     })
 }
 
 // 7. 대표 계좌 등록
-export const accountPatch = (data: Record<string, string>) => {
-    const accessToken = AsyncStorage.getItem("accessToken");
+export const accountPatch = async (data: Record<string, string>) => {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+    console.log('??')
     console.log(accessToken)
-    return axiosClient.patch(`/accoutnt/client/setPrimaryAccount`, data, {
-        // headers:{ Authorization : `${accessToken}`}
-    })
+    return axiosClient.patch(`/account/client/setPrimaryAccount`, data)
 }
 
 /* Media API */
@@ -379,47 +370,65 @@ export const sendExpoNotification = (data: Record<string, string>) => {
 
 // 1. 보호 관계 요청 (보호자 → 피보호자)
 export const subscriptionPost = (data:Record<string,string>) => {
-    return axiosClient.post(`/subscriptions/request`, 
-        data)
-}
+    return axiosClient.post(`/subscriptions/request`, data)
+  }
 
-// 2. 보호 관계 수락 (피보호자 → 보호자)
-export const subscriptionApproval = (data:Record<string,string>) => {
-    return axiosClient.post(`/subscriptions/approval`, 
-       )
-}
-// 3. 보호 관계 거절 (피보호자 → 보호자)
-export const subscriptionRefusal= (data:Record<string,string>) => {
-    return axiosClient.post(`/subscriptions/refusal`, 
-        {params: data})
-}
-// 4. 보호 관계 조회 
-export const subscriptionCheck= () => {
+// 2. 보호 관계 수락
+export const subscriptionApproval = (Id:number) => {
+    return axiosClient.patch(`/subscriptions/approval/${Id}`)
+  }
+
+// 3. 보호 관계 거절 // {params: data}
+export const subscriptionRefusal= (Id:number) => {
+    return axiosClient.patch(`/subscriptions/refusal/${Id}`) 
+  }
+
+// 4. 보호 관계 조회 - 보호자
+export const subTargetCheck= () => {
     const accessToken = AsyncStorage.getItem("accessToken");
-    console.log(accessToken)
-    return axiosClient.get(`/subscriptions/find`,
-        {
-            headers:{ Authorization : `${accessToken}`}
-        }
-        
+    return axiosClient.get(`/subscriptions/findbytarget`,
+        {headers:{ Authorization : `${accessToken}`}}
     )
-}
+  }
+
+// 5. 보호 관계 조회 - 피보호자
+export const subProtectCheck= () => {
+    const accessToken = AsyncStorage.getItem("accessToken");
+    return axiosClient.get(`/subscriptions/findbyprotect`,
+        {headers:{ Authorization : `${accessToken}`}}  
+    )
+  }
+
+// 6. 보호 관계 요청자 이름 조회
+export const subscriptionName= (Id:number) => {
+    const accessToken = AsyncStorage.getItem("accessToken");
+    return axiosClient.get(`/subscriptions/${Id}`)
+  }
+
+// 7. 보호 관계 금액 제한 - 1회
+export const subOnce= (data:Record<string,number>) => {
+    const accessToken = AsyncStorage.getItem("accessToken");
+    return axiosClient.put(`/subscriptions/setOneTime`,
+        { headers:{ Authorization : `Bearer ${accessToken}`}},
+        { params:data}
+    )
+  }
+
+// 8. 보호 관계 금액 제한 - 하루
+export const subDaily= (data:Record<string,number>) => {
+  const accessToken = AsyncStorage.getItem("accessToken");
+  return axiosClient.put(`/subscriptions/setDaily`,
+      { params: { Authorization : `${accessToken}`}, data }
+    )
+  }
+
 // 4. 보호 관계 생성 
-export const subscriptionCreate= (data:Record<string,string>) => {
-    const accessToken = AsyncStorage.getItem("accessToken");
-    console.log(accessToken)
-    return axiosClient.post(`/subscriptions/create`,data,
-    )
-}
-
-
-// 5. 보호 관계 요청 온 이름 조회
-export const subscriptionName= (Id:any) => {
-    const accessToken = AsyncStorage.getItem("accessToken");
-    console.log(accessToken)
-    return axiosClient.get(`/subscriptions/${Id}`,
-    )
-}
+// export const subscriptionCreate= (data:Record<string,string>) => {
+//     const accessToken = AsyncStorage.getItem("accessToken");
+//     console.log(accessToken)
+//     return axiosClient.post(`/subscriptions/create`,data,
+//     )
+// }
 
 
 /* Token */

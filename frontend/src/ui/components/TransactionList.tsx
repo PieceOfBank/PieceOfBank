@@ -2,6 +2,8 @@ import { View, Text, Button, ImageBackground, Alert, TextInput, TouchableOpacity
 import { useRouter, Link, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import { getHistoryList } from '../../services/api';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface sendInfo{
     account:string | string[],
@@ -22,58 +24,60 @@ const TransactionList = ({account, bank, name} : sendInfo) => {
         transactionMemo: string
     }
      // 임시 리스트 (거래) - 요청 받아와야 함
-     const transferList: TransferItem [] = 
-     [            {
-        transactionUniqueNo: 19211,
-        transactionDate: "20240929",
-        transactionTime: "000706",
-        transactionType: "1",
-        transactionTypeName: "입금",
-        transactionAccountNo: "",
-        transactionBalance: 1000000000,
-        transactionAfterBalance: 1000000000,
-        transactionSummary: "(수시입출금) : 입금",
-        transactionMemo: ""
-    },
-    {
-        transactionUniqueNo: 19212,
-        transactionDate: "20240929",
-        transactionTime: "000819",
-        transactionType: "2",
-        transactionTypeName: "출금(이체)",
-        transactionAccountNo: "0019197589758057",
-        transactionBalance: 10000,
-        transactionAfterBalance: 999990000,
-        transactionSummary: "",
-        transactionMemo: ""
-    }
-    ,
-    {
-        transactionUniqueNo: 19213,
-        transactionDate: "20240929",
-        transactionTime: "000819",
-        transactionType: "2",
-        transactionTypeName: "출금(이체)",
-        transactionAccountNo: "0019197589758057",
-        transactionBalance: 10000,
-        transactionAfterBalance: 999990000,
-        transactionSummary: "",
-        transactionMemo: ""
-    }
-    ,
-    {
-        transactionUniqueNo: 19214,
-        transactionDate: "20240929",
-        transactionTime: "000819",
-        transactionType: "2",
-        transactionTypeName: "출금(이체)",
-        transactionAccountNo: "0019197589325758057",
-        transactionBalance: 10000,
-        transactionAfterBalance: 999990000,
-        transactionSummary: "",
-        transactionMemo: ""
-    }
-]
+    //  const transferList: TransferItem [] = 
+    //  [            
+    //     {
+    //     transactionUniqueNo: 19211,
+    //     transactionDate: "20240929",
+    //     transactionTime: "000706",
+    //     transactionType: "1",
+    //     transactionTypeName: "입금",
+    //     transactionAccountNo: "",
+    //     transactionBalance: 1000000000,
+    //     transactionAfterBalance: 1000000000,
+    //     transactionSummary: "(수시입출금) : 입금",
+    //     transactionMemo: ""
+    // },
+    // {
+    //     transactionUniqueNo: 19212,
+    //     transactionDate: "20240929",
+    //     transactionTime: "000819",
+    //     transactionType: "2",
+    //     transactionTypeName: "출금(이체)",
+    //     transactionAccountNo: "0019197589758057",
+    //     transactionBalance: 10000,
+    //     transactionAfterBalance: 999990000,
+    //     transactionSummary: "",
+    //     transactionMemo: ""
+    // }
+    // ,
+    // {
+    //     transactionUniqueNo: 19213,
+    //     transactionDate: "20240929",
+    //     transactionTime: "000819",
+    //     transactionType: "2",
+    //     transactionTypeName: "출금(이체)",
+    //     transactionAccountNo: "0019197589758057",
+    //     transactionBalance: 10000,
+    //     transactionAfterBalance: 999990000,
+    //     transactionSummary: "",
+    //     transactionMemo: ""
+    // }
+    // ,
+    // {
+    //     transactionUniqueNo: 19214,
+    //     transactionDate: "20240929",
+    //     transactionTime: "000819",
+    //     transactionType: "2",
+    //     transactionTypeName: "출금(이체)",
+    //     transactionAccountNo: "0019197589325758057",
+    //     transactionBalance: 10000,
+    //     transactionAfterBalance: 999990000,
+    //     transactionSummary: "",
+    //     transactionMemo: ""
+    // }
+// ]
+    const [transferList, setTransferList] = useState<TransferItem[]>([])
     const [dealList, setDealList] = useState<TransferItem[]>([])
 
     // const {account, bank, name} = useLocalSearchParams()
@@ -81,6 +85,29 @@ const TransactionList = ({account, bank, name} : sendInfo) => {
     // 보호자 확인하는 요청 - 보호자 있을 
     const [relation, setRelation] = useState('1')
     
+
+    /* 거래 목록 조회 */
+    const listView = async() => {
+    try {
+        const accountMy = await AsyncStorage.getItem("mainAccount");
+        const JsonData = {
+        "accountNo": accountMy,
+        "startDate": "20240101",
+        "endDate": "20241231",
+        "transactionType": "A",
+        "orderByType": "ASC"
+        }
+        const response = await getHistoryList(JsonData);
+        const listData = response.data.REC.list
+        // console.log(response.data.REC.list)
+        setDealList(listData)
+        console.log(listData)
+    }
+    catch (error) {
+        console.log(`에러: ${error}`)
+    }
+    } 
+
 
 
     const [modals, setModals] = useState(false)
@@ -94,11 +121,10 @@ const TransactionList = ({account, bank, name} : sendInfo) => {
         };
         screenChange();
         /* 전체 거래 내역 조회 요청 추가하기 */
-        console.log('!!')
+        listView()
         // 연락처 대상으로 거래 내역 필터링
         const checkList = transferList.filter(value => value.transactionAccountNo == account)
         setDealList(checkList)
-        console.log(account)
 
         const mediaList = []
 

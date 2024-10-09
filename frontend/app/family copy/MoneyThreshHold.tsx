@@ -5,10 +5,11 @@ import { useState } from "react";
 import Toast from 'react-native-toast-message';
 import CancelButton from "../../src/ui/components/CancelButton";
 import Header from "../../src/ui/components/Header";
+import { subOnce, subDaily } from "../../src/services/api";
 
 const MoneyTrheshHold = () => {
-  const [oneLimit, setOneLimit] = useState<string>("");
-  const [todayLimit, setTodayLimit] = useState<string>("");
+  const [oneLimit, setOneLimit] = useState<string>('');
+  const [todayLimit, setTodayLimit] = useState<string>('');
   const router = useRouter()
 
   /*
@@ -29,6 +30,28 @@ const MoneyTrheshHold = () => {
     })
   }
 
+  const limitCheck = async() => {
+    // () => router.push('/family copy/familyMain')
+    try{
+      const onceLimit = parseInt(oneLimit)
+      const dayLimit = parseInt(todayLimit)
+      const oneData = {
+        newLimit:onceLimit
+      }
+      const dayData = {
+        newLimit:dayLimit
+      }
+      const onceRequest = await subOnce(oneData)
+      // const dayRequest = await subDaily(dayData)
+      console.log(onceRequest)
+      // console.log(dayRequest)
+    }catch(error){
+      console.log(error)
+    }
+
+
+  }
+
   return (
     <View className='flex-1'>
       <Header />
@@ -37,12 +60,12 @@ const MoneyTrheshHold = () => {
         <SafeAreaView className='bg-gray-300 rounded-3xl p-5'>
           <Text className="my-2 text-center font-bold text-2xl">1회</Text>
           <View className='flex-row'>
-            <TextInput className="mx-2 py-2 w-60 bg-white rounded-3xl" onChangeText={(limit) => setOneLimit(limit)}></TextInput>
+            <TextInput className="mx-2 py-2 w-60 bg-white rounded-3xl" keyboardType="numeric" onChangeText={(limit) => setOneLimit(limit)}></TextInput>
             <Text className='text-xl font-bold py-2'>원</Text>
           </View>
           <Text className="my-2 text-center font-bold text-2xl mt-3">하루 총</Text>
           <View className='flex-row'>
-          <TextInput className="mx-2 py-2 w-60 bg-white rounded-3xl" onChangeText={(limit) => setTodayLimit(limit)}></TextInput>
+          <TextInput className="mx-2 py-2 w-60 bg-white rounded-3xl" keyboardType="numeric" onChangeText={(limit) => setTodayLimit(limit)}></TextInput>
           <Text className='text-xl font-bold py-2'>원</Text>
           </View>
           <Text className="text-center font-bold mt-6">한도 이상 송금 요청 시</Text>
@@ -51,7 +74,7 @@ const MoneyTrheshHold = () => {
         <View className='flex-row mt-2'>
           <TouchableOpacity 
             className='m-2 py-2 px-4 bg-red-400 rounded-3xl bg-sky-500'
-            onPress={() => router.push('/family copy/familyMain')} 
+            onPress={limitCheck} 
             >
             <Text className='text-white text-center font-bold'>설정 완료</Text></TouchableOpacity>
             <CancelButton />

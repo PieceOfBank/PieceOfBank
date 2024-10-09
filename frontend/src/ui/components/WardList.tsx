@@ -3,7 +3,7 @@ import { View, Text, ImageBackground, TextInput, SafeAreaView, TouchableOpacity,
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { subscriptionCheck } from "../../services/api";
+import { subProtectCheck } from "../../services/api";
 import { directory } from "../../types/directory";
 
 const WardListForm = () => {
@@ -21,29 +21,14 @@ const WardListForm = () => {
     // 보호자 연결 상태 확인 - 1 : 연결 전 (보호자 요청 수락 페이지) / 2 : 연결 후 (기본 메인)
     const [connect, setConnect] = useState(false);
 
-    // 보호자 연결 조회 (GET)
-    // const connectCheck = async () => {
-
-    //     try{
-    //         const response = await subscriptionCheck();
-    //         // // ★ api 요청 & 응답 추가 - 보호자 연결 되어있으면 setConnect(2)
-    //         // if (response) {
-    //         //     setConnect(2)
-    //         // }
-    //     }catch (error){
-    //         console.log(error)
-    //     }
-    // }
-
     useEffect(() => {
 
         // 구독 관계 있는지 확인
         const subCheck = async() => {
             try{
-            const response = await subscriptionCheck()
+            const response = await subProtectCheck()
             const checking = response.data
-            console.log('322')
-            console.log(response)
+            console.log(checking)
             if (checking == null){
                 setConnect(false) // 없으면 등록 화면 보여주기
             } else{

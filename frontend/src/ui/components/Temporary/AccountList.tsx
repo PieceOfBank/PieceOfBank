@@ -7,6 +7,8 @@ import Toast from "react-native-toast-message";
 import CancelButton from "../CancelButton";
 import { account } from "../../../types/account";
 import { getAccountList } from "../../../services/api";
+import { accountPatch } from "../../../services/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const FamilyAccountList = () => {
 
@@ -55,9 +57,27 @@ const FamilyAccountList = () => {
     }
 
     // ★ 메인 계좌 등록 요청 (요청 구현해야 함)
-    const mainSelect = () => {
-        console.log(mainAccount)
-        console.log(accountChecked)
+    const mainSelect = async () => {
+        try{
+            console.log(mainAccount)
+            const keyGet = await AsyncStorage.getItem("myKey")
+            const myKey = JSON.parse(keyGet!)
+
+            const JsonData = {
+                userKey:myKey,
+                accountNo:mainAccount
+            }
+            const requests = await accountPatch(JsonData)
+            console.log(requests.data)
+            Toast.show({
+                type: 'success',
+                text1: '대표 계좌 등록',
+                text2: ':happy:'
+              })
+            router.push('/family copy/familyMain')
+        }catch(error){
+            console.log(error)
+        }
         Toast.show({
             type: 'success',
             text1: '대표 계좌 등록이 완료되었습니다',

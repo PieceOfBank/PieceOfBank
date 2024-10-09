@@ -24,7 +24,7 @@ const WardAllAccount = () => {
         try {
           const response = await getAccountList();
           const answer = response.data.REC // 계좌목록
-          console.log(response)
+        //   console.log(response.data.REC)
           setAccountList(answer)
         }
         catch (error) {
@@ -62,13 +62,17 @@ const WardAllAccount = () => {
             
             const keyGet = await AsyncStorage.getItem("myKey")
             const myKey = JSON.parse(keyGet!)
+            console.log(myKey)
+            console.log(typeof myKey)
+            console.log(mainAccount)
+            console.log(typeof mainAccount)
 
             const JsonData = {
-                'userKey':myKey,
-                'accountNo':mainAccount
+                userKey:myKey,
+                accountNo:mainAccount
             }
             const requests = await accountPatch(JsonData)
-            // console.log(mainAccount)
+            console.log(mainAccount)
             // console.log(accountChecked)
             console.log(requests)
             Toast.show({

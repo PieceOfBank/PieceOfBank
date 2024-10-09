@@ -6,10 +6,12 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import WardListForm from "../../src/ui/components/WardList";
 import NowAccount from "../../src/ui/components/NowAccount";
 import SmallLogo from "../../src/assets/SmallLogo.png";
-import { mediaPost, createAccount, logoutUser } from "../../src/services/api";
+import { mediaPost, createAccount, logoutUser, getAccountList, addMoney } from "../../src/services/api";
 import Toast from "react-native-toast-message";
 import { useDispatch } from "react-redux";
 import { logout } from "../../src/store/userSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 
 interface CareItem {
@@ -22,7 +24,7 @@ const caregiver = () => {
     const router = useRouter()
     const dispatch = useDispatch();
 
-
+    const [mainAc, setMainAc] = useState('')
     const accountGo = async() => {
         try{
       
@@ -34,6 +36,34 @@ const caregiver = () => {
               Toast.show({
                 type: 'success',
                 text1: '계좌 생성 성공!',
+              })
+            // router.push('/family copy/familyMain')
+        }
+        catch(error){
+            console.log(error)
+            Toast.show({
+                type: 'error',
+                text1: '실패',
+              })
+        }
+      }
+    const moneyAdd = async() => {
+        try{
+            const myMoney = await AsyncStorage.getItem("mainAccount");
+
+            // const myAcc = myAc.toSring()
+            // console.log(typeof myAc)
+            // console.log(typeof myAcc)
+            const JsonData = {
+              "accountNo": myMoney,
+              "transactionBalance":10000000,
+              "transactionSummary": "string"
+            }
+              const response = await addMoney(JsonData);
+            //   console.log(myAcc)
+              Toast.show({
+                type: 'success',
+                text1: '입금 성공!',
               })
             // router.push('/family copy/familyMain')
         }
@@ -76,6 +106,21 @@ const caregiver = () => {
             await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
         };
         screenChange();
+        const mainRequest = async() => {
+            try{
+                const response = await getAccountList();
+                console.log(response.data.REC[0].accountNo)
+                const mainGo = response.data.REC[0].accountNo
+                await AsyncStorage.setItem("mainAccount", mainGo);
+                setMainAc('1')
+            }
+            catch(error){
+                console.log(error)
+                setMainAc('2')
+            }
+        }
+        mainRequest()
+        
         return () => {
             ScreenOrientation.unlockAsync()
         }
@@ -104,7 +149,12 @@ const caregiver = () => {
             className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
             onPress={accountGo}>
                 <Text className='text-white'>계좌생성</Text>
-        </TouchableOpacity>
+            </TouchableOpacity>
+            <TouchableOpacity 
+            className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
+            onPress={moneyAdd}>
+                <Text className='text-white'>입금</Text>
+            </TouchableOpacity>
         </View>
         <View className='flex-1 items-center justify-center'>
             <WardListForm />

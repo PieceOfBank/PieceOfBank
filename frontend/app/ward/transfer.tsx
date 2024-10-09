@@ -20,6 +20,7 @@ import DirectoryTransfer from "../../src/ui/components/DirectoryTransfer";
 import Toast from "react-native-toast-message";
 import smallLogo from "../../src/assets/SmallLogo.png";
 import { accountTransfer, getAccount, notifyLimitRequest } from "../../src/services/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const careTransfer = () => {
   interface directoryInfo {
@@ -98,10 +99,16 @@ const careTransfer = () => {
 
   const moneyGo = async (balance: number) => {
     try {
+
+      const keyGet = await AsyncStorage.getItem("myKey");
+      const myKey = JSON.parse(keyGet!)
+
+      const accountMy = await AsyncStorage.getItem("mainAccount");
+      // const myAc = JSON.parse(acGet!)
       const JsonData = {
         depositAccountNo: account, // 상대방 계좌
         transactionBalance: balance,
-        withdrawalAccountNo: "0019730654868483", // 임시 - 내 계좌 정보 필요
+        withdrawalAccountNo: accountMy, // 내 계좌
         depositTransactionSummary: "string", // 임시
         withdrawalTransactionSummary: "string", // 임시
       };
