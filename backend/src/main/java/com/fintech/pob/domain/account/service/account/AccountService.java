@@ -264,6 +264,10 @@ public class AccountService {
 
         ClientAccountTransferRequestDTO requestDTO = ClientAccountTransferRequestDTO.of(header, requestPayload);
 
+        System.out.println("-------------------[UPDATE ACCOUNT TRANSFER]-------------------");
+        System.out.println(header.toString());
+        System.out.println("----------------------------------------------------------");
+
         return webClient.post()
                 .uri("demandDeposit/updateDemandDepositAccountTransfer")
                 .accept(MediaType.APPLICATION_JSON)
