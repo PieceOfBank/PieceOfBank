@@ -170,6 +170,10 @@ public class AccountService {
     public Mono<ClientAccountDetailResponseDTO> getAccountDetail(AccountDetailRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
 
+        System.out.println("-------------------[GET ACCOUNT DETAIL]-------------------");
+        System.out.println(header.toString());
+        System.out.println("----------------------------------------------------------");
+
         ClientAccountDetailRequestDTO requestDTO = new ClientAccountDetailRequestDTO();
         requestDTO.setHeader(header);
         requestDTO.setAccountNo(requestPayload.getAccountNo());
