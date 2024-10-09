@@ -78,7 +78,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     @Transactional
     public void setDailyTransferLimit(UUID userKey,Long limit) {
 
-        Subscription subscription  =subscriptionRepository.findByTargetUserUserKey(userKey);
+        Subscription subscription  =subscriptionRepository.findByProtectUserUserKey(userKey);
         subscription.setDailyTransferLimit(limit);
         subscriptionRepository.save(subscription);
 
