@@ -39,7 +39,7 @@ public class FCMServiceImpl implements FCMService {
      */
     public Mono<Integer> sendMessageTo(FCMRequestDto notificationRequestDto) throws IOException {
         String message = makeMessage(notificationRequestDto);
-        System.out.println("+++++++++" + message);
+        log.info("+++++++++{}", message);
         String accessToken = getAccessToken();
 
         return webClient.post()

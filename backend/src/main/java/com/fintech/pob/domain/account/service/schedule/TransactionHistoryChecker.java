@@ -8,6 +8,7 @@ import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
 import com.fintech.pob.global.header.service.HeaderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -16,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TransactionHistoryChecker implements ScheduledChecker {
@@ -45,7 +47,7 @@ public class TransactionHistoryChecker implements ScheduledChecker {
 
                     //if (lastTransactionDate == null || LocalDate.parse(lastTransactionDate, formatter).isEqual(LocalDate.now())) {
                     if (lastTransactionDate == null || LocalDate.parse(lastTransactionDate, formatter).isBefore(LocalDate.now().minusDays(3))) {
-                        System.out.println("[ScheduledChecker]: " + accountNo + ", " + subscription.getTargetUser());
+                        log.info("[ScheduledChecker]: {}, {}", accountNo, subscription.getTargetUser());
                         notificationService.sendNotification(UUID.fromString(header.getUserKey()), subscription.getProtectUser().getUserKey(), "거래 내역 없음 알림");
                         break;
                     }
