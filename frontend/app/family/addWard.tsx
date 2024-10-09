@@ -27,20 +27,20 @@ const AddWard = () => {
       console.log("부모추가하기.. gogo")
       console.log(response.data)
 
-      // 관계 맺은 후, 부모 정보 얻기
-      const subData = await subTargetCheck();
-      // 1. 부모 유저키 얻기
-      const protectUserKey = subData.data.protectUser.userKey;
-      // 2. 부모 디바이스 토큰 얻기
-      const ProtectUserTokenKeyRes = await getToken(protectUserKey);
-      const ProtectUserExpoToken = ProtectUserTokenKeyRes.data;
+      // // 관계 맺은 후, 부모 정보 얻기
+      // const subData = await subTargetCheck();
+      // // 1. 부모 유저키 얻기
+      // const protectUserKey = subData.data.protectUser.userKey;
+      // // 2. 부모 디바이스 토큰 얻기
+      // const ProtectUserTokenKeyRes = await getToken(protectUserKey);
+      // const ProtectUserExpoToken = ProtectUserTokenKeyRes.data;
 
-      const notificationMsg = {
-        token: ProtectUserExpoToken,
-        title: "구독 신청 알림",
-        body: "안전한 금융 거래를 보장할 수 있어요!"
-      }
-      await sendExpoNotification(notificationMsg);
+      // const notificationMsg = {
+      //   token: ProtectUserExpoToken,
+      //   title: "구독 신청 알림",
+      //   body: "안전한 금융 거래를 보장할 수 있어요!"
+      // }
+      // await sendExpoNotification(notificationMsg);
 
       Toast.show({
         type: 'success',

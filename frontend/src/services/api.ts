@@ -251,9 +251,10 @@ export const getAccount = (data: Record<string, string>) => {
 // 4. 계좌 이체 
 export const accountTransfer = (data: Record<string, unknown>) => {
     const accessToken = AsyncStorage.getItem("accessToken");
+    console.log(`토큰확인확인 ${accessToken}`)
     return axiosClient.post(`/account/client/updateDemandDepositAccountTransfer`, data, {
         // headers:{userKey:'1bf84ad8-160e-4b31-b6ae-73ea4064cfad'}
-        headers: { Authorization: `${accessToken}` },
+        headers: { "Requires-Auth": true  },
     } )
 }
 // 5. 거래 내역 조회

@@ -112,6 +112,8 @@ const careTransfer = () => {
         depositTransactionSummary: "string", // 임시
         withdrawalTransactionSummary: "string", // 임시
       };
+
+      console.log("최종 JsonData:", JsonData);
       const response = await accountTransfer(JsonData);
       console.log(response);
     } catch (error) {

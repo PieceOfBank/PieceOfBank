@@ -102,20 +102,20 @@ const FamilyMain = () => {
     }
     subCheck() // 구독 관계 요청
 
-    const mainRequest = async() => {
-      try{
-          const response = await getAccountList();
-          console.log(response.data.REC[0].accountNo)
-          const mainGo = response.data.REC[0].accountNo
-          await AsyncStorage.setItem("mainAccount", mainGo);
-          // setMainAc('1')
-      }
-      catch(error){
-          console.log(error)
-          // setMainAc('2')
-      }
-  }
-  mainRequest()
+      const mainRequest = async() => {
+        try{
+            const response = await getAccountList();
+            console.log(response.data.REC[0].accountNo)
+            const mainGo = response.data.REC[0].accountNo
+            await AsyncStorage.setItem("mainAccount", mainGo);
+            // setMainAc('1')
+        }
+        catch(error){
+            console.log(error)
+            // setMainAc('2')
+        }
+    }
+    mainRequest()
 
     return () => {}
     },[]);
