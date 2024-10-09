@@ -380,9 +380,10 @@ export const subscriptionRefusal= (Id:number) => {
 
 // 4. 보호 관계 조회 - 보호자
 export const subTargetCheck= () => {
-    const accessToken = AsyncStorage.getItem("accessToken");
+  //const accessToken = AsyncStorage.getItem("accessToken");
+  //Authorization : `${accessToken}`
     return axiosClient.get(`/subscriptions/findbytarget`,
-        {headers:{ Authorization : `${accessToken}`}}
+        {headers:{"Requires-Auth": true }}
     )
   }
 
@@ -428,9 +429,6 @@ export const subDaily= (data:Record<string,number>) => {
 
 /* Token */
 export const sendToken = (userKey: string, token: string) => {
-    console.log(("why not send this token?"))
-    console.log(userKey)
-    console.log(token)
   return axiosClient.post(`/token`, {
     userKey: userKey,
     token: token,
@@ -438,11 +436,11 @@ export const sendToken = (userKey: string, token: string) => {
 };
 
 export const getToken = (userKey: string) => {
-  return axiosClient.get(`/token?userKey=${userKey}`);
+  return axiosClient.get(`/token/${userKey}`);
 };
 
 export const deleteToken = (userKey: string) => {
-  return axiosClient.delete(`/token?userKey=${userKey}`);
+  return axiosClient.delete(`/token/${userKey}`);
 };
 
 // 2. 보호 관계 순서 수정 - PUT
