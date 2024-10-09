@@ -18,6 +18,7 @@ public interface SubscriptionService {
     Subscription update(UUID userKey);
     List<Subscription> findAll();
     void delete(UUID userKey);
+    Subscription getSubscriptionByTargetUserKey(UUID userKey);
     Subscription getSubscriptionByProtectUserKey(UUID userKey);
     void setOneTimeTransferLimit(UUID userKey,Long limit);
     void setDailyTransferLimit(UUID userKey,Long limit);

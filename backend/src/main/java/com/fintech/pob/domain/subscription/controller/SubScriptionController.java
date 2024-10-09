@@ -33,25 +33,17 @@ public class SubScriptionController {
     }
 
     @GetMapping("/findbytarget")
-    public ResponseEntity<Optional<Subscription>> getSubscription(@RequestHeader("Authorization") String token) {
-
-       String key = (String) jwtUtil.extractUserKey(token);
+    public ResponseEntity<Subscription> getSubscriptionByTargetUserKey(@RequestHeader("Authorization") String token) {
+        String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
-        Optional<Subscription> subscriptions = Optional.ofNullable(subscriptionService.findByTargetUserKey(userKey).orElse(null));
+        Subscription subscription = subscriptionService.getSubscriptionByTargetUserKey(userKey);
+       
 
-       // String k= String.valueOf(subscriptions.get().getProtectUser().getUserKey());
-
-       // User user = userLocalService.findByUserKey(k);
-
-        //System.out.println(user);
-        //System.out.println(user.getAccountNo());
-
-        
-        //String accountNo= user.getAccountNo();
-
-
-
-        return ResponseEntity.ok(Optional.of(subscriptions.get()));
+        if (subscription != null) {
+            return ResponseEntity.ok(subscription);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/findbyprotect")
