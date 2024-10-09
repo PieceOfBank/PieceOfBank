@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public class SubScriptionController {
     @GetMapping("/findbytarget")
     public ResponseEntity<?> getSubscription(@RequestHeader("Authorization") String token) {
 
-        String key = (String) jwtUtil.extractUserKey(token);
+       String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
         Optional<Subscription> subscriptions = Optional.ofNullable(subscriptionService.findByTargetUserKey(userKey).orElse(null));
 
