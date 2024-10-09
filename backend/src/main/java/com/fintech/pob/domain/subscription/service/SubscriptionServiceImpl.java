@@ -71,7 +71,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
 
         subscriptionRepository.save(subscription);
 
-        notificationService.sendNotification(userKey, subscription.getProtectUser().getUserKey(), "한도 변경 알림");
+       // notificationService.sendNotification(userKey, subscription.getProtectUser().getUserKey(), "한도 변경 알림");
     }
 
     @Override
@@ -82,7 +82,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         subscription.setDailyTransferLimit(limit);
         subscriptionRepository.save(subscription);
 
-        notificationService.sendNotification(userKey, subscription.getProtectUser().getUserKey(), "한도 변경 알림");
+      //  notificationService.sendNotification(userKey, subscription.getProtectUser().getUserKey(), "한도 변경 알림");
     }
 
 @Override
