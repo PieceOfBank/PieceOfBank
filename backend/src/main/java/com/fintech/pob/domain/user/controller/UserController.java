@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -43,16 +44,6 @@ public class UserController {
             return ResponseEntity.ok("사용자 정보 저장 성공");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("사용자 정보 저장 실패: " + e.getMessage());
-        }
-    }
-
-      @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserByUserId(@PathVariable String userId) {
-        Optional<User> user = userService.getUserByUserId(userId);
-        if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());
-        } else {
-            return ResponseEntity.notFound().build();
         }
     }
 
