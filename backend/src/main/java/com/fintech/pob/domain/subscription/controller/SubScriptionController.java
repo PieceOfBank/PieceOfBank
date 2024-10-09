@@ -45,6 +45,7 @@ public class SubScriptionController {
 
         System.out.println(user);
         System.out.println(user.getAccountNo());
+
         
         String accountNo= user.getAccountNo();
 
@@ -62,6 +63,10 @@ public class SubScriptionController {
 
         User user = userLocalService.findByUserKey(k.toString());
         String accountNo= user.getAccountNo();
+
+        System.out.println(user);
+        System.out.println(user.getAccountNo());
+
 
         if (subscription != null) {
             return ResponseEntity.ok(subscription+accountNo);
