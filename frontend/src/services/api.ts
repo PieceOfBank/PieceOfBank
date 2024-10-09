@@ -182,13 +182,6 @@ axiosClient.interceptors.response.use(
 );
 
 /* Directory API */
-// 1. 계좌 저장소 수정 - PUT
-export const updateDirectory = (id: number) => {
-  return axiosClient.patch(`/directory/update/${id}`, {
-    headers: { id: id },
-  });
-};
-
 interface UserInfo {
   userKey: string;
   accountNo: string;
@@ -202,26 +195,28 @@ interface UserDirectory {
   file: string;
 }
 
+// 1. 계좌 저장소 수정 - PUT
+export const updateDirectory = (id: number, data: Record<string, string>) => {
+    return axiosClient.put(`/directory/put/${id}`, data, {
+        headers: { "Requires-Auth": true },
+    });
+};
+
 // 2. 계좌 저장소 등록 - POST
-export const createDirectory = (data: any) => {
-  const accessToken = AsyncStorage.getItem("accessToken");
-  console.log(accessToken);
+export const createDirectory = (data: Record<string, any>) => {
   return axiosClient.post(`/directory/create`, data, {
-    headers: { Authorization: `${accessToken}` },
+    headers: { "Requires-Auth": true },
   });
 };
 // 3. 계좌 저장소 조회 - GET
-export const getDirectory = (data: Record<string, string>) => {
-  const accessToken = AsyncStorage.getItem("accessToken");
+export const getDirectory = () => {
   return axiosClient.get(`/directory/find`, {
-    headers: { Authorization: `${accessToken}` },
+    headers: { "Requires-Auth": true },
   });
 };
 // 4. 계좌 저장소 삭제 - DELETE
-export const deleteDirectory = (id: number) => {
-  return axiosClient.delete(`/directory/delete/${id}`, {
-    headers: { id: id },
-  });
+export const deleteDirectory = (accountNo: number) => {
+    return axiosClient.delete(`/directory/delete/${accountNo}`);
 };
 
 /* Account API */
@@ -230,7 +225,7 @@ export const createAccount = (data: Record<string, string>) => {
   const accessToken = AsyncStorage.getItem("accessToken");
   console.log(accessToken);
   return axiosClient.post(`/account/client/createDemandDepositAccount`, data, {
-    headers: { Authorization: `${accessToken}` },
+    headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 // 2. 계좌 목록 조회 ★★ - 빈 객체 넣어줘야 요청 잘 들어감
@@ -241,7 +236,7 @@ export const getAccountList = () => {
     `/account/client/inquireDemandDepositAccountList`,
     {},
     {
-      headers: { Authorization: `${accessToken}` },
+      headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
     }
   );
 };
@@ -250,7 +245,7 @@ export const getAccountList = () => {
 export const getAccount = (data: Record<string, string>) => {
     const accessToken = AsyncStorage.getItem("accessToken");
     return axiosClient.post(`/account/client/inquireDemandDepositAccount`, data, {
-        // headers:{userKey:"6d49bc32-c5ea-4ea7-9e62-a87e905a1a97"}
+        headers : { "Requires-Auth": true }
     })
 }
 // 4. 계좌 이체 
