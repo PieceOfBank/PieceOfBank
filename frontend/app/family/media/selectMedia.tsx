@@ -16,11 +16,11 @@ const selectMedia = () => {
             <Text className='text-xl m-2 text-center font-bold'>어떻게 보낼까요?</Text>
         </View>
             <Link className='w-44 p-2 rounded-3xl justify-center items-center font-bold bg-pink-300 m-2 text-center text-2xl text-white' 
-          href={{pathname:'/family copy/media/videoMedia', params:{mediaNo:mediaNo}}}>동영상</Link>
+          href={{pathname:'/family/media/videoMedia', params:{mediaNo:mediaNo}}}>동영상</Link>
           <Link className='w-44 p-2 rounded-3xl justify-center items-center font-bold bg-pink-300 m-2 text-center text-2xl text-white' 
-          href={{pathname:'/family copy/media/imageMedia', params:{mediaNo:mediaNo}}}>이미지</Link>
+          href={{pathname:'/family/media/imageMedia', params:{mediaNo:mediaNo}}}>이미지</Link>
             <Link className='w-44 p-2 rounded-3xl justify-center items-center font-bold bg-sky-300 m-2 text-center text-2xl text-white' 
-          href={{pathname:'/family copy/media/textMedia', params:{mediaNo:mediaNo}}}>텍스트</Link>
+          href={{pathname:'/family/media/textMedia', params:{mediaNo:mediaNo}}}>텍스트</Link>
         </View>
       </View>
 

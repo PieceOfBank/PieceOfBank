@@ -23,7 +23,7 @@ const DealHistory = () => {
           {/* <Link className='w-32 p-2 rounded-3xl justify-center items-center font-bold bg-sky-300 m-2 text-center text-2xl text-white' 
             href={{pathname:'/family copy/sendMoney'}}>송금하기</Link> */}
           <Link className='m-2 py-2 px-4 bg-red-400 rounded-3xl bg-sky-500'
-          href={{pathname:'/family copy/sendMoney', params:{sendAccount: accounting, sendBank: banking, sendName: naming}}}>
+          href={{pathname:'/family/sendMoney', params:{sendAccount: accounting, sendBank: banking, sendName: naming}}}>
             <Text className='text-white text-center font-bold'>송금하기</Text>
           </Link>
           {/* <TouchableOpacity 

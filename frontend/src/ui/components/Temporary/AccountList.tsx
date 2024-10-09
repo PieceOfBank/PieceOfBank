@@ -74,7 +74,7 @@ const FamilyAccountList = () => {
                 text1: '대표 계좌 등록',
                 text2: ':happy:'
               })
-            router.push('/family copy/familyMain')
+            router.push('/family/familyMain')
         }catch(error){
             console.log(error)
         }
@@ -83,7 +83,7 @@ const FamilyAccountList = () => {
             text1: '대표 계좌 등록이 완료되었습니다',
             text2: ':happy:'
           })
-        router.push('/family copy/familyMain')
+        router.push('/family/familyMain')
     
     }
 

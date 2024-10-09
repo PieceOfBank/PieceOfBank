@@ -33,7 +33,7 @@ const AddWard = () => {
         text1: '피보호자 등록 요청 완료',
         text2: '피보호자의 수락 후 메인 서비스를 이용하실 수 있습니다! 👋'
       })
-      router.push('/family copy/familyMain')
+      router.push('/family/familyMain')
     }catch(error){
       console.log(error)
       Toast.show({

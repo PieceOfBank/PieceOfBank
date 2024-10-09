@@ -66,7 +66,7 @@ const ListInput = () => {
                     </View>
                     <View className='flex-row mx-2'>
                         <TouchableOpacity className='w-16 h-8 mx-1 rounded justify-center rounded-2xl bg-sky-500'
-                        onPress={() => router.push('/family copy/DirectoryObject')} 
+                        onPress={() => router.push('/family/DirectoryObject')} 
                         >
                         <Text className='text-white text-center font-bold '>설정</Text></TouchableOpacity>
                         {/* <TouchableOpacity className='w-16 h-8 mx-1 rounded justify-center bg-red-500'
@@ -80,7 +80,7 @@ const ListInput = () => {
             <View className='flex-row'>
             <TouchableOpacity 
             className='m-2 py-2 px-4 bg-red-400 rounded-3xl bg-sky-500'
-            onPress={() => router.push('/family copy/DirectoryObject')} 
+            onPress={() => router.push('/family/DirectoryObject')} 
             >
               <Text className='text-white text-center font-bold'>+ 보호자 송금 대상 추가</Text></TouchableOpacity>
                 <CancelButton />

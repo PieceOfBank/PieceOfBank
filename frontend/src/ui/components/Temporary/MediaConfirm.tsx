@@ -27,7 +27,7 @@ const MediaConfirm = ({ onChange, mediaNo }: mediaCheck) => {
                 </View>
             <View className='flex-row'>
             <Link className='w-40 p-2 rounded-3xl border m-2 font-semibold text-center text-xl bg-white'
-          href={{pathname:'/family copy/media/selectMedia', params:{mediaNo:mediaNo}}}>
+          href={{pathname:'/family/media/selectMedia', params:{mediaNo:mediaNo}}}>
             송금하기
           </Link>
             {/* <TouchableOpacity className='m-2 py-2 px-4 bg-sky-400 rounded-3xl w-20' onPress={thirdCheck}>

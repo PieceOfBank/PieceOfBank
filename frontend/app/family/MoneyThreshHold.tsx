@@ -1,65 +1,197 @@
-import { View, Text, SafeAreaView, TextInput, Button, TouchableOpacity } from "react-native";
-import { Link, useRouter } from "expo-router";
-// import { Header } from "react-native/Libraries/NewAppScreen";
-import { useState } from "react";
-import Toast from 'react-native-toast-message';
-import CancelButton from "../../src/ui/components/CancelButton";
+import { Link, useRouter, useLocalSearchParams } from "expo-router";
+import { View, Text, ImageBackground, TextInput, SafeAreaView, Alert, Button, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import Toast from "react-native-toast-message";
+import TransferInput from "../../src/ui/components/Temporary/TransferInput";
+import PinInfo from "../../src/ui/components/Temporary/PinCheck";
+import MediaConfirm from "../../src/ui/components/Temporary/MediaConfirm";
 import Header from "../../src/ui/components/Header";
+import { useSelector } from "react-redux";
+import { RootState } from "../../src/store/store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { accountTransfer } from "../../src/services/api";
 
-const MoneyTrheshHold = () => {
-  const [oneLimit, setOneLimit] = useState<string>("");
-  const [todayLimit, setTodayLimit] = useState<string>("");
-  const router = useRouter()
+/*
+일반 송금 후 미디어 송금 추가 요청 -> 송금 후 거래고유번호 받아와서 변수로 넘기기
+*/
+const sendMoney = () => {
 
-  /*
-  ★★★★★★추가해야 할 내용★★★★★★
-  1. 금액 한도 존재하는지 요청
-  - 있으면 금액 정보 보여주기
+  const params = useLocalSearchParams()
+  const { sendAccount, sendBank, sendName } = params
+  const myUserKey = useSelector((state: RootState) => state.getUserKey.userKey);
 
-  2. 금액 한도 입력 후 저장하는 요청
-  
-  */
 
-  /* 알림팝업 Logic */
-  const handleBtn = () => {
-    Toast.show({
-      type: 'success',
-      text1: 'Hello',
-      text2: 'This is some something 👋'
-    })
+    /* 요청 보낼 정보 */
+    const [account, setAccount] = useState<string>(''); // 계좌번호
+    const [bank, setBank] = useState<string>(''); // 은행  
+    const [balance, setBalance] = useState<string>(''); // 금액
+
+    // 현재 계정의 핀 번호 정보
+    const [nowPin, setNowPin] = useState('')
+
+      // 현재 계정의 핀 번호 요청
+  const pinInfo = () => {
+    try{
+      /* ★ 핀 번호 요청 보내는 내용 추가하기 ★ */
+
+      setNowPin('111111') // 임시 핀번호
+
+    } catch(error){
+      console.log(error)
+    }
   }
 
-  return (
-    <View className='flex-1'>
-      <Header />
-      <View className='justify-center items-center p-4'>
-        <Text className='mt-20 mb-8 bg-gray-300 p-3 w-48 rounded-3xl text-xl text-center font-semibold'>금액 한도 설정</Text>
-        <SafeAreaView className='bg-gray-300 rounded-3xl p-5'>
-          <Text className="my-2 text-center font-bold text-2xl">1회</Text>
-          <View className='flex-row'>
-            <TextInput className="mx-2 py-2 w-60 bg-white rounded-3xl" onChangeText={(limit) => setOneLimit(limit)}></TextInput>
-            <Text className='text-xl font-bold py-2'>원</Text>
-          </View>
-          <Text className="my-2 text-center font-bold text-2xl mt-3">하루 총</Text>
-          <View className='flex-row'>
-          <TextInput className="mx-2 py-2 w-60 bg-white rounded-3xl" onChangeText={(limit) => setTodayLimit(limit)}></TextInput>
-          <Text className='text-xl font-bold py-2'>원</Text>
-          </View>
-          <Text className="text-center font-bold mt-6">한도 이상 송금 요청 시</Text>
-          <Text className="text-center font-bold mb-6">승인 절차를 거쳐야 합니다</Text>
-        </SafeAreaView>
-        <View className='flex-row mt-2'>
-          <TouchableOpacity 
-            className='m-2 py-2 px-4 bg-red-400 rounded-3xl bg-sky-500'
-            onPress={() => router.push('/family copy/familyMain')} 
-            >
-            <Text className='text-white text-center font-bold'>설정 완료</Text></TouchableOpacity>
-            <CancelButton />
-        </View>
+  /* 미디어를 보낼 경우 필요한 거래고유번호 저장하기 */
+  const [mediaNo, setMediaNo] = useState(0)
 
+  /* 이체 */
+  const moneyGo = async(balance:number) => {
+  try {
+    const keyGet = await AsyncStorage.getItem("myKey");
+    const myKey = JSON.parse(keyGet!)
+
+    const accountMy = await AsyncStorage.getItem("mainAccount");
+
+    console.log(myKey)
+    console.log(accountMy)
+    const JsonData = {
+      depositAccountNo: "0017906285245167",  // 임시 - 받는 계좌 정보 *구독 정보에서 가져오기*
+      transactionBalance: 10000,
+      withdrawalAccountNo: "0011274394443090", // 내 계좌
+      depositTransactionSummary: "string", // 임시
+      withdrawalTransactionSummary: "string" // 임시
+    }
+    if (accountMy != null){
+      try{
+        const response = await accountTransfer(JsonData);
+        console.log(response)
+        setStep('3')
+        Toast.show({
+          type: 'success',
+          text1: '송금 완료',
+          text2: '송금이 완료되었습니다'
+        })
+      }catch(error){
+        console.log('nnnn')
+      }
+
+    }
+
+    // const transNo = response.data.REC[0]["transactionUniqueNo"] // 거래번호 맞게 가져오는지 확인해봐야 함
+    // setMediaNo(transNo)
+  }
+  catch (error) {
+    console.log(`에러: ${error}`)
+    Toast.show({
+      type: 'error',
+      text1: '송금 실패!',
+      text2: '입력 정보를 다시 확인해주세요'
+    })
+  }
+} 
+const router = useRouter();
+useEffect(() => {
+
+    
+    // 현재 계정의 핀번호 확인
+    pinInfo()
+}, [])
+    
+    const nowName = sendName
+
+    /* 1차 - 연락처 대상 송금 : 송금시 필요한 금액 입력 받는 화면 & 계좌, 은행은 전달받은 정보 활용 */
+    const existChange = (balance:string) => {
+        setBalance(balance)
+        setStep('2')
+    }
+
+    const thirdChange = () => {
+        setStep('4')
+      }
+    const [step, setStep] = useState('1'); // 송금 절차 화면 (1-1차, 2-2차, 3-3차, 4-4차)
+
+    const secondChange = async (inputPin:string) => {
+        if (inputPin == nowPin){
+  
+          const balanceCheck = parseInt(balance) // 송금 금액 숫자 변환
+          await moneyGo(balanceCheck)
+
+            setStep('3')
+            Toast.show({
+              type: 'success',
+              text1: '송금 완료',
+              text2: '송금이 완료되었습니다'
+            })
+          }
+
+          else {
+            Toast.show({
+              type: 'error',
+              text1: '송금 실패!',
+              text2: '비밀번호를 다시 입력해주세요'
+            })
+          }
+  
+        }
+
+
+    return(
+      <View className='flex-1'>
+        <Header />
+        {step == '1' && (
+          <View className='flex-row justify-center items-center'>
+              {/* <TransferObject onChange={firstChange} />  */}
+              <TransferInput onChange={existChange} name={nowName}/>
+          </View>
+          )
+        }
+        {step == '2' && (
+          <PinInfo onChange={secondChange}/>
+          )
+        }
+        {step == '3' && (
+          <MediaConfirm onChange={thirdChange} mediaNo={mediaNo}/>
+          )
+        }
       </View>
-    </View>
-  );
+    )
+    // if (step == '1') {
+    //     return (
+    //       <View className='flex-1'>
+    //         <View className='flex-row justify-center items-center'>
+    //             {/* <TransferObject onChange={firstChange} />  */}
+    //             <TransferInput onChange={existChange} name={nowName}/>
+    //         </View>
+    //       </View>
+
+    //     )
+    // }
+
+    // // 2차 화면 - 핀번호 입력받는 화면
+    // else if (step == '2') {
+    //     return(
+    //         <View className='flex-1'>
+    //             <PinInfo onChange={secondChange}/>
+    //         </View>
+    //       )
+    // }
+
+    // // 3차 화면 - 일반 송금 완료 후 미디어 보낼 지 확인하는 화면
+    // else if (step == '3'){
+    //     return(
+    //         <View className='flex-1'>
+    //             <MediaConfirm onChange={thirdChange} mediaNo={mediaNo}/>
+    //         </View>
+    //     )
+    // }
+
+    // // // 미디어 보낼 경우 media/selectMedia로 보내기
+    // // else if (step == '4'){
+    // //     return(
+    // //         router.push('/family copy/media/selectMedia')
+    // //     )
+    // // }
+
 };
 
-export default MoneyTrheshHold;
+export default sendMoney;

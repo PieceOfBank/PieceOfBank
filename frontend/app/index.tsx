@@ -66,7 +66,7 @@ export default function LoginScreen() {
       });
       // 구독 관계 1이면 보호자 페이지로 이동
       if (response?.data["subscriptionType"] == 1) {
-        router.push("/family copy/familyMain");
+        router.push("/family/familyMain");
       }
       // 구독 관계 2이면 피보호자 페이지 이동
       else if (response?.data["subscriptionType"] == 2) {
@@ -96,7 +96,7 @@ export default function LoginScreen() {
         text1: "미디어 보내기 성공!",
         text2: "미디어가 정상적으로 보내졌습니다",
       });
-      router.push("/family copy/familyMain");
+      router.push("/family/familyMain");
     } catch (error) {
       console.log(error);
       Toast.show({
@@ -188,7 +188,7 @@ const moneyCheck = async() => {
             피보호자
           </Link>
           <Text className="my-2 text-xl"> | </Text>
-          <Link className="my-2 text-xl" href={`/family copy/familyMain`}>
+          <Link className="my-2 text-xl" href={`/family/familyMain`}>
             보호자
           </Link>
         </View>

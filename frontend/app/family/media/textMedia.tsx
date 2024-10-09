@@ -35,7 +35,7 @@ const textMedia = () => {
                 text1: '미디어 보내기 성공!',
                 text2: '미디어가 정상적으로 보내졌습니다'
               })
-            router.push('/family copy/familyMain')
+            router.push('/family/familyMain')
         }
         catch(error){
             console.log(error)
@@ -72,7 +72,7 @@ const textMedia = () => {
                     <TouchableOpacity className='m-2 py-2 px-4 bg-sky-400 rounded-3xl w-20' onPress={textPost}>
                             <Text className='text-white text-center'>보내기</Text>
                             </TouchableOpacity>
-                    <TouchableOpacity className='m-2 py-2 px-4 bg-red-400 rounded-3xl w-20' onPress={() => router.push('/family copy/familyMain')}>
+                    <TouchableOpacity className='m-2 py-2 px-4 bg-red-400 rounded-3xl w-20' onPress={() => router.push('/family/familyMain')}>
                     <Text className='text-white text-center'>취소</Text>
                     </TouchableOpacity>
                     </View>

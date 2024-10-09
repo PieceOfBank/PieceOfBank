@@ -8,7 +8,7 @@ import DealHistory from "./dealHistory";
 import smallLogo from "../../src/assets/SmallLogo.png";
 import mail from '../../src/assets/mail.png'
 import Toast from "react-native-toast-message";
-import { logoutUser, subscriptionCheck } from "../../src/services/api";
+import { logoutUser, subTargetCheck } from "../../src/services/api";
 import { useDispatch } from "react-redux";
 import { logout, setNickName } from "../../src/store/userSlice";
 
@@ -83,7 +83,7 @@ const FamilyMain = () => {
     // 구독 관계 있는지 확인
     const subCheck = async() => {
       try{
-        const response = await subscriptionCheck()
+        const response = await subTargetCheck()
         const checking = response.data
         console.log(response)
         if (checking == null){
@@ -115,7 +115,7 @@ const FamilyMain = () => {
           <Image source={smallLogo} className="w-12 h-12" />
           <TouchableOpacity
             className="w-12 h-12 pt-2 pr-16"
-            onPress={() => router.push('/family copy/reqSendMoney')} >
+            onPress={() => router.push('/family/reqSendMoney')} >
             <Image source={mail}  />
           </TouchableOpacity>
         </View>
@@ -124,11 +124,11 @@ const FamilyMain = () => {
         {(mainAccount=='1')? (        
           <Link className='h-6 rounded-3xl justify-center m-4 text-center font-bold' 
              href={
-                {pathname:'/family copy/totalAccount'}
+                {pathname:'/family/totalAccount'}
                 }>테스트용 00 계좌 : 102312-300-231245</Link>) 
                 :<Link className='h-6 rounded-3xl justify-center m-4 text-center font-bold' 
                 href={
-                   {pathname:'/family copy/totalAccount'}
+                   {pathname:'/family/totalAccount'}
                    }>계좌 등록하기</Link>}
       </View>
 
@@ -146,18 +146,18 @@ const FamilyMain = () => {
                 
                 <Link className='w-32 h-8 pt-1 rounded-3xl justify-center items-center bg-teal-100 my-4 text-center rounded-3xl font-bold' 
                   href={
-                      {pathname:'/family copy/dealHistory', 
+                      {pathname:'/family/dealHistory', 
                         params:{accounting:wardInfo.accountNo, banking:wardInfo.userKey, naming:wardInfo.userName}}
                       }>{wardInfo.userName}</Link> 
               </View>
               <TouchableOpacity 
                   className='w-48 h-12 m-5 rounded-3xl justify-center bg-gray-300'
-                  onPress={() => router.push('/family copy/MoneyThreshHold')} 
+                  onPress={() => router.push('/family/MoneyThreshHold')} 
                   >
                     <Text className='text-center text-base font-bold'>금액 한도 설정</Text></TouchableOpacity>
                 <TouchableOpacity 
                   className='w-48 h-12 m-5 rounded-3xl justify-center bg-gray-300'
-                  onPress={() => router.push('/family copy/DirectoryList')} 
+                  onPress={() => router.push('/family/DirectoryList')} 
                   >
                 <Text className='text-center text-base font-bold'>부모 대상 송금 관리</Text></TouchableOpacity>
                 <TouchableOpacity 
@@ -177,7 +177,7 @@ const FamilyMain = () => {
               <View className='border bg-white'>
               <Image className="w-32 h-32 bg-teal-400 mt-4" source={require('../../assets/smile.png')}></Image>
               </View>
-              <TouchableOpacity className='m-2 py-1 px-4 bg-sky-400 rounded-3xl' onPress={() => router.push('/family copy/addWard')}>
+              <TouchableOpacity className='m-2 py-1 px-4 bg-sky-400 rounded-3xl' onPress={() => router.push('/family/addWard')}>
                   <Text className='text-white'>피보호자 등록 신청</Text>
               </TouchableOpacity>
           </View>
