@@ -4,7 +4,7 @@ import { useState } from "react";
 import Toast from 'react-native-toast-message';
 import CancelButton from "../../src/ui/components/CancelButton";
 import { useRouter} from 'expo-router';
-import { getToken, sendExpoNotification, subscriptionPost, subTargetCheck } from "../../src/services/api";
+import { getToken, getUserInfo, sendExpoNotification, subscriptionPost, subTargetCheck } from "../../src/services/api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddWard = () => {
@@ -16,6 +16,27 @@ const AddWard = () => {
   /* 알림팝업 Logic */
   const subRequest = async() => {
     try {
+      // #############################################
+      // 관계 맺은 후, 부모 정보 얻기, (id -> 부모 정보 얻어오기..)
+      const subData = await getUserInfo(wardId);
+      console.log("######")
+      console.log(subData.data)
+      // 1. 부모 유저키 얻기
+      const protectUserKey = subData.data.userKey;
+      // 2. 부모 디바이스 토큰 얻기
+      const ProtectUserTokenKeyRes = await getToken(protectUserKey);
+      const ProtectUserExpoToken = ProtectUserTokenKeyRes.data;
+
+      console.log("부모 Expo 토큰 : " + ProtectUserExpoToken)
+      const notificationMsg = {
+        to: ProtectUserExpoToken,
+        title: "구독 신청 알림",
+        content: "안전한 금융 거래를 보장할 수 있어요!"
+      }
+      await sendExpoNotification(notificationMsg);
+      console.log("알림 보낸ㅆ슴다...")
+      // ##########################################
+
       const keyGet = await AsyncStorage.getItem("myKey");
       const myKey = JSON.parse(keyGet!)
     
@@ -26,21 +47,6 @@ const AddWard = () => {
       const response = await subscriptionPost(JsonData);
       console.log("부모추가하기.. gogo")
       console.log(response.data)
-
-      // 관계 맺은 후, 부모 정보 얻기
-      const subData = await subTargetCheck();
-      // 1. 부모 유저키 얻기
-      const protectUserKey = subData.data.protectUser.userKey;
-      // 2. 부모 디바이스 토큰 얻기
-      const ProtectUserTokenKeyRes = await getToken(protectUserKey);
-      const ProtectUserExpoToken = ProtectUserTokenKeyRes.data;
-
-      const notificationMsg = {
-        token: ProtectUserExpoToken,
-        title: "구독 신청 알림",
-        body: "안전한 금융 거래를 보장할 수 있어요!"
-      }
-      await sendExpoNotification(notificationMsg);
 
       Toast.show({
         type: 'success',
