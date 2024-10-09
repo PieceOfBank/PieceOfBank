@@ -6,6 +6,7 @@ import com.fintech.pob.domain.media.entity.MediaTypeENUM;
 import com.fintech.pob.domain.media.service.MediaService;
 import com.fintech.pob.domain.media.service.MediaUploadService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.UrlResource;
@@ -22,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/media")
@@ -37,17 +39,14 @@ public class MediaController {
                                               @RequestParam("type") MediaTypeENUM type,
                                               @RequestParam("content") String content) {
         try {
-
-
             String url = mediaUploadService.uploadFile(file);
-            System.out.println(url);
+            log.info(url);
             Media media = new Media();
             media.setTransactionUniqueNo(transactionUniqueNo);
             media.setType(type);
 
             media.setUrl(url);
             media.setContent(content);
-
 
             mediaService.createMedia(media);
 
@@ -61,8 +60,7 @@ public class MediaController {
 
     @GetMapping("/find")
     public ResponseEntity<Resource> findMedia(
-                                              @RequestParam("transactionUniqueNo") Long transactionUniqueNo)
-    {
+            @RequestParam("transactionUniqueNo") Long transactionUniqueNo) {
 
         Optional<Media> media = mediaService.findMedia(transactionUniqueNo);
 
@@ -72,9 +70,8 @@ public class MediaController {
                 Path filePath = Paths.get(mediaUrl);
 
 
-
                 Resource resource = (Resource) new UrlResource(filePath.toUri());
-               if (resource.exists() || resource.isReadable()) {
+                if (resource.exists() || resource.isReadable()) {
 
                     String contentType = Files.probeContentType(filePath);
                     if (contentType == null) {
@@ -99,9 +96,6 @@ public class MediaController {
 
 
     }
-
-
-
 
 
 }

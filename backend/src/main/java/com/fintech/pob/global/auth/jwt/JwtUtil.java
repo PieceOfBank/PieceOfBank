@@ -5,12 +5,15 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtUtil {
 
@@ -62,14 +65,14 @@ public class JwtUtil {
             return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
         } catch (Exception e) {
             // 예외 처리 및 로그 출력
-            System.out.println("Error extracting user key from token: " + e.getMessage());
+            log.info("Error extracting user key from token: {}", e.getMessage());
             throw new RuntimeException("JWT Parsing Error");
         }
     }
 
 
     // JWT 토큰에서 subscriptionType 추출
-    public int extractSubscriptiontype(String token) {
+    public int extractSubscriptionType(String token) {
         Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         return (int) claims.get("subscriptionType");
     }

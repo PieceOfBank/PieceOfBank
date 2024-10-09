@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/directory")
 @AllArgsConstructor
@@ -50,10 +53,8 @@ public class DirectoryController {
             @RequestHeader("Authorization") String token
     ) throws IOException {
 
-
         String url = mediaUploadService.uploadFile(file);
         String key = (String) jwtUtil.extractUserKey(token);
-
 
         UUID userKey = UUID.fromString(key);
         directoryDTO.setUserKey(userKey);
@@ -62,37 +63,24 @@ public class DirectoryController {
     }
 
 
-
     @GetMapping("/find")
     public ResponseEntity<List<DirectoryRequestDto>> getDirectoryById(@RequestHeader("Authorization") String token) {
-      //  UUID userKey = UUID.fromString("58898a6b-0535-48df-a47f-437e61b92c59");
-
-
         String key = (String) jwtUtil.extractUserKey(token);
-
         UUID userKey = UUID.fromString(key);
-
-        List< DirectoryRequestDto> directoryDTO = directoryService.getDirectoryById(userKey);
-
+        List<DirectoryRequestDto> directoryDTO = directoryService.getDirectoryById(userKey);
         return ResponseEntity.ok(directoryDTO);
     }
 
     @GetMapping("/findUserImage")
     public ResponseEntity<Resource> findMedia(
-            @RequestParam("accountNo") String accountNo)
-    {
-
+            @RequestParam("accountNo") String accountNo) {
         Optional<Directory> media = directoryRepository.findByAccountNo(accountNo);
-
         if (media.isPresent()) {
             try {
                 String mediaUrl = media.get().getUrl();
-                System.out.println(mediaUrl);
+                log.info(mediaUrl);
                 Path filePath = Paths.get(mediaUrl);
-
-
-
-                Resource        resource = (Resource) new UrlResource(filePath.toUri());
+                Resource resource = (Resource) new UrlResource(filePath.toUri());
                 if (resource.exists() || resource.isReadable()) {
 
                     String contentType = Files.probeContentType(filePath);
@@ -127,16 +115,14 @@ public class DirectoryController {
     ) {
 
         String key = (String) jwtUtil.extractUserKey(token);
-
         UUID userKey = UUID.fromString(key);
         directoryDTO.setUserKey(userKey);
-
         DirectoryRequestDto updatedDirectory = directoryService.updateDirectory(id, directoryDTO);
         return ResponseEntity.ok(updatedDirectory);
     }
 
 
-    @DeleteMapping("/deelte/{accountNo}")
+    @DeleteMapping("/delete/{accountNo}")
     public ResponseEntity<Void> deleteDirectory(@PathVariable String accountNo) {
         directoryService.deleteDirectory(accountNo);
         return ResponseEntity.noContent().build();
