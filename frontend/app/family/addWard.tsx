@@ -4,7 +4,7 @@ import { useState } from "react";
 import Toast from 'react-native-toast-message';
 import CancelButton from "../../src/ui/components/CancelButton";
 import { useRouter} from 'expo-router';
-import { subscriptionPost } from "../../src/services/api";
+import { sendExpoNotification, subscriptionPost, subTargetCheck } from "../../src/services/api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddWard = () => {
@@ -17,17 +17,26 @@ const AddWard = () => {
   const subRequest = async() => {
     try{
       const keyGet = await AsyncStorage.getItem("myKey");
-
       const myKey = JSON.parse(keyGet!)
-
-
-      // 나중에 userkey 어떻게 받아와서 넣어야 할까요? authorization 으로 되는지 확인하기
+    
       const JsonData = {
         senderKey: myKey, 
         receiverId: wardId
       }
       const response = await subscriptionPost(JsonData);
       console.log(response.data)
+
+      // 부모 디바이스 토큰 얻기
+      // 1. 부모 유저키 얻기
+      const subData = await subTargetCheck();
+      const protectUserKey = subData.data.protectUser.userKey;
+      const notificationMsg = {
+        token: protectUserKey,
+        title: "구독 신청 알림",
+        body: "안전한 금융 거래를 보장할 수 있어요!"
+      }
+      await sendExpoNotification(notificationMsg);
+
       Toast.show({
         type: 'success',
         text1: '피보호자 등록 요청 완료',
