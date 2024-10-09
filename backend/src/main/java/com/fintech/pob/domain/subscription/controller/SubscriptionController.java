@@ -1,29 +1,27 @@
 package com.fintech.pob.domain.subscription.controller;
 
 
+import com.fintech.pob.domain.subscription.dto.NewLimitRequestDto;
 import com.fintech.pob.domain.subscription.dto.SubscriptionRequestDto;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
-import com.fintech.pob.domain.user.entity.User;
-import com.fintech.pob.domain.user.service.LocalUserService;
-import com.fintech.pob.domain.user.service.UserService;
 import com.fintech.pob.global.auth.jwt.JwtUtil;
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/subscriptions")
 @AllArgsConstructor
-public class SubScriptionController {
+public class SubscriptionController {
+
     private final SubscriptionService subscriptionService;
     private final JwtUtil jwtUtil;
-    private final UserService userService;
-    private final LocalUserService userLocalService;
+
     @PostMapping("/create")
     public ResponseEntity<Subscription> createSubscription(@RequestBody SubscriptionRequestDto dto) {
 
@@ -51,13 +49,13 @@ public class SubScriptionController {
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
         Subscription subscription = subscriptionService.getSubscriptionByProtectUserKey(userKey);
-      //  UUID k= subscription.getTargetUser().getUserKey();
+        //  UUID k= subscription.getTargetUser().getUserKey();
 
-      //  User user = userLocalService.findByUserKey(k.toString());
-     //   String accountNo= user.getAccountNo();
+        //  User user = userLocalService.findByUserKey(k.toString());
+        //   String accountNo= user.getAccountNo();
 
-      //  System.out.println(user);
-   //     System.out.println(user.getAccountNo());
+        //  System.out.println(user);
+        //     System.out.println(user.getAccountNo());
 
 
         if (subscription != null) {
@@ -70,13 +68,13 @@ public class SubScriptionController {
 
     @PutMapping("/setOneTime")
     public ResponseEntity<Subscription> setOneTimeTransferLimit(
-            @RequestHeader("Authorization") String token, @RequestParam Long newLimit) {
+            @RequestHeader("Authorization") String token, @RequestBody NewLimitRequestDto newLimitRequestDto) {
 
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
-
-        System.out.println(newLimit);
-         subscriptionService.setOneTimeTransferLimit(userKey, newLimit);
+        Long newLimit = newLimitRequestDto.getNewLimit();
+        log.info("setOneTime >>>>> {}", newLimit);
+        subscriptionService.setOneTimeTransferLimit(userKey, newLimit);
         return ResponseEntity.ok(null);
 
     }
@@ -84,11 +82,12 @@ public class SubScriptionController {
 
     @PutMapping("/setDaily")
     public ResponseEntity<Subscription> setDailyTransferLimit(
-            @RequestHeader("Authorization") String token, @RequestParam Long newLimit) {
+            @RequestHeader("Authorization") String token, @RequestBody NewLimitRequestDto newLimitRequestDto) {
 
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
-
+        Long newLimit = newLimitRequestDto.getNewLimit();
+        log.info("setDaily >>>>> {}", newLimit);
         subscriptionService.setDailyTransferLimit(userKey, newLimit);
         return ResponseEntity.ok(null);
 
