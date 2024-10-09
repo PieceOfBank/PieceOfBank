@@ -6,6 +6,7 @@ import com.fintech.pob.domain.notification.entity.NotificationType;
 import com.fintech.pob.domain.notification.repository.NotificationRepository;
 import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
 import com.fintech.pob.domain.subscription.dto.SubscriptionRequestDto;
+import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalKeyDto;
 import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalRequestDto;
@@ -79,28 +80,22 @@ public class SubscriptionApprovalServiceImpl implements SubscriptionApprovalServ
 
     @Override
     @Transactional
-    public SubscriptionApprovalKeyDto approveSubscriptionRequest(Long subscriptionApprovalId) {
+    public Subscription approveSubscriptionRequest(Long subscriptionApprovalId) {
         SubscriptionApproval subscriptionApproval = subscriptionApprovalRepository.findById(subscriptionApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Subscription Approval not found"));
         subscriptionApproval.setStatus(SubscriptionApprovalStatus.APPROVED);
         subscriptionApprovalRepository.save(subscriptionApproval);
 
-
         Notification notification = subscriptionApproval.getNotification();
-
-        // 수락시 저장하는 로직 - 정민
         SubscriptionRequestDto subscriptionRequestDto = new SubscriptionRequestDto();
         subscriptionRequestDto.setUserKey(notification.getSenderUser().getUserKey());
         subscriptionRequestDto.setTargetKey(notification.getReceiverUser().getUserKey());
-        subscriptionService.create(subscriptionRequestDto);
+        Subscription subscription = subscriptionService.create(subscriptionRequestDto);
 
         notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
         notificationRepository.save(notification);
 
-        return SubscriptionApprovalKeyDto.builder()
-                .protectKey(notification.getSenderUser().getUserKey())
-                .targetKey(notification.getReceiverUser().getUserKey())
-                .build();
+        return subscription;
     }
 
     @Override
