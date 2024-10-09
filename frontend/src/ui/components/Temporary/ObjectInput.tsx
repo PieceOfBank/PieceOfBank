@@ -20,7 +20,10 @@ const ObjectInput = () => {
     const [phone, setPhone] = useState('')
     const [bank, setBank] = useState('')
     const [account, setAccount] = useState('')
+    
     const [imageUri, setImageUri] = useState<string | null>(null);
+  const [imageName, setImageName] = useState<string | null | undefined>(null);
+  const [imageType, setImageType] = useState<any>(null);
 
     const router = useRouter()
     const myUserKey = useSelector((state: RootState) => state.getUserKey.userKey);
@@ -47,75 +50,31 @@ const ObjectInput = () => {
     // 이미지 선택 완료하면 IamgeUri에 저장됨
     if (!result.canceled) {
       setImageUri(result.assets[0].uri);
+      setImageName(result.assets[0].fileName);
+      setImageType(result.assets[0].type);
     } 
   };
 
     const directoryGo = async() => {
       try{
         // 나중에 userkey 어떻게 받아와서 넣어야 할까요? authorization 으로 되는지 확인하기
-        
-        // interface UserInfo {
-        //   userKey: string,
-        //   accountNo: string,
-        //   institutionCode: number,
-        //   name: string,
-        //   url: string
-        // }
-        
-        // interface UserDirectory {
-        //   directory: UserInfo;
-        //   file: string;
-        // }
-
-        const userInfo = {
-          userKey: "234532543",
-          accountNo: "0016893582615978",
-          institutionCode: 0,
-          name: "test",
-          url: "test"
-        }
-
-        // const imageInfo = {
-
-        // }
-        // const fileInput = document.querySelector('#fileInput'); 
-        // const formData = new FormData();
-        // formData.append('directory', new Blob([JSON.stringify(directoryData)], { type: "application/json" }))
-
-      //   formData.append('file', 
-      //     {
-      //     uri: image,
-      //     type: 'image/png',
-      //     name: 'image.png',
-      // } 
-      // as any)
+        /* 아래 정보는 formData에 넣어야 함.. 얻오는 방법? */
+        // userkey
+        // acountNo
+        // Code
+        // name
+        // uri
 
       const formData = new FormData();
         
         // FormData에 이미지 추가
-        formData.append('file', {
+        formData.append('image', {
             uri: imageUri, // 선택된 이미지 URI
-            type: 'image/jpeg', // MIME 타입 (상황에 따라 조정 가능)
-            name: 'image.jpg', // 파일 이름
+            type: imageType, // MIME 타입 (상황에 따라 조정 가능)
+            name: imageName, // 파일 이름
         } as any);
-
-      // const formData = new FormData();
-        const JsonData = {
-          directory: {
-            accountNo: "0019312432084644",
-            institutionCode: 100,
-            name: "qkqkqk",
-          }
-        }
-
-      //   formData.append('directory', JSON.stringify(JsonData.directory));
-      //   formData.append('file', {
-      //     uri: image.uri,
-      //     type: 'image.type',
-      //     name: 'image.fileName',
-      // });
-        console.log(JsonData)
-        const response = await createDirectory(JsonData);
+        
+        const response = await createDirectory(formData);
         console.log(response)
         } catch(error){
             console.log(error)

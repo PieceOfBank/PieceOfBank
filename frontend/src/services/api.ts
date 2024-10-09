@@ -122,6 +122,11 @@ export const logoutUser = () => {
   });
 };
 
+// 5. ID로 유저 정보 얻어오기
+export const getUserInfo = (userId: string) => {
+  return axiosClient.get(`/users/${userId}`);
+}
+
 /* JWT 코드 */
 // Interceptor - JWT 로직 (AccessToken & RefreshToken)
 axiosClient.interceptors.request.use(
@@ -195,26 +200,26 @@ interface UserDirectory {
   file: string;
 }
 
-// 1. 계좌 저장소 수정 - PUT
+// 1. 연락처 수정 - PUT
 export const updateDirectory = (id: number, data: Record<string, string>) => {
     return axiosClient.put(`/directory/put/${id}`, data, {
         headers: { "Requires-Auth": true },
     });
 };
 
-// 2. 계좌 저장소 등록 - POST
-export const createDirectory = (data: Record<string, any>) => {
+// 2. 연락처 등록 - POST
+export const createDirectory = (data: FormData) => {
   return axiosClient.post(`/directory/create`, data, {
-    headers: { "Requires-Auth": true },
+    headers: { 'Content-Type': 'multipart/form-data', "Requires-Auth": true },
   });
 };
-// 3. 계좌 저장소 조회 - GET
+// 3. 연락처 조회 - GET
 export const getDirectory = () => {
   return axiosClient.get(`/directory/find`, {
     headers: { "Requires-Auth": true },
   });
 };
-// 4. 계좌 저장소 삭제 - DELETE
+// 4. 연락처 삭제 - DELETE
 export const deleteDirectory = (accountNo: number) => {
     return axiosClient.delete(`/directory/delete/${accountNo}`);
 };
@@ -359,6 +364,7 @@ export const transferExpiry = () => {
   return axiosClient.patch(`api/notification/transfers/expiry`);
 };
 export const sendExpoNotification = (data: Record<string, string>) => {
+  console.log(data)
   return axiosClient.post(`/notification/expoMessage`, data);
 };
 
@@ -381,10 +387,9 @@ export const subscriptionRefusal= (Id:number) => {
 
 // 4. 보호 관계 조회 - 보호자
 export const subTargetCheck= () => {
-  //const accessToken = AsyncStorage.getItem("accessToken");
-  //Authorization : `${accessToken}`
+  const accessToken = AsyncStorage.getItem("accessToken");
     return axiosClient.get(`/subscriptions/findbytarget`,
-        {headers:{"Requires-Auth": true }}
+        {headers:{Authorization : `${accessToken}`, "Requires-Auth": true }}
     )
   }
 
