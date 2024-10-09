@@ -33,7 +33,7 @@ public class SubScriptionController {
     }
 
     @GetMapping("/findbytarget")
-    public ResponseEntity<?> getSubscription(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Optional<Subscription>> getSubscription(@RequestHeader("Authorization") String token) {
 
        String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
@@ -55,7 +55,7 @@ public class SubScriptionController {
     }
 
     @GetMapping("/findbyprotect")
-    public ResponseEntity<?> getSubscriptionByProtectUserKey(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Optional<Subscription>> getSubscriptionByProtectUserKey(@RequestHeader("Authorization") String token) {
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
         Subscription subscription = subscriptionService.getSubscriptionByProtectUserKey(userKey);
