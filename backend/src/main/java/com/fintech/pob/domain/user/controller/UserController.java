@@ -46,6 +46,16 @@ public class UserController {
         }
     }
 
+      @GetMapping("/{userId}")
+    public ResponseEntity<User> getUserByUserId(@PathVariable String userId) {
+        Optional<User> user = userService.getUserByUserId(userId);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PatchMapping("/setPrimaryAccount")
     public ResponseEntity<String> setPrimaryAccount(@RequestBody AccountUpdateRequestDTO request) {
         try {
