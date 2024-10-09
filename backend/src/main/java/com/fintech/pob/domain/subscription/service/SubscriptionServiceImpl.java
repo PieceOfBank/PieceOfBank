@@ -104,4 +104,9 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         return subscriptionRepository.findByProtectUserUserKey(userKey);
     }
 
+    @Override
+    public Subscription getSubscriptionByTargetUserKey(UUID userKey) {
+        return subscriptionRepository.findByTargetUserUserKey(userKey);
+    }
+
 }
