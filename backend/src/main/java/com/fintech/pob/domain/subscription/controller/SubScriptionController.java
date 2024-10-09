@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,10 +34,11 @@ public class SubScriptionController {
 
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
-        Optional<Subscription> subscriptions = Optional.ofNullable(subscriptionService.findByTargetUserKey(userKey).orElse(null));
 
-        //System.out.println();
-        return ResponseEntity.ok(Optional.of(subscriptions.get()));
+        Subscription subscription = subscriptionService.findByTargetUserKey(userKey)
+                .orElseThrow(() -> new NoSuchElementException("Subscription Not Found: " + userKey));
+
+        return ResponseEntity.ok(Optional.ofNullable(subscription));
     }
 
     @GetMapping("/findbyprotect")
