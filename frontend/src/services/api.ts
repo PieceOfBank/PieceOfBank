@@ -195,9 +195,11 @@ export const createDirectory = (data: FormData) => {
   });
 };
 // 3. 연락처 조회 - GET
-export const getDirectory = () => {
+export const getDirectory = async () => {
+
+  const accessToken = await AsyncStorage.getItem("accessToken");
   return axiosClient.get(`/directory/find`, {
-    headers: { "Requires-Auth": true },
+    headers: { "Authorization" : accessToken,  "Requires-Auth": true },
   });
 };
 // 4. 연락처 삭제 - DELETE
@@ -278,21 +280,20 @@ export const accountPatch = (data: Record<string, string>) => {
 /* Media API */
 // 1. 미디어 등록 - POST
 export const mediaPost = (
-  // transNo: number,
-  // type: string,
-  // content: string,
-  // data: Record<string, unknown>
+  transNo: number,
+  type: string,
+  content: string,
+  data: Record<string, unknown>
 ) => {
-  const data = {
-    'transactionUniqueNo': 77565,
-    'type': "TEXT",
-    'content': '배고파요',
-    
-  }
   const accessToken = AsyncStorage.getItem("accessToken");
   return axiosMedia.post(`/media/upload`, data, {
     headers: {
-      Authorization: `${accessToken}` 
+      Authorization: `${accessToken}`,
+    },
+    params: {
+      transactionUniqueNo: transNo,
+      type: type,
+      content: content,
     },
   });
 };

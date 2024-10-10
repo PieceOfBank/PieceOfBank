@@ -16,7 +16,7 @@ const ObjectInput = ({data} : DirectoryObjectInfo) => {
 
     const [name, setName] = useState('')
     const [account, setAccount] = useState('')
-    const [imageUri, setImageUri] = useState<string | null>(null);
+    //const [imageUri, setImageUri] = useState<string | null>(null);
     const [code, setCode] = useState<string>("00100");
     const [userKey, setUserKey] = useState<string | null>(null);
 
@@ -32,7 +32,7 @@ const ObjectInput = ({data} : DirectoryObjectInfo) => {
     useEffect(() => {
         setName(data.name);
         setAccount(data.accountNo);
-        setImageUri(data.url);
+        //setImageUri(data.url);
         setUserKey(data.userKey);
 
     }, [])

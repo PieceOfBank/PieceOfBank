@@ -55,7 +55,7 @@ const imageMedia = () => {
             const type = 'IMAGE'
             const content = '컨텐츠'
             const JsonData = {
-                file:imageData
+                file: `data:image/jpeg;base64,${imageData}`
               }
               const response = await mediaPost(transNo, type, content, JsonData);
               console.log(response)

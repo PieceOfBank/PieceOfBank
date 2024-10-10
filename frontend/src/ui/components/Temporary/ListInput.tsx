@@ -38,13 +38,6 @@ const ListInput = ({ data }: listInfo) => {
     name: string;
   }
 
-  // 임시 관계 요청 목록
-  const connectList: ConnectItem[] = [
-    { id: "1", name: "딸" },
-    { id: "2", name: "영숙" },
-    { id: "3", name: "미숙" },
-  ];
-
   // 요청 수락
   const checkAccept = (index: number, name: string) => {
     for (let i = 0; i < mainConnect.length; i++) {
