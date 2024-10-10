@@ -76,7 +76,7 @@ public class MediaController {
     }
 
     @GetMapping("/find")
-    public ResponseEntity<Resource> findMedia(
+    public ResponseEntity<?> findMedia(
             @RequestParam("transactionUniqueNo") Long transactionUniqueNo) {
 
         System.out.println("--------------------[Find Media]---------------------");
@@ -109,7 +109,7 @@ public class MediaController {
                 return ResponseEntity.ok().body(null); // 파일이 없거나 읽을 수 없는 경우 null 반환
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // 예외 발생 시 null 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("미디어있는데 예외터지는 경우 " + e.getMessage());
         }
     }
 
