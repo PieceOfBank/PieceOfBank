@@ -31,7 +31,7 @@ public class MediaController {
     private final MediaUploadService mediaUploadService;
 
 
-    @PostMapping("/upload")
+    @PostMapping(value= "/upload",consumes = "multipart/form-data")
     public ResponseEntity<String> uploadMedia(@RequestParam(value = "file", required = false) MultipartFile file,
                                               @RequestParam("transactionUniqueNo") Long transactionUniqueNo,
                                               @RequestParam("type") MediaTypeENUM type,
