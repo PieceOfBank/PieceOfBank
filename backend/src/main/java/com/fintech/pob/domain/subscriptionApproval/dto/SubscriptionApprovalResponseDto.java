@@ -3,6 +3,8 @@ package com.fintech.pob.domain.subscriptionApproval.dto;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.UUID;
+
 @Slf4j
 @Getter
 @Builder
@@ -11,4 +13,5 @@ import lombok.extern.slf4j.Slf4j;
 public class SubscriptionApprovalResponseDto {
     private String requesterName;
     private Long subscriptionId;
+    private UUID userKey; // 자식
 }
