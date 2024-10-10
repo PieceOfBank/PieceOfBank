@@ -210,6 +210,18 @@ public class AccountService {
     public Mono<ClientAccountTransferResponseDTO> updateAccountTransfer(AccountTransferRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
 
+        log.info("-------------------[UPDATE ACCOUNT TRANSFER]-------------------");
+        log.info("[HEADER]");
+        log.info(header.toString());
+        log.info("[REQUEST]");
+        log.info(requestPayload.toString());
+        log.info("[USER]");
+        log.info(accountClientService.findByAccountNo(requestPayload.getDepositAccountNo()).getUser().getUserName());
+        log.info(accountClientService.findByAccountNo(requestPayload.getWithdrawalAccountNo()).getUser().getUserName());
+        log.info("---------------------------------------------------------------");
+
+
+
         Optional<Subscription> subscriptionOptional = subscriptionService.findByTargetUserKey(UUID.fromString(header.getUserKey()));
         if (subscriptionOptional.isPresent()) {
             UUID depositUserToken = accountClientService.findByAccountNo(requestPayload.getDepositAccountNo()).getUser().getUserKey();
@@ -267,9 +279,14 @@ public class AccountService {
 
         ClientAccountTransferRequestDTO requestDTO = ClientAccountTransferRequestDTO.of(header, requestPayload);
 
-        log.info("-------------------[UPDATE ACCOUNT TRANSFER]-------------------");
-        log.info(header.toString());
-        log.info("---------------------------------------------------------------");
+//        log.info("-------------------[UPDATE ACCOUNT TRANSFER]-------------------");
+//        log.info("[HEADER]");
+//        log.info(header.toString());
+//        log.info("[REQUEST]");
+//        log.info(requestDTO.toString());
+//        log.info("[USER]");
+//
+//        log.info("---------------------------------------------------------------");
 
         return webClient.post()
                 .uri("demandDeposit/updateDemandDepositAccountTransfer")
