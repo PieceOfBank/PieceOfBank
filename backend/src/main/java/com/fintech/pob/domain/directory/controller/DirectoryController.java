@@ -44,11 +44,10 @@ public class DirectoryController {
 
     @PostMapping("/create")
     public ResponseEntity<DirectoryRequestDto> createDirectory(
-            @RequestParam String name,
-            @RequestParam String phone,
-
-            @RequestParam String bank,
-            @RequestParam String account,
+            @RequestParam("name") String name,
+            @RequestParam("phone") String phone,
+            @RequestParam("bank") String bank,
+            @RequestParam("account") String account,
             @RequestHeader("Authorization") String token
     ) throws IOException {
 
