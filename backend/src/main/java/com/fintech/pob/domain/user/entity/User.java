@@ -48,4 +48,18 @@ public class User {
     protected void onUpdate() {
         this.updated = LocalDateTime.now(); // 수정 시 updated 설정
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userKey=" + userKey +
+                ", userId='" + userId + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", created=" + created +
+                ", updated=" + updated +
+                ", subscriptionType=" + subscriptionType +
+                ", accountNo='" + accountNo + '\'' +
+                '}';
+    }
 }
