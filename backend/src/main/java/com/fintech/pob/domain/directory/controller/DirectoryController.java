@@ -63,11 +63,13 @@ public class DirectoryController {
 
         Subscription subscription= subscriptionService.getSubscriptionByProtectUserKey(userKey);
 
+        System.out.println("자식 정보(구독관계에서가져옴)");
         System.out.println(subscription);
 
         UUID parentKey = subscription.getTargetUser().getUserKey();
 
         directoryDTO.setAccount(account);
+        System.out.println(account);
         directoryDTO.setName(name);
         directoryDTO.setPhone(phone);
         directoryDTO.setBank(bank);
