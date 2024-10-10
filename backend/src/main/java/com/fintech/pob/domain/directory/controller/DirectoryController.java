@@ -56,10 +56,13 @@ public class DirectoryController {
 
         UUID userKey = UUID.fromString(key);
 
-        Subscription subscription= subscriptionService.getSubscriptionByTargetUserKey(userKey);
+        Subscription subscription= subscriptionService.getSubscriptionByProtectUserKey(userKey);
+
+        System.out.println(subscription);
 
         UUID parentKey = subscription.getTargetUser().getUserKey();
 
+        System.out.println("parentkey: "+parentKey);
 
         directoryDTO.setUserKey(userKey);
         DirectoryRequestDto createdDirectory = directoryService.createDirectory(directoryDTO, parentKey);
