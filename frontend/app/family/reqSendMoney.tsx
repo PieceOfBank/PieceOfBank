@@ -17,6 +17,9 @@ const ReqSendMoney = () => {
 
     const [updateView, setUpdateView] = useState(false)
 
+    const params = useLocalSearchParams()
+    const {accounting, banking, naming} = params
+    
     interface notifyItem {
         created: string, 
         notificationId: number, 
@@ -30,7 +33,6 @@ const ReqSendMoney = () => {
     // 계좌 목록 정보
     const [noticeList, setNoticeList] = useState<notifyItem[]>([])
     const router = useRouter()
-
 
     // 알림 전체 조회
     const notifyView = async() =>{
@@ -64,8 +66,20 @@ const ReqSendMoney = () => {
             const numId = noticeList[i]['notificationId']
             // 요청 보내기
             const checkRequest = async () => {
-                await transferApproval()
-                notifyDelete(numId)
+                const JsonData = {
+                    senderKey: noticeList[i]['senderKey'],
+                    receiverKey: noticeList[i]['receiverKey'],
+                    accountNo:2039420348,
+                }
+
+                const response = await transferApproval(JsonData)
+
+
+                console.log('##')
+                console.log(response)
+                const answer = notifyDelete(numId)
+                console.log('%%')
+                console.log(answer)
             }
             checkRequest()
             Toast.show({
@@ -74,6 +88,8 @@ const ReqSendMoney = () => {
                 text2: '계좌 이체가 완료되었습니다'
               })
             setUpdateView(prev => !prev)
+            // router.push('family/familyMain')
+
             }
         }
         }
@@ -85,8 +101,9 @@ const ReqSendMoney = () => {
             const numId = noticeList[i]['notificationId']
             // 요청 보내기
             const checkRequest = async () => {
+                const response = await transferRefusal()
                 await transferRefusal()
-                notifyDelete(numId)
+                // notifyDelete(numId)
             }
             checkRequest()
             Toast.show({
@@ -111,7 +128,7 @@ const ReqSendMoney = () => {
         <View className='justify-center items-center h-3/4'>
             <ScrollView className='flex-1'>
             {noticeList.map((list, index) => (
-                <View key={index} className='w-80 p-2 m-2 flex-row bg-gray-300 rounded-3xl h-24 items-center justify-between'>
+                <View key={list.notificationId} className='w-80 p-2 m-2 flex-row bg-gray-300 rounded-3xl h-24 items-center justify-between'>
                     <View className='mx-2'>
                         <Text className='font-bold'>일자 : {list.created.slice(0,4)}년
                         {list.created.slice(5,7)}월

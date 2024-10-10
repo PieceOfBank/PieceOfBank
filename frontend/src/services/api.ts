@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { axiosClient, axiosMedia } from "./axios";
+import { axiosClient } from "./axios";
 import { account } from "../types/account";
 import { jwtDecode } from "jwt-decode";
 
@@ -276,23 +276,38 @@ export const accountPatch = (data: Record<string, string>) => {
 }
 
 /* Media API */
-// 1. 미디어 등록 - POST
+// // 1. 미디어 등록 - POST
+// export const mediaPost = (data:Record<string, unknown>) => {
+
+//   const accessToken = AsyncStorage.getItem("accessToken");
+//   return axiosClient.post(`/media/upload`, {
+//     headers: {
+//       Authorization: `${accessToken}` 
+//     }, params:data
+//   });
+
+//   // return axiosClient.post(`/media/upload`, {params:data}, {
+//   //   headers: {
+//   //     Authorization: `${accessToken}` 
+//   //   },
+//   // });
+// };
 export const mediaPost = (
-  // transNo: number,
-  // type: string,
-  // content: string,
-  // data: Record<string, unknown>
+  transNo: number,
+  type: string,
+  content: string,
+  data: FormData
 ) => {
-  const data = {
-    'transactionUniqueNo': 77565,
-    'type': "TEXT",
-    'content': '배고파요',
-    
-  }
   const accessToken = AsyncStorage.getItem("accessToken");
-  return axiosMedia.post(`/media/upload`, data, {
+  return axiosClient.post(`/media/upload`, data, {
     headers: {
-      Authorization: `${accessToken}` 
+      Authorization: `${accessToken}`,
+      'Content-Type': 'multipart/form-data'
+    },
+    params: {
+      transactionUniqueNo: transNo,
+      type: type,
+      content: content,
     },
   });
 };
@@ -342,8 +357,8 @@ export const notifyDelete = (notificationId: number) => {
 //   return axiosClient.post(`api/notification/transfers/request`);
 // };
 // 7. 부모 거래 승인 처리
-export const transferApproval = () => {
-  return axiosClient.patch(`/transfers/approval`);
+export const transferApproval = (data:Record<string,unknown>) => {
+  return axiosClient.patch(`/transfers/approval`, data);
 };
 // 8. 부모 거래 거부 처리
 export const transferRefusal = () => {

@@ -43,21 +43,49 @@ const imageMedia = () => {
     const router = useRouter()
 
     const imagePost = async() => {
-        if (!imageUri) return; // 이미지 정보 있는지 확인
+        if (!imageUri) 
+          return; // 이미지 정보 있는지 확인
 
         // 이미지 파일을 Base64로 인코딩
-        const imageData = await FileSystem.readAsStringAsync(imageUri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-    
+        // const imageData = await FileSystem.readAsStringAsync(imageUri, {
+        //   encoding: FileSystem.EncodingType.Base64,
+        // });
+        // const response = await fetch(imageUri);
+        // const blob = await response.blob(); // Blob으로 변환
+
+        // console.log('이미지????')
+        // console.log(blob)
+        // const response = await fetch(imageUri);
+        // const blob = await response.blob(); // Blob으로 변환
+
+        const formData = new FormData();
+        formData.append('file', {
+          uri: imageUri, // 파일의 URI
+          type: 'image/jpeg',     // 파일 타입 (Blob 형태)
+          name: 'myImage.jpg',    // 파일 이름
+        } as any);
+        // formData.append('file', blob, 'ddd'); // Blob을 FormData에 추
+        // formData.append('image', blob, 'photo.jpg');
+        // const file = {
+        //   uri: imageUri,  // 이미지 URI
+        //   name: imageUri.split('/').pop(),  // 파일명 추출
+        //   type: 'image/jpeg',  // 이미지 MIME 타입 (예시)
+        // };
+  
+        // formData.append('file', file);  // 파일 추가
+        // formData.append('transactionUniqueNo', 123456789);  // 추가 데이터
+        // formData.append('type', 'IMAGE');  // ENUM 타입 (예시)
+        // formData.append('content', 'This is some content.');  //
+        const transNo = Number(mediaNo)
+        const type = 'IMAGE'
+        const content = '컨텐츠'
+      // console.log('??')
+      // console.log(formData)
+      //   console.log(blob)
+      
         try{
-            const transNo = Number(mediaNo)
-            const type = 'IMAGE'
-            const content = '컨텐츠'
-            const JsonData = {
-                file:imageData
-              }
-              const response = await mediaPost(transNo, type, content, JsonData);
+
+              const response = await mediaPost(transNo, type, content, formData);
               console.log(response)
               Toast.show({
                 type: 'success',

@@ -108,7 +108,7 @@ const TransactionList = ({account, bank, name} : sendInfo) => {
     }
     } 
 
-
+    
 
     const [modals, setModals] = useState(false)
     const ModalOpen = () => {

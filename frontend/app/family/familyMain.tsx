@@ -23,6 +23,7 @@ const FamilyMain = () => {
   const [flag, setFlag] = useState(false)
 
   const [wardBank, setWardBank] = useState('')
+  const [mainBank, setMainBank] = useState('')
 
   const router = useRouter();
 
@@ -86,7 +87,14 @@ const FamilyMain = () => {
 
   const mediaGo = async () =>{
     try{
-      const answer = await mediaPost()
+      const transNo = 78164
+      const type = 'TEXT'
+      const content = '미디어'
+      const data = {
+          file:null
+        }
+      console.log('요청')
+      const answer = await mediaPost(transNo, type, content, data)
       console.log(answer)
     }catch(error){
       console.log('미디어보내고싶어요')
@@ -114,6 +122,7 @@ const FamilyMain = () => {
           setWardInfo(Info)
           setFlag(true) // 있으면 관계 보여주기
           setNoticeKey(response.data['protectUser'].userKey)
+          setMainBank(response.data['protectUser'].accountNo)
         }
       } catch(error){
         console.log(error)
@@ -229,26 +238,32 @@ const FamilyMain = () => {
         </View>
       </SafeAreaView>
       <View className="bg-gray-200 flex justify-center items-center">
-      <TouchableOpacity 
-            className="w-28 bg-green-800 h-8 rounded-3xl justify-center items-center"
-            onPress={mediaGo}>
-                <Text className='text-white'>미디어</Text>
+      <View className="flex-1">
+        <View className="items-between">
+          <TouchableOpacity 
+                className="w-28 bg-green-800 h-8 rounded-3xl justify-center items-center"
+                onPress={mediaGo}>
+                    <Text className='text-white'>미디어</Text>
+                </TouchableOpacity>
+          <TouchableOpacity 
+                className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
+                onPress={accountGo}>
+                    <Text className='text-white'>계좌생성</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+                className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
+                onPress={moneyAdd}>
+                    <Text className='text-white'>입금</Text>
             </TouchableOpacity>
-      <TouchableOpacity 
-            className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
-            onPress={accountGo}>
-                <Text className='text-white'>계좌생성</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-            className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
-            onPress={moneyAdd}>
-                <Text className='text-white'>입금</Text>
-            </TouchableOpacity>
+        </View>
+
+      </View>
+      
         {(mainAccount=='1')? (        
           <Link className='h-6 rounded-3xl justify-center m-4 text-center font-bold' 
              href={
                 {pathname:'/family/totalAccount'}
-                }>테스트용 00 계좌 : 102312-300-231245</Link>) 
+                }>{}</Link>) 
                 :<Link className='h-6 rounded-3xl justify-center m-4 text-center font-bold' 
                 href={
                    {pathname:'/family/totalAccount'}
