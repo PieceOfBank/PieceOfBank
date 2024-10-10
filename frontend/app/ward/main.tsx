@@ -9,7 +9,7 @@ import SmallLogo from "../../src/assets/SmallLogo.png";
 import { mediaPost, createAccount, logoutUser, getAccountList, addMoney } from "../../src/services/api";
 import Toast from "react-native-toast-message";
 import { useDispatch } from "react-redux";
-import { logout } from "../../src/store/userSlice";
+import { logout, setID, setNickName } from "../../src/store/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
@@ -80,7 +80,9 @@ const caregiver = () => {
         try{
             const response = await logoutUser();
 
-            console.log(response)
+          console.log(response)
+          dispatch(setID(""));
+          dispatch(setNickName(""));
             dispatch(logout());
             
             Toast.show({

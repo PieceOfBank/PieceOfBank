@@ -195,9 +195,11 @@ export const createDirectory = (data: FormData) => {
   });
 };
 // 3. 연락처 조회 - GET
-export const getDirectory = () => {
+export const getDirectory = async () => {
+
+  const accessToken = await AsyncStorage.getItem("accessToken");
   return axiosClient.get(`/directory/find`, {
-    headers: { "Requires-Auth": true },
+    headers: { "Authorization" : accessToken,  "Requires-Auth": true },
   });
 };
 // 4. 연락처 삭제 - DELETE

@@ -3,7 +3,7 @@ import { View, Text, ImageBackground, TextInput, SafeAreaView, TouchableOpacity,
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { subTargetCheck, subProtectCheck } from "../../services/api";
+import { subTargetCheck, subProtectCheck, getDirectory } from "../../services/api";
 import { directory } from "../../types/directory";
 
 const WardListForm = () => {
@@ -20,6 +20,7 @@ const WardListForm = () => {
 
     // 보호자 연결 상태 확인 - 1 : 연결 전 (보호자 요청 수락 페이지) / 2 : 연결 후 (기본 메인)
     const [connect, setConnect] = useState(false);
+    const [careList, setCareList] = useState<directory[]>([]);
 
     // 금액 한도 - 1회 / 하루
     const [countLimit, setCountLimit] = useState(0)
@@ -76,14 +77,22 @@ const WardListForm = () => {
          }
      }
 
+    useEffect(() => {
+        const fetchDirectory = async () => {
+            const response = await getDirectory();
+            console.log("directory get data")
+            console.log(response.data);
+            
+            setCareList(response.data);
+            
+            console.log("LIST!!")
+            console.log(careList)
+         }
 
+        fetchDirectory();
+    }, []);
  
-     // 임시 리스트 (전체 연락처)
-     const careList: directory [] = [
-        {userKey: "333333", accountNo: "0019197589758057", institutionCode: 0, name: "딸", url: "string"},
-        {userKey: "444444", accountNo: "23455789", institutionCode: 0, name: "진숙", url: "string"},
-        {userKey: "555555", accountNo: "678976543", institutionCode: 0, name: "영숙", url: "string"},
-]
+    // 임시 리스트 (전체 연락처)
      
      // 임시 리스트 (고정 카드: 전체 기록 카드)
      const addList: directory = {userKey: "99", accountNo: "", institutionCode: 0, name: "전체 기록", url: "string"}

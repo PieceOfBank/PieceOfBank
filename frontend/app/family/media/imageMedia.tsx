@@ -86,6 +86,7 @@ const imageMedia = () => {
         try{
 
               const response = await mediaPost(transNo, type, content, formData);
+
               console.log(response)
               Toast.show({
                 type: 'success',

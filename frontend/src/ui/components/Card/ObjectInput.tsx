@@ -14,7 +14,7 @@ const ObjectInput = () => {
     const [phone, setPhone] = useState('')
     const [bank, setBank] = useState('')
     const [account, setAccount] = useState('')
-    const [imageUri, setImageUri] = useState<string | null>(null);
+    //const [imageUri, setImageUri] = useState<string | null>(null);
 
     const router = useRouter()
     const myUserKey = useSelector((state: RootState) => state.getUserKey.userKey);
@@ -40,11 +40,11 @@ const ObjectInput = () => {
   
     // 이미지 선택 완료하면 IamgeUri에 저장됨
     if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+      //setImageUri(result.assets[0].uri);
     } 
   };
 
-    const directoryGo = async() => {
+    const directoryMake = async() => {
       try{
         const formData = new FormData();
         formData.append("name", name);
@@ -53,11 +53,11 @@ const ObjectInput = () => {
         formData.append("account", account);
         
         // FormData에 이미지 추가
-        formData.append('file', {
-            uri: imageUri, // 선택된 이미지 URI
-            type: 'image/jpeg', // MIME 타입 (상황에 따라 조정 가능)
-            name: 'image.jpg', // 파일 이름
-        } as any);
+        // formData.append('file', {
+        //     uri: imageUri, // 선택된 이미지 URI
+        //     type: 'image/jpeg', // MIME 타입 (상황에 따라 조정 가능)
+        //     name: 'image.jpg', // 파일 이름
+        // } as any);
 
         const response = await createDirectory(formData);
         console.log(response)
@@ -71,7 +71,7 @@ const ObjectInput = () => {
         <View className='justify-center items-center p-4'>
           <Text className='mt-12 mb-8 bg-gray-300 px-3 py-2 w-48 rounded-3xl text-xl text-center font-semibold'>대상자 설정</Text>
          <SafeAreaView className='bg-gray-200 rounded-3xl px-6 py-4'>
-         <Text className="my-2 ml-2 font-semibold">프로필 이미지</Text>
+         {/* <Text className="my-2 ml-2 font-semibold">프로필 이미지</Text>
                 {imageUri && (
                     <Image 
                         source={{ uri: imageUri }} 
@@ -83,7 +83,7 @@ const ObjectInput = () => {
                     onPress={selectImage}
                 >
                     <Text className='text-center'>이미지 선택</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
           <Text className="my-2 ml-2 font-semibold">이름</Text>
           <View className='flex-row'>
             <TextInput className="my-1 w-56 bg-white rounded-3xl py-1" onChangeText={(name) => setName(name)}></TextInput>
@@ -104,7 +104,8 @@ const ObjectInput = () => {
             onChangeText={(bank) => setBank(bank)}></TextInput>
           </View>
 
-          <Text className="my-2 ml-2 font-semibold">계좌번호</Text>
+           <Text className="my-2 ml-2 font-semibold">계좌번호</Text>
+           <Text className="my-2 ml-2 font-semibold"> 반드시 실제 계좌번호를 입력해 주세요! </Text>
           <View className='flex-row'>
           <TextInput
             className="my-1 w-56 bg-white rounded-3xl py-1"
@@ -116,7 +117,7 @@ const ObjectInput = () => {
         <View className='flex-row mt-2'>
           <TouchableOpacity 
             className='m-2 py-2 px-4 bg-red-400 rounded-3xl bg-sky-500'
-            onPress={directoryGo} 
+            onPress={directoryMake} 
             >
             <Text className='text-white text-center font-bold'>설정 완료</Text></TouchableOpacity>
             <CancelButton />
