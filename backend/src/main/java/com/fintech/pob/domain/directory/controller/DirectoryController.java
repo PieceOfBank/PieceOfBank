@@ -44,10 +44,11 @@ public class DirectoryController {
 
     @PostMapping("/create")
     public ResponseEntity<DirectoryRequestDto> createDirectory(
-
-            @RequestParam String phone,
             @RequestParam String name,
-            @RequestParam String institutionCode,
+            @RequestParam String phone,
+
+            @RequestParam String bank,
+            @RequestParam String account,
             @RequestHeader("Authorization") String token
     ) throws IOException {
 
@@ -64,6 +65,11 @@ public class DirectoryController {
         System.out.println(subscription);
 
         UUID parentKey = subscription.getTargetUser().getUserKey();
+
+        directoryDTO.setAccount(account);
+        directoryDTO.setName(name);
+        directoryDTO.setPhone(phone);
+        directoryDTO.setBank(bank);
 
         System.out.println("parentkey: "+parentKey);
 
