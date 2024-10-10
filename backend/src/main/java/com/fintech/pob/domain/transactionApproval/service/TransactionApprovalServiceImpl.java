@@ -108,7 +108,11 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
         notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
         notificationRepository.save(notification);
 
-        pendingHistoryService.approvePendingHistory(notification.getNotificationId());
+        try {
+            pendingHistoryService.approvePendingHistory(notificationId);
+        } catch (Exception e) {
+            throw new RuntimeException("Pending history approval failed", e);
+        }
 
         // 거래 완료 푸시 알림 전송(자식 -> 부모)
         User target = userRepository.findByUserKey(notification.getSenderUser().getUserKey())
@@ -134,7 +138,11 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
 
         Notification notification = transactionApproval.getNotification();
 
-        pendingHistoryService.refusePendingHistory(notification.getNotificationId());
+        try {
+            pendingHistoryService.refusePendingHistory(notificationId);
+        } catch (Exception e) {
+            throw new RuntimeException("Pending history approval failed", e);
+        }
 
         // 거래 완료 푸시 알림 전송(자식 -> 부모)
         User target = userRepository.findByUserKey(notification.getSenderUser().getUserKey())
