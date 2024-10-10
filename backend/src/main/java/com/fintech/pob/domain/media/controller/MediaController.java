@@ -39,14 +39,15 @@ public class MediaController {
         try {
 
             String url;
+            if (file == null || file.isEmpty()) {
 
-            if(file != null && file.isEmpty())
-            {
-                url = "";
-            }else{
-                 url = mediaUploadService.uploadFile(file);
+                url = "파일이 제공되지 않았습니다."; 
+            } else {
 
+                url = mediaUploadService.uploadFile(file);
             }
+
+
 
             if (content == null) {
                 content = "";
