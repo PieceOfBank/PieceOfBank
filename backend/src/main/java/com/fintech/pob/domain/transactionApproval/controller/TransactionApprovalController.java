@@ -25,14 +25,14 @@ public class TransactionApprovalController {
     }
 
     @PatchMapping("/approval")
-    public ResponseEntity<TransactionApprovalResponseDto> approveTransferRequest(@RequestBody Long transactionApprovalId) {
-        TransactionApprovalResponseDto transactionApprovalResponseDto = transactionApprovalService.approveTransferRequest(transactionApprovalId);
+    public ResponseEntity<TransactionApprovalResponseDto> approveTransferRequest(@RequestBody Long notificationId) {
+        TransactionApprovalResponseDto transactionApprovalResponseDto = transactionApprovalService.approveTransferRequest(notificationId);
         return ResponseEntity.ok(transactionApprovalResponseDto);
     }
 
     @PatchMapping("/refusal")
-    public ResponseEntity<TransactionApprovalResponseDto> refuseTransferRequest(@RequestBody Long transactionApprovalId) {
-        TransactionApprovalResponseDto transactionApprovalResponseDto = transactionApprovalService.refuseTransferRequest(transactionApprovalId);
+    public ResponseEntity<TransactionApprovalResponseDto> refuseTransferRequest(@RequestBody Long notificationId) {
+        TransactionApprovalResponseDto transactionApprovalResponseDto = transactionApprovalService.refuseTransferRequest(notificationId);
         return ResponseEntity.ok(transactionApprovalResponseDto);
     }
 

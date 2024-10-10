@@ -7,6 +7,7 @@ import com.fintech.pob.domain.notification.entity.NotificationType;
 import com.fintech.pob.domain.notification.repository.NotificationRepository;
 import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
 import com.fintech.pob.domain.notification.service.expo.ExpoService;
+import com.fintech.pob.domain.pendinghistory.service.PendingHistoryService;
 import com.fintech.pob.domain.transactionApproval.repository.TransactionApprovalRepository;
 import com.fintech.pob.domain.transactionApproval.dto.TransactionApprovalRequestDto;
 import com.fintech.pob.domain.transactionApproval.dto.TransactionApprovalResponseDto;
@@ -36,6 +37,7 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
     private final TransactionApprovalRepository transactionApprovalRepository;
     private final UserTokenService userTokenService;
     private final ExpoService expoService;
+    private final PendingHistoryService pendingHistoryService;
 
     @Override
     @Transactional
@@ -77,14 +79,13 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
         TransactionApproval savedApproval = transactionApprovalRepository.save(transactionApproval);
 
         // 푸시 알림 보내기
-        sendPushMessage(receiver.getUserKey(), typeName);
+        sendPushMessage(receiver.getUserKey(), typeName, "거래 승인 알림이 도착했습니다!");
 
         return savedApproval.getTransactionApprovalId();
     }
 
-    private void sendPushMessage(UUID receiverKey, String typeName) {
-        String to = userTokenService.getUserTokenByUserKey(receiverKey);
-        String content = "거래 승인 알림이 도착했습니다!";
+    private void sendPushMessage(UUID userKey, String typeName, String content) {
+        String to = userTokenService.getUserTokenByUserKey(userKey);
 
         ExpoNotificationRequestDto expoNotificationRequestDto = ExpoNotificationRequestDto.builder()
                 .to(to)
@@ -96,7 +97,8 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
 
     @Override
     @Transactional
-    public TransactionApprovalResponseDto approveTransferRequest(Long transactionApprovalId) {
+    public TransactionApprovalResponseDto approveTransferRequest(Long notificationId) {
+        Long transactionApprovalId = getTransactionApprovalIdByNotificationId(notificationId);
         TransactionApproval transactionApproval = transactionApprovalRepository.findById(transactionApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Transaction Approval not found"));
         transactionApproval.setStatus(TransactionApprovalStatus.APPROVED);
@@ -105,6 +107,17 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
         Notification notification = transactionApproval.getNotification();
         notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
         notificationRepository.save(notification);
+
+        try {
+            pendingHistoryService.approvePendingHistory(notificationId);
+        } catch (Exception e) {
+            throw new RuntimeException("Pending history approval failed", e);
+        }
+
+        // 거래 완료 푸시 알림 전송(자식 -> 부모)
+        User target = userRepository.findByUserKey(notification.getSenderUser().getUserKey())
+                .orElseThrow(() -> new IllegalArgumentException("TargetKey(parent) not found"));
+        sendPushMessage(target.getUserKey(), "거래 승인 알림", "보호자가 거래를 승인했습니다.");
 
         return TransactionApprovalResponseDto.builder()
                 .senderKey(notification.getSenderUser().getUserKey())
@@ -116,13 +129,25 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
     }
 
     @Override
-    public TransactionApprovalResponseDto refuseTransferRequest(Long transactionApprovalId) {
+    public TransactionApprovalResponseDto refuseTransferRequest(Long notificationId) {
+        Long transactionApprovalId = getTransactionApprovalIdByNotificationId(notificationId);
         TransactionApproval transactionApproval = transactionApprovalRepository.findById(transactionApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Transaction Refusal not found"));
         transactionApproval.setStatus(TransactionApprovalStatus.REFUSED);
         transactionApprovalRepository.save(transactionApproval);
 
         Notification notification = transactionApproval.getNotification();
+
+        try {
+            pendingHistoryService.refusePendingHistory(notificationId);
+        } catch (Exception e) {
+            throw new RuntimeException("Pending history approval failed", e);
+        }
+
+        // 거래 완료 푸시 알림 전송(자식 -> 부모)
+        User target = userRepository.findByUserKey(notification.getSenderUser().getUserKey())
+                .orElseThrow(() -> new IllegalArgumentException("TargetKey(parent) not found"));
+        sendPushMessage(target.getUserKey(), "거래 거절 알림", "보호자가 거래를 거절했습니다.");
 
         return TransactionApprovalResponseDto.builder()
                 .senderKey(notification.getSenderUser().getUserKey())
@@ -131,6 +156,11 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
                 .amount(transactionApproval.getAmount())
                 .status(transactionApproval.getStatus())
                 .build();
+    }
+
+    public Long getTransactionApprovalIdByNotificationId(Long notificationId) {
+        return transactionApprovalRepository.findTransactionApprovalIdByNotificationId(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("No transaction approval found for notificationId: " + notificationId));
     }
 
     @Override
