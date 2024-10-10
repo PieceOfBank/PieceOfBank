@@ -19,7 +19,7 @@ public class AccountClientService {
         account.setUser(user);
         account.setAccountNo(accountNo);
         accountRepository.save(account);
-        log.info("---------end ---- saveAccount");
+        System.out.println("---------end ---- saveAccount");
     }
 
     public Account findByUser(User user) {
