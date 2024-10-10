@@ -43,6 +43,7 @@ public class JwtUtil {
     // JWT 토큰 생성
     public String createToken(String userKey, Integer subscriptionType, long expirationTime) {
         Claims claims = Jwts.claims().setSubject(userKey);
+
         if (subscriptionType != null) {
             claims.put("subscriptionType", subscriptionType);
 

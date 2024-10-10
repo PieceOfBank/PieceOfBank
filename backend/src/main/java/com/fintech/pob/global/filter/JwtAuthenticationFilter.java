@@ -43,13 +43,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 logger.error("Error extracting JWT Token", e);
             }
         }
+        logger.info("JWT Token: " + jwtToken);
+        logger.info("Extracted userKey: " + userKey);
+
 
         if (userKey != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // UserAuthenticationService를 통해 유저 인증 정보 설정
             UsernamePasswordAuthenticationToken authentication = userAuthenticationService.getAuthentication(userKey, request);
             if (authentication != null) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                logger.info("SecurityContext에 인증 정보 설정됨: " + authentication);
             }
         }
 
