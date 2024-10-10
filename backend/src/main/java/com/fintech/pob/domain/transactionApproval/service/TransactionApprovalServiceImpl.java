@@ -7,6 +7,7 @@ import com.fintech.pob.domain.notification.entity.NotificationType;
 import com.fintech.pob.domain.notification.repository.NotificationRepository;
 import com.fintech.pob.domain.notification.repository.NotificationTypeRepository;
 import com.fintech.pob.domain.notification.service.expo.ExpoService;
+import com.fintech.pob.domain.pendinghistory.service.PendingHistoryService;
 import com.fintech.pob.domain.transactionApproval.repository.TransactionApprovalRepository;
 import com.fintech.pob.domain.transactionApproval.dto.TransactionApprovalRequestDto;
 import com.fintech.pob.domain.transactionApproval.dto.TransactionApprovalResponseDto;
@@ -36,6 +37,7 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
     private final TransactionApprovalRepository transactionApprovalRepository;
     private final UserTokenService userTokenService;
     private final ExpoService expoService;
+    private final PendingHistoryService pendingHistoryService;
 
     @Override
     @Transactional
@@ -106,6 +108,8 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
         notification.setNotificationStatus(NotificationStatus.READ); // 읽음 처리
         notificationRepository.save(notification);
 
+        pendingHistoryService.approvePendingHistory(notification.getNotificationId());
+
         return TransactionApprovalResponseDto.builder()
                 .senderKey(notification.getSenderUser().getUserKey())
                 .receiverKey(notification.getReceiverUser().getUserKey())
@@ -123,6 +127,8 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
         transactionApprovalRepository.save(transactionApproval);
 
         Notification notification = transactionApproval.getNotification();
+
+        pendingHistoryService.refusePendingHistory(notification.getNotificationId());
 
         return TransactionApprovalResponseDto.builder()
                 .senderKey(notification.getSenderUser().getUserKey())
