@@ -53,8 +53,8 @@ public class AccountService {
     public void handleAccountTransferEvent(AccountTransferEvent event) {
         AccountTransferRequestDTO requestPayload = event.getRequestPayload();
         handlePendingHistory(requestPayload)
-                .doOnSuccess(response -> log.info("[Account Transfer Event] 계좌 이체 성공: {}", response))
-                .doOnError(error -> log.error("[Account Transfer Event] 계좌 이체 중 오류 발생", error))
+                .doOnSuccess(response -> log.info("[Account Transfer Event] 계좌 이체 성공: ", response))
+                .doOnError(error -> log.error("[Account Transfer Event] 계좌 이체 중 오류 발생: ", error))
                 .subscribe();
     }
 
@@ -171,8 +171,9 @@ public class AccountService {
     public Mono<ClientAccountDetailResponseDTO> getAccountDetail(AccountDetailRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
 
-        log.info("-------------------[GET ACCOUNT DETAIL]-------------------%n {} " +
-                "%n ----------------------------------------------------------", header.toString());
+        log.info("-------------------[GET ACCOUNT DETAIL]-------------------");
+        log.info(header.toString());
+        log.info("----------------------------------------------------------");
 
         ClientAccountDetailRequestDTO requestDTO = new ClientAccountDetailRequestDTO();
         requestDTO.setHeader(header);
@@ -187,9 +188,9 @@ public class AccountService {
     }
 
     public Mono<ClientAccountDetailResponseDTO> getAccountDetail(AccountDetailRequestDTO requestPayload, HeaderRequestDTO header) {
-        log.info("-------------------[GET ACCOUNT DETAIL]-------------------%n");
+        log.info("-------------------[GET ACCOUNT DETAIL]-------------------");
         log.info(header.toString());
-        log.info("%n----------------------------------------------------------");
+        log.info("----------------------------------------------------------");
 
         ClientAccountDetailRequestDTO requestDTO = new ClientAccountDetailRequestDTO();
         requestDTO.setHeader(header);
@@ -225,9 +226,9 @@ public class AccountService {
 
                         return transferCheckService.checkTransfer(transferCheckDTO)
                                 .flatMap(checkResult -> {
-                                    log.info("--------------------------------------%n");
+                                    log.info("--------------------------------------");
                                     log.info(String.valueOf(checkResult));
-                                    log.info("%n--------------------------------------");
+                                    log.info("--------------------------------------");
 
                                     if (checkResult != TransferCheckResult.SUCCESS) {
                                         // 알림 전송
@@ -263,9 +264,9 @@ public class AccountService {
 
         ClientAccountTransferRequestDTO requestDTO = ClientAccountTransferRequestDTO.of(header, requestPayload);
 
-        log.info("-------------------[UPDATE ACCOUNT TRANSFER]-------------------%n");
+        log.info("-------------------[UPDATE ACCOUNT TRANSFER]-------------------");
         log.info(header.toString());
-        log.info("%n----------------------------------------------------------");
+        log.info("---------------------------------------------------------------");
 
         return webClient.post()
                 .uri("demandDeposit/updateDemandDepositAccountTransfer")
