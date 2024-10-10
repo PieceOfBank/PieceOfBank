@@ -1,5 +1,7 @@
 package com.fintech.pob.domain.directory.controller;
 
+import com.fintech.pob.domain.account.service.account.AccountClientService;
+import com.fintech.pob.domain.account.service.account.AccountService;
 import com.fintech.pob.domain.directory.entity.Directory;
 import com.fintech.pob.domain.directory.entity.DirectoryRequestDto;
 import com.fintech.pob.domain.directory.repository.DirectoryRepository;
@@ -41,7 +43,7 @@ public class DirectoryController {
     private final DirectoryRepository directoryRepository;
     private final SubscriptionService subscriptionService;
     private final JwtUtil jwtUtil;
-
+    private final AccountClientService accountService;
     @PostMapping("/create")
     public ResponseEntity<DirectoryRequestDto> createDirectory(
             @RequestParam("name") String name,
@@ -82,7 +84,12 @@ public class DirectoryController {
     public ResponseEntity<List<DirectoryRequestDto>> getDirectoryById(@RequestHeader("Authorization") String token) {
         String key = (String) jwtUtil.extractUserKey(token);
         UUID userKey = UUID.fromString(key);
+
+
         List<DirectoryRequestDto> directoryDTO = directoryService.getDirectoryById(userKey);
+
+
+
         return ResponseEntity.ok(directoryDTO);
     }
 

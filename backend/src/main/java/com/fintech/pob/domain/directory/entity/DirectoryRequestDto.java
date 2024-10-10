@@ -12,5 +12,5 @@ public class DirectoryRequestDto {
     private String name;
     private String bank;
     private String phone;
-
+    private String protectKey;
 }
