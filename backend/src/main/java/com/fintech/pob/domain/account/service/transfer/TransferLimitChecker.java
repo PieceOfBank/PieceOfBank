@@ -4,12 +4,14 @@ import com.fintech.pob.domain.account.dto.client.ClientAccountHistoryListRespons
 import com.fintech.pob.domain.account.dto.request.AccountHistoryListRequestDTO;
 import com.fintech.pob.domain.account.dto.request.AccountTransferRequestDTO;
 import com.fintech.pob.domain.account.dto.transfer.TransferCheckDTO;
-import com.fintech.pob.domain.account.service.account.AccountHistoryListService;
+import com.fintech.pob.domain.account.service.account.AccountHistoryListChecker;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.service.SubscriptionService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.fintech.pob.global.header.dto.HeaderRequestDTO;
+import com.fintech.pob.global.header.service.HeaderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -20,12 +22,12 @@ import java.util.UUID;
 public class TransferLimitChecker implements TransferChecker {
 
     private final SubscriptionService subscriptionService;
-    private final AccountHistoryListService accountHistoryListService;
-    private final HttpServletRequest request;
+    private final AccountHistoryListChecker accountService;
+    private final HeaderService headerService;
 
     @Override
-    public TransferCheckResult check(TransferCheckDTO transferCheckDTO) {
-        String userKey = (String) request.getAttribute("userKey");
+    public Mono<TransferCheckResult> check(TransferCheckDTO transferCheckDTO) {
+        String userKey = transferCheckDTO.getUserKey();
         Optional<Subscription> subscriptionOptional = subscriptionService.findByTargetUserKey(UUID.fromString(userKey));
 
         AccountTransferRequestDTO requestPayload = transferCheckDTO.getRequestPayload();
@@ -37,32 +39,33 @@ public class TransferLimitChecker implements TransferChecker {
 
             // 1회 이체 한도 체크
             if (transferCheckDTO.getRequestPayload().getTransactionBalance() > oneTimeTransferLimit) {
-                return TransferCheckResult.LIMIT;
+                return Mono.just(TransferCheckResult.LIMIT);
             }
 
-            // 일일 이체 한도 체크
-            AccountHistoryListRequestDTO historyRequest = new AccountHistoryListRequestDTO(
-                    requestPayload.getWithdrawalAccountNo(),
-                    LocalDate.now().toString(),
-                    LocalDate.now().toString(),
-                    "A",
-                    "DESC"
-            );
-
-            return accountHistoryListService.getAccountHistoryList(historyRequest)
-                    .map(response -> {
-                        Long totalAmountToday = response.getRec().getHistory().stream()
-                                .mapToLong(ClientAccountHistoryListResponseDTO.Record.HistoryInfo::getTransactionBalance)
-                                .sum();
-
-                        if (totalAmountToday + requestPayload.getTransactionBalance() > dailyTransferLimit) {
-                            return TransferCheckResult.LIMIT;
-                        }
-                        return TransferCheckResult.SUCCESS;
-                    })
-                    .block();
+//            // 일일 이체 한도 체크
+//            AccountHistoryListRequestDTO historyRequest = new AccountHistoryListRequestDTO(
+//                    requestPayload.getWithdrawalAccountNo(),
+//                    LocalDate.now().toString(),
+//                    LocalDate.now().toString(),
+//                    "A",
+//                    "DESC"
+//            );
+//
+//            HeaderRequestDTO header = headerService.createCommonHeader("inquireTransactionHistoryList", userKey);
+//
+//            return accountService.getAccountHistoryList(historyRequest, header)
+//                    .map(response -> {
+//                        Long totalAmountToday = response.getRec().getHistory().stream()
+//                                .mapToLong(ClientAccountHistoryListResponseDTO.Record.HistoryInfo::getTransactionBalance)
+//                                .sum();
+//
+//                        if (totalAmountToday + requestPayload.getTransactionBalance() > dailyTransferLimit) {
+//                            return TransferCheckResult.LIMIT;
+//                        }
+//                        return TransferCheckResult.SUCCESS;
+//                    });
         }
 
-        return TransferCheckResult.SUCCESS;
+        return Mono.just(TransferCheckResult.SUCCESS);
     }
 }

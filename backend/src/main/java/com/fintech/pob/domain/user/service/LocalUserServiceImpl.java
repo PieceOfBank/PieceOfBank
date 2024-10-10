@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -22,15 +23,14 @@ public class LocalUserServiceImpl implements LocalUserService {
         if (userKey == null) {
             throw new IllegalArgumentException("userKey는 null이거나 비어 있을 수 없습니다.");
         }
+
         user.setUserKey(userKey);
         user.setUserName(userName);
         user.setUserId(userId);
-
-        System.out.println(userId);
         user.setUserPassword(userPassword);
         user.setSubscriptionType(userSubscriptionType);
+        user.setAccountNo(null);
 
-        System.out.println(user.getUserKey());
 
         userRepository.save(user);
     }
@@ -46,6 +46,18 @@ public class LocalUserServiceImpl implements LocalUserService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 userKey 찾을 수 없음"));
     }
 
+    @Override
+    public void updateAccountNo(UUID userKey, String accountNo) {
+        User user = userRepository.findByUserKey(userKey)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setAccountNo(accountNo);
+        userRepository.save(user);
+    }
+
+    @Override
+    public Optional<User> getUserByUserId(String userId) {
+        return userRepository.findByUserId(userId);
+    }
 
 
 }

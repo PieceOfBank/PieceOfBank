@@ -13,5 +13,5 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
     Optional<Subscription> findByTargetUser_UserKey(UUID userKey);
 
     Subscription findByProtectUserUserKey(UUID userKey);
-
+    Subscription findByTargetUserUserKey(UUID userKey);
 }
