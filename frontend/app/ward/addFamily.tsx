@@ -35,6 +35,8 @@ const familyAdd = () => {
   interface NameItem {
     requesterName: string;
     subscriptionId: number;
+    senderKey: string,
+    receiverKey: string,
   }
 
   interface ConnectItem {
@@ -111,6 +113,8 @@ const familyAdd = () => {
               return {
                 requesterName: response.data["requesterName"],
                 subscriptionId: response.data["subscriptionId"],
+                senderKey: response.data["senderKey"], // 자식 - protect
+                receiverKey: response.data["receiverKey"], // 부모 - target
               };
             })
           );
@@ -124,6 +128,10 @@ const familyAdd = () => {
     if (numList.length > 0) {
       fetchData();
     }
+
+    console.log("######")
+    console.log(nameList);
+    console.log("######")
   }, [numList]);
 
   /* 구독 요청 수락 */
@@ -132,20 +140,24 @@ const familyAdd = () => {
       if (i == index) {
         const subCreate = async () => {
           try {
-              const subId = nameList[i].subscriptionId;
+            const subId = nameList[i].subscriptionId;
+            console.log("자식 ID " + subId)
               const response = await subscriptionApproval(subId);
               // 자식 유저키 구하기
-              const familyUserKey = response.data.targetKey;
+            const familyUserKey = response.data.protectUser.userKey;
+            console.log("자식 유저 키 : " + familyUserKey)
               // 자식 디바이스 토큰 구하기
               const familyExpoTokenRes = await getToken(familyUserKey);
               const familyExpoToken = familyExpoTokenRes.data;
-              // 알람 붙이기
+            // 알람 붙이기
+            console.log("자식 Expo 토큰 : " + familyExpoToken)
               const notificationMsg = {
                   to: familyExpoToken,
                   title: "구독 완료 알림",
                   content: "구독 관계가 설정되었어요!"
               }
-              await sendExpoNotification(notificationMsg);
+            await sendExpoNotification(notificationMsg);
+            console.log("알림 보낸ㅆ슴다...")
               
             console.log(response.data);
           } catch (error) {

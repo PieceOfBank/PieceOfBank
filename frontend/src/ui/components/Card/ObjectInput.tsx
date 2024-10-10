@@ -51,19 +51,21 @@ const ObjectInput = () => {
         formData.append("phone", phone);
         formData.append("bank", bank);
         formData.append("account", account);
+
+        console.log(formData)
         
-        // FormData에 이미지 추가
-        // formData.append('file', {
-        //     uri: imageUri, // 선택된 이미지 URI
-        //     type: 'image/jpeg', // MIME 타입 (상황에 따라 조정 가능)
-        //     name: 'image.jpg', // 파일 이름
-        // } as any);
+        console.log("######################################")
+        formData.forEach((value, key) => {
+          console.log(`${key}: ${value}`);
+        });
+        console.log("######################################")
 
         const response = await createDirectory(formData);
-        console.log(response)
+        console.log("디렉토리 성공")
+        console.log(response.data)
         router.back();
         } catch(error){
-            console.log(error)
+            console.log("디렉토리 생성 오류 : " + error)
         }
     }
     

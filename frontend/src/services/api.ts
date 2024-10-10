@@ -77,7 +77,7 @@ export const registUser = async (newMember: Record<string, unknown>) => {
     try {
         const userKey = await AsyncStorage.getItem('myKey');
         console.log("my userKey : --> " + userKey)
-        newMember = { ...newMember, 'myKey': userKey };
+        newMember = { ...newMember, 'userKey': userKey };
         console.log(newMember)
         return axiosClient.post(`/users/regist`, newMember);
     } catch (error) {
@@ -145,8 +145,6 @@ axiosClient.interceptors.response.use(
         const response = await axiosClient.post("/auth/refresh", { refresh: refreshToken });
         // 오타인지 확인..
         const newAccessToken = response.headers["Authorization"];
-        console.log(response.headers);
-
         originalRequest.headers.Authorization = `${newAccessToken}`;
 
         // 토큰을 다시 저장
@@ -182,16 +180,22 @@ interface UserDirectory {
 }
 
 // 1. 연락처 수정 - PUT
-export const updateDirectory = (id: number, data: Record<string, string>) => {
+export const updateDirectory = async (id: number, data: Record<string, string>) => {
+    const accessToken = await AsyncStorage.getItem("accessToken");
     return axiosClient.put(`/directory/put/${id}`, data, {
-        headers: { "Requires-Auth": true },
+        headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
     });
 };
 
 // 2. 연락처 등록 - POST
-export const createDirectory = (data: FormData) => {
+export const createDirectory = async (data: FormData) => {
+  const accessToken = await AsyncStorage.getItem("accessToken");
   return axiosClient.post(`/directory/create`, data, {
-    headers: { 'Content-Type': 'multipart/form-data', "Requires-Auth": true },
+    headers: {
+      Authorization: `${accessToken}`,
+      'Content-Type': 'multipart/form-data',
+      "Requires-Auth": true
+    },
   });
 };
 // 3. 연락처 조회 - GET
@@ -199,7 +203,7 @@ export const getDirectory = async () => {
 
   const accessToken = await AsyncStorage.getItem("accessToken");
   return axiosClient.get(`/directory/find`, {
-    headers: { "Authorization" : accessToken,  "Requires-Auth": true },
+    headers: { Authorization: `${accessToken}`,  "Requires-Auth": true },
   });
 };
 // 4. 연락처 삭제 - DELETE
@@ -209,16 +213,18 @@ export const deleteDirectory = (accountNo: string) => {
 
 /* Account API */
 // 1. 계좌 생성 - POST @@@
-export const createAccount = (data: Record<string, string>) => {
-  const accessToken = AsyncStorage.getItem("accessToken");
+export const createAccount = async (data: Record<string, string>) => {
+  const accessToken = await AsyncStorage.getItem("accessToken");
+  console.log("createAccoutn - AccessToken : " + accessToken)
   console.log(accessToken);
   return axiosClient.post(`/account/client/createDemandDepositAccount`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 // 2. 계좌 목록 조회 ★★ - 빈 객체 넣어줘야 요청 잘 들어감
-export const getAccountList = () => {
-  const accessToken = AsyncStorage.getItem("accessToken");
+export const getAccountList = async () => {
+  const accessToken = await AsyncStorage.getItem("accessToken");
+  console.log("getAccountList - AccessToken : " + accessToken)
   console.log(accessToken);
   return axiosClient.post(
     `/account/client/inquireDemandDepositAccountList`,
@@ -230,15 +236,15 @@ export const getAccountList = () => {
 };
 
 // 3. 계좌 조회(단건) @@@
-export const getAccount = (data: Record<string, string>) => {
-    const accessToken = AsyncStorage.getItem("accessToken");
+export const getAccount = async (data: Record<string, string>) => {
+    const accessToken = await AsyncStorage.getItem("accessToken");
     return axiosClient.post(`/account/client/inquireDemandDepositAccount`, data, {
-        headers : { "Requires-Auth": true }
+        headers : { Authorization: `${accessToken}`, "Requires-Auth": true }
     })
 }
 // 4. 계좌 이체 
-export const accountTransfer = (data: Record<string, unknown>) => {
-    const accessToken = AsyncStorage.getItem("accessToken");
+export const accountTransfer = async (data: Record<string, unknown>) => {
+    const accessToken = await AsyncStorage.getItem("accessToken");
     console.log(`토큰확인확인 ${accessToken}`)
     return axiosClient.post(`/account/client/updateDemandDepositAccountTransfer`, data, {
         // headers:{userKey:'1bf84ad8-160e-4b31-b6ae-73ea4064cfad'}
@@ -270,11 +276,12 @@ export const addMoney = (data: Record<string, unknown>) => {
 }
 
 // 7. 대표 계좌 등록
-export const accountPatch = (data: Record<string, string>) => {
-    const accessToken = AsyncStorage.getItem("accessToken");
-    console.log('??')
-    console.log(accessToken)
-    return axiosClient.patch(`/users/setPrimaryAccount`, data)
+export const accountPatch = (data: Record<string, any>) => {
+
+    console.log("setPrimaryAccount #####")
+    console.log(data)
+
+    return axiosClient.patch(`users/setPrimaryAccount`, data)
 }
 
 /* Media API */
@@ -403,8 +410,8 @@ export const subTargetCheck= () => {
   }
 
 // 5. 보호 관계 조회 - 피보호자
-export const subProtectCheck= () => {
-    const accessToken = AsyncStorage.getItem("accessToken");
+export const subProtectCheck= async () => {
+    const accessToken = await AsyncStorage.getItem("accessToken");
     return axiosClient.get(`/subscriptions/findByProtect`,
         {headers:{ Authorization : `${accessToken}`, "Requires-Auth": true }}  
     )

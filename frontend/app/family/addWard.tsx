@@ -18,30 +18,29 @@ const AddWard = () => {
     try {
       // #############################################
       // 관계 맺은 후, 부모 정보 얻기, (id -> 부모 정보 얻어오기..)
-      // const subData = await getUserInfo(wardId);
-      // console.log("######")
-      // console.log(subData.data)
+      const subData = await getUserInfo(wardId);
+      console.log("######")
+      console.log(subData.data)
       // // 1. 부모 유저키 얻기
-      // const protectUserKey = subData.data.userKey;
+       const protectUserKey = subData.data.userKey;
       // // 2. 부모 디바이스 토큰 얻기
-      // const ProtectUserTokenKeyRes = await getToken(protectUserKey);
-      // const ProtectUserExpoToken = ProtectUserTokenKeyRes.data;
+      const ProtectUserTokenKeyRes = await getToken(protectUserKey);
+      const ProtectUserExpoToken = ProtectUserTokenKeyRes.data;
 
-
-      // console.log("부모 Expo 토큰 : " + ProtectUserExpoToken)
-      // const notificationMsg = {
-      //   to: ProtectUserExpoToken,
-      //   title: "구독 신청 알림",
-      //   content: "안전한 금융 거래를 보장할 수 있어요!"
-      // }
-      // await sendExpoNotification(notificationMsg);
-      // console.log("알림 보낸ㅆ슴다...")
+      console.log("부모 Expo 토큰 : " + ProtectUserExpoToken)
+      const notificationMsg = {
+        to: ProtectUserExpoToken,
+        title: "구독 신청 알림",
+        content: "안전한 금융 거래를 보장할 수 있어요!"
+      }
+      await sendExpoNotification(notificationMsg);
+      console.log("알림 보낸ㅆ슴다...")
       // ##########################################
 
       const keyGet = await AsyncStorage.getItem("myKey");
       const myKey = JSON.parse(keyGet!)
-      console.log(myKey)
-      console.log(wardId)
+      console.log("자식키 : " + myKey) // 자식키
+      console.log("부모키 : " + wardId) // 부모키
       const JsonData = {
         senderKey: myKey, 
         receiverId: wardId

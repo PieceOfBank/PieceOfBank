@@ -1,12 +1,12 @@
 import { Link } from "expo-router";
 import { View, Text, ImageBackground, TextInput, SafeAreaView, TouchableOpacity, Image, FlatList } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'expo-router';
+import { useRouter, Redirect } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import WardListForm from "../../src/ui/components/WardList";
 import NowAccount from "../../src/ui/components/NowAccount";
 import SmallLogo from "../../src/assets/SmallLogo.png";
-import { mediaPost, createAccount, logoutUser, getAccountList, addMoney } from "../../src/services/api";
+import { mediaPost, createAccount, logoutUser, getAccountList, addMoney, accountPatch } from "../../src/services/api";
 import Toast from "react-native-toast-message";
 import { useDispatch } from "react-redux";
 import { logout, setID, setNickName } from "../../src/store/userSlice";
@@ -32,12 +32,24 @@ const caregiver = () => {
               "accountTypeUniqueNo": "001-1-e7e3f77e997c46"
             }
               const response = await createAccount(JsonData);
-              console.log(response)
+          
+          
+          const findUserKey = await AsyncStorage.getItem("myKey");
+        
+        let cleanedUserKey = findUserKey!.replace(/"/g, ''); // 백슬래시를 제거
+        console.log(cleanedUserKey);
+
+        console.log("after createAccount in 자식, UserKey : " + findUserKey)
+
+        const JsonDataTwo = { userKey: cleanedUserKey, accountNo: response.data.REC.accountNo };
+        console.log("BEFORE PUTTING accoutPATCH ")
+        console.log(JsonDataTwo)
+        const resTwo = await accountPatch(JsonDataTwo);
               Toast.show({
                 type: 'success',
                 text1: '계좌 생성 성공!',
               })
-            // router.push('/family copy/familyMain')
+            router.push('/ward/main')
         }
         catch(error){
             console.log(error)

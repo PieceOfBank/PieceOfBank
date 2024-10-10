@@ -8,7 +8,7 @@ import DealHistory from "./dealHistory";
 import smallLogo from "../../src/assets/SmallLogo.png";
 import mail from '../../src/assets/mail.png'
 import Toast from "react-native-toast-message";
-import { logoutUser, subTargetCheck, subProtectCheck } from "../../src/services/api";
+import { logoutUser, subTargetCheck, subProtectCheck, accountPatch } from "../../src/services/api";
 import { useDispatch } from "react-redux";
 import { logout } from "../../src/store/userSlice";
 import { createAccount } from "../../src/services/api";
@@ -108,15 +108,16 @@ const FamilyMain = () => {
       try{
         const response = await subProtectCheck()
         console.log('##')
-        console.log(response.data)
-        console.log(response.data['targetUser'].accountNo)
+        console.log("subProtectCheck response data : " + response.data)
+        console.log("부모의 통장 : " + response.data['targetUser'].accountNo)
         const checking = response.data
         // console.log(checking)
         // console.log(typeof checking)
         if (!checking || !checking.targetUser){
           setFlag(false) // 없으면 등록 화면 보여주기
         } else{
-          const Info = response.data.targetUser
+          const Info = response.data.targetUser;
+          console.log("## 등록인 정보 ##")
           console.log(Info)
           setWardBank(response.data['targetUser'].accountNo)
           setWardInfo(Info)
@@ -125,21 +126,22 @@ const FamilyMain = () => {
           setMainBank(response.data['protectUser'].accountNo)
         }
       } catch(error){
-        console.log(error)
+        console.log("subProtectCheck Error : " + error)
       }
     }
     subCheck() // 구독 관계 요청
 
       const mainRequest = async() => {
         try{
-            const response = await getAccountList();
+          const response = await getAccountList();
+            console.log("## : getAccountList : ##" )
             console.log(response.data.REC[0].accountNo)
             const mainGo = response.data.REC[0].accountNo
             await AsyncStorage.setItem("mainAccount", mainGo);
             // setMainAc('1')
         }
         catch(error){
-            console.log(error)
+            console.log("Error For getAccountList : " + error)
             // setMainAc('2')
         }
     }
@@ -156,12 +158,28 @@ const FamilyMain = () => {
             "accountTypeUniqueNo": "001-1-e7e3f77e997c46"
           }
             const response = await createAccount(JsonData);
-            console.log(response)
+            console.log("after createAccount in 자식")
+        console.log(response.data)
+        console.log("after createAccount in 자식, Account number : " + response.data.REC.accountNo);
+        
+        const findUserKey = await AsyncStorage.getItem("myKey");
+        
+        let cleanedUserKey = findUserKey!.replace(/"/g, ''); // 백슬래시를 제거
+        console.log(cleanedUserKey);
+
+        console.log("after createAccount in 자식, UserKey : " + findUserKey)
+
+        const JsonDataTwo = { userKey: cleanedUserKey, accountNo: response.data.REC.accountNo };
+        console.log("BEFORE PUTTING accoutPATCH ")
+        console.log(JsonDataTwo)
+        const resTwo = await accountPatch(JsonDataTwo);
+        console.log(resTwo.data)
+
             Toast.show({
               type: 'success',
               text1: '계좌 생성 성공!',
             })
-          // router.push('/family copy/familyMain')
+          //router.push('/family/familyMain')
       }
       catch(error){
           console.log(error)
