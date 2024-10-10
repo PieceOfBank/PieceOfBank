@@ -4,19 +4,22 @@ import com.fintech.pob.domain.account.entity.Account;
 import com.fintech.pob.domain.account.repository.AccountRepository;
 import com.fintech.pob.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccountClientService {
 
     private final AccountRepository accountRepository;
 
-    public Account saveAccount(User user, String accountNo) {
+    public void saveAccount(User user, String accountNo) {
         Account account = new Account();
         account.setUser(user);
         account.setAccountNo(accountNo);
-        return accountRepository.save(account);
+        accountRepository.save(account);
+        log.info("---------end ---- saveAccount");
     }
 
     public Account findByUser(User user) {
