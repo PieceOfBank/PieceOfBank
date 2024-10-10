@@ -82,7 +82,6 @@ public class AccountService {
                     String accountNo = response.getRec().getAccountNo();
                     accountClientService.saveAccount(user, accountNo);
                     log.info("Account saved: {}", accountNo);
-                    localUserService.updateAccountNo(user.getUserKey(), accountNo);
                     log.info("Account number updated");
                     return Mono.just(response);
                 })
