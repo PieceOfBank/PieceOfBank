@@ -40,7 +40,7 @@ public class MediaController {
 
             String url;
 
-            if(file.isEmpty())
+            if(file != null && file.isEmpty())
             {
                 url = "";
             }else{
