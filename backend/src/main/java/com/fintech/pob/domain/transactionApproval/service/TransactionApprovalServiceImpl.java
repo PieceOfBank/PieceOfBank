@@ -98,7 +98,8 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
 
     @Override
     @Transactional
-    public TransactionApprovalResponseDto approveTransferRequest(Long transactionApprovalId) {
+    public TransactionApprovalResponseDto approveTransferRequest(Long notificationId) {
+        Long transactionApprovalId = getTransactionApprovalIdByNotificationId(notificationId);
         TransactionApproval transactionApproval = transactionApprovalRepository.findById(transactionApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Transaction Approval not found"));
         transactionApproval.setStatus(TransactionApprovalStatus.APPROVED);
@@ -120,7 +121,8 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
     }
 
     @Override
-    public TransactionApprovalResponseDto refuseTransferRequest(Long transactionApprovalId) {
+    public TransactionApprovalResponseDto refuseTransferRequest(Long notificationId) {
+        Long transactionApprovalId = getTransactionApprovalIdByNotificationId(notificationId);
         TransactionApproval transactionApproval = transactionApprovalRepository.findById(transactionApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Transaction Refusal not found"));
         transactionApproval.setStatus(TransactionApprovalStatus.REFUSED);
@@ -137,6 +139,11 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
                 .amount(transactionApproval.getAmount())
                 .status(transactionApproval.getStatus())
                 .build();
+    }
+
+    public Long getTransactionApprovalIdByNotificationId(Long notificationId) {
+        return transactionApprovalRepository.findTransactionApprovalIdByNotificationId(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("No transaction approval found for notificationId: " + notificationId));
     }
 
     @Override
