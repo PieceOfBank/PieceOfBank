@@ -44,8 +44,10 @@ public class DirectoryController {
 
     @PostMapping("/create")
     public ResponseEntity<DirectoryRequestDto> createDirectory(
-            @RequestPart("directory") DirectoryRequestDto directoryDTO,
 
+            @RequestParam String phone,
+            @RequestParam String name,
+            @RequestParam String institutionCode,
             @RequestHeader("Authorization") String token
     ) throws IOException {
 
@@ -53,6 +55,7 @@ public class DirectoryController {
         String key = (String) jwtUtil.extractUserKey(token);
 
 
+        DirectoryRequestDto directoryDTO= new DirectoryRequestDto();
 
         UUID userKey = UUID.fromString(key);
 
