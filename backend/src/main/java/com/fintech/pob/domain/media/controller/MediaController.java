@@ -32,13 +32,28 @@ public class MediaController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadMedia(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<String> uploadMedia(@RequestParam(value = "file", required = false) MultipartFile file,
                                               @RequestParam("transactionUniqueNo") Long transactionUniqueNo,
                                               @RequestParam("type") MediaTypeENUM type,
-                                              @RequestParam("content") String content) {
+                                              @RequestParam(value="content",required = false) String content) {
         try {
-            String url = mediaUploadService.uploadFile(file);
-            log.info(url);
+
+            String url;
+
+            if(file.isEmpty())
+            {
+                url = "";
+            }else{
+                 url = mediaUploadService.uploadFile(file);
+
+            }
+
+            if (content == null) {
+                content = "";
+            }
+
+
+            System.out.println(url);
             Media media = new Media();
             media.setTransactionUniqueNo(transactionUniqueNo);
             media.setType(type);
