@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -53,32 +54,64 @@ public class DirectoryController {
             @RequestHeader("Authorization") String token
     ) throws IOException {
 
-  //      String url = mediaUploadService.uploadFile(file);
-        String key = (String) jwtUtil.extractUserKey(token);
 
+        try {
+            String key = (String) jwtUtil.extractUserKey(token);
+            DirectoryRequestDto directoryDTO = new DirectoryRequestDto();
+            UUID userKey = UUID.fromString(key);
 
-        DirectoryRequestDto directoryDTO= new DirectoryRequestDto();
+            // Attempt to fetch the subscription
+            Subscription subscription = subscriptionService.getSubscriptionByProtectUserKey(userKey);
+            if (subscription == null) {
+                // If no subscription is found, return a 404 response
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null); // Optionally, you can return a message or error DTO
+            }
 
-        UUID userKey = UUID.fromString(key);
+            UUID parentKey = subscription.getTargetUser().getUserKey();
 
-        Subscription subscription= subscriptionService.getSubscriptionByProtectUserKey(userKey);
+            directoryDTO.setAccount(account);
+            directoryDTO.setName(name);
+            directoryDTO.setPhone(phone);
+            directoryDTO.setBank(bank);
 
-        System.out.println("자식 정보(구독관계에서가져옴)");
-        System.out.println(subscription);
-
-        UUID parentKey = subscription.getTargetUser().getUserKey();
-
-        directoryDTO.setAccount(account);
-        System.out.println(account);
-        directoryDTO.setName(name);
-        directoryDTO.setPhone(phone);
-        directoryDTO.setBank(bank);
-
-        System.out.println("parentkey: "+parentKey);
-
-        directoryDTO.setUserKey(userKey);
-        DirectoryRequestDto createdDirectory = directoryService.createDirectory(directoryDTO, parentKey);
-        return ResponseEntity.ok(createdDirectory);
+            DirectoryRequestDto createdDirectory = directoryService.createDirectory(directoryDTO, parentKey);
+            return ResponseEntity.ok(createdDirectory);
+        } catch (NoSuchElementException e) {
+            // This handles case when user or subscription not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null); // Optionally, include an error message
+        } catch (Exception e) {
+            // Catch-all for any other exceptions
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null); // You can include more details about the error
+        }
+//  //      String url = mediaUploadService.uploadFile(file);
+//        String key = (String) jwtUtil.extractUserKey(token);
+//
+//
+//        DirectoryRequestDto directoryDTO= new DirectoryRequestDto();
+//
+//        UUID userKey = UUID.fromString(key);
+//
+//        Subscription subscription= subscriptionService.getSubscriptionByProtectUserKey(userKey);
+//
+//        System.out.println("자식 정보(구독관계에서가져옴)");
+//        System.out.println(subscription);
+//
+//        UUID parentKey = subscription.getTargetUser().getUserKey();
+//
+//        directoryDTO.setAccount(account);
+//        System.out.println(account);
+//        directoryDTO.setName(name);
+//        directoryDTO.setPhone(phone);
+//        directoryDTO.setBank(bank);
+//
+//        System.out.println("parentkey: "+parentKey);
+//
+//        directoryDTO.setUserKey(userKey);
+//        DirectoryRequestDto createdDirectory = directoryService.createDirectory(directoryDTO, parentKey);
+//        return ResponseEntity.ok(createdDirectory);
     }
 
 

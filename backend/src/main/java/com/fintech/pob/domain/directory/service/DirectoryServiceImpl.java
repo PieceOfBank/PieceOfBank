@@ -48,7 +48,6 @@ public class DirectoryServiceImpl implements  DirectoryService{
         //UUID targetKey =UUID.fromString(accountService.findByAccountNo())
 
 
-
         for (Directory directory : directories) {
             DirectoryRequestDto dto = new DirectoryRequestDto();
 
@@ -56,17 +55,18 @@ public class DirectoryServiceImpl implements  DirectoryService{
 
             UUID u = account.getUser().getUserKey();
             dto.setProtectKey(String.valueOf(u));
-          //  dto.setDirectoryId(directory.getDirectoryId());
+            //  dto.setDirectoryId(directory.getDirectoryId());
             dto.setAccount(directory.getAccountNo());
-        //    dto.setBank((directory.getInstitutionCode()));
+            //    dto.setBank((directory.getInstitutionCode()));
             dto.setName(directory.getName());
-        //    dto.setUrl(directory.getUrl());
+            //    dto.setUrl(directory.getUrl());
 
 
             directoryDtos.add(dto);
         }
         return directoryDtos;
     }
+
 
     @Override
     public DirectoryRequestDto updateDirectory(Long id,DirectoryRequestDto directoryRequestDto) {
