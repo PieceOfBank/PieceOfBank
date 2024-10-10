@@ -76,7 +76,7 @@ public class AccountService {
                     User user = localUserService.findByUserKey(userKey);
                     String accountNo = response.getRec().getAccountNo();
                     accountClientService.saveAccount(user, accountNo);
-                    localUserService.updateAccountNo(UUID.fromString(userKey), accountNo);
+                    localUserService.updateAccountNo(user.getUserKey(), accountNo);
                     return Mono.just(response);
                 });
     }
