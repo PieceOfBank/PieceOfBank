@@ -29,4 +29,16 @@ public class ClientAccountTransferRequestDTO {
                 .withdrawalTransactionSummary(requestPayload.getWithdrawalTransactionSummary())
                 .build();
     }
+
+    @Override
+    public String toString() {
+        return "ClientAccountTransferRequestDTO{" +
+                "header=" + header +
+                ", depositAccountNo='" + depositAccountNo + '\'' +
+                ", transactionBalance=" + transactionBalance +
+                ", withdrawalAccountNo='" + withdrawalAccountNo + '\'' +
+                ", depositTransactionSummary='" + depositTransactionSummary + '\'' +
+                ", withdrawalTransactionSummary='" + withdrawalTransactionSummary + '\'' +
+                '}';
+    }
 }
