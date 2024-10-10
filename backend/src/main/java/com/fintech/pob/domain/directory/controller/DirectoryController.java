@@ -6,6 +6,8 @@ import com.fintech.pob.domain.directory.repository.DirectoryRepository;
 import com.fintech.pob.domain.directory.service.DirectoryService;
 import com.fintech.pob.domain.media.service.MediaService;
 import com.fintech.pob.domain.media.service.MediaUploadService;
+import com.fintech.pob.domain.subscription.entity.Subscription;
+import com.fintech.pob.domain.subscription.service.SubscriptionService;
 import com.fintech.pob.domain.user.service.UserServiceImpl;
 import com.fintech.pob.global.auth.jwt.JwtUtil;
 import lombok.AllArgsConstructor;
@@ -37,23 +39,30 @@ public class DirectoryController {
     private final DirectoryService directoryService;
     private final MediaUploadService mediaUploadService;
     private final DirectoryRepository directoryRepository;
+    private final SubscriptionService subscriptionService;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/create")
     public ResponseEntity<DirectoryRequestDto> createDirectory(
             @RequestPart("directory") DirectoryRequestDto directoryDTO,
-            @RequestPart("file") MultipartFile file,
+
             @RequestHeader("Authorization") String token
     ) throws IOException {
 
-        String url = mediaUploadService.uploadFile(file);
+  //      String url = mediaUploadService.uploadFile(file);
         String key = (String) jwtUtil.extractUserKey(token);
 
 
-        System.out.println("url: "+url);
+
         UUID userKey = UUID.fromString(key);
+
+        Subscription subscription= subscriptionService.getSubscriptionByTargetUserKey(userKey);
+
+        UUID parentKey = subscription.getTargetUser().getUserKey();
+
+
         directoryDTO.setUserKey(userKey);
-        DirectoryRequestDto createdDirectory = directoryService.createDirectory(directoryDTO, userKey, url);
+        DirectoryRequestDto createdDirectory = directoryService.createDirectory(directoryDTO, parentKey);
         return ResponseEntity.ok(createdDirectory);
     }
 
