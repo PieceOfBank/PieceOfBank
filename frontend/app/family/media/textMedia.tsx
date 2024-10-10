@@ -23,13 +23,13 @@ const textMedia = () => {
     const textPost = async() => {
         try{
             const transNo = Number(mediaNo)
-            const type = 'VOICE'
+            const type = 'TEXT'
             const content = '컨텐츠'
-            const JsonData = {
-                file:message
-              }
-              const response = await mediaPost(transNo, type, content, JsonData);
-              console.log(response)
+            // const JsonData = {
+            //     file:message
+            //   }
+            //   const response = await mediaPost(transNo, type, content);
+            //   console.log(response)
               Toast.show({
                 type: 'success',
                 text1: '미디어 보내기 성공!',

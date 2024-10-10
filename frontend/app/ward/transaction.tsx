@@ -13,10 +13,14 @@ const careTransaction = () => {
     const router = useRouter()
 
     // 카드 리스트에서 전달받은 이름, 계좌번호, 은행
-    const {account, bank, name} = useLocalSearchParams()
+    const {account, bank, name, count, allCount, firKey, secKey} = useLocalSearchParams()
     const accounts = account 
     const banks = bank
     const names = name
+    const counts = count
+    const allCounts = allCount
+    const thirdKey = firKey
+    const fourthKey = secKey
     
     // 화면 가로고정
     useEffect(() => {
@@ -44,7 +48,8 @@ const careTransaction = () => {
       <View className='flex-row items-center w-full justify-between h-20'>
         <View className='flex-1 items-center'>
           <Link className='w-40 p-2 rounded-3xl border m-2 font-semibold text-center text-xl bg-white'
-          href={{pathname:'/ward/transfer', params:{nowAccount: account, nowBank: bank, nowName: name}}}>
+          href={{pathname:'/ward/transfer', params:{nowAccount: account, nowBank: bank, nowName: name,
+           countLimit:counts, allLimit:allCounts, mymyKey:thirdKey, youyouKey:fourthKey}}}>
             송금하기
           </Link>
         </View>

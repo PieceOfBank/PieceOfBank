@@ -19,7 +19,7 @@ import TransferOk from "../../src/ui/components/TransferOk";
 import DirectoryTransfer from "../../src/ui/components/DirectoryTransfer";
 import Toast from "react-native-toast-message";
 import smallLogo from "../../src/assets/SmallLogo.png";
-import { accountTransfer, getAccount, notifyLimitRequest } from "../../src/services/api";
+import { accountTransfer, getAccount, notifyPost } from "../../src/services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const careTransfer = () => {
@@ -27,11 +27,16 @@ const careTransfer = () => {
     nowAccount?: string;
     nowBank?: string;
     nowName?: string;
+    countLimit?: string;
+    allLimit?: string;
+    mymyKey?:string;
+    youyouKey?:string;
+    
   }
 
   // 전달받은 계좌번호, 은행, 이름
   const params = useLocalSearchParams() as directoryInfo;
-  const { nowAccount, nowBank, nowName } = params;
+  const { nowAccount, nowBank, nowName, countLimit, allLimit, mymyKey, youyouKey } = params;
 
   // 전달받은 정보 변환 - 연락처 등록 대상에게 송금 할 때만 사용
   const [existAccount, setExistAccount] = useState<directoryInfo>({});
@@ -51,13 +56,22 @@ const careTransfer = () => {
   };
 
   // 현재 계정의 금액 한도 정보
-  const [nowLimit, setNowLimit] = useState("");
+  const [nowLimit, setNowLimit] = useState<string>("");
+  const [totalLimit, setTotalLimit] = useState<string>("");
 
   // 현재 계정의 한도 정보 요청
   const limitInfo = () => {
     try {
+      if (countLimit) {
+        setNowLimit(countLimit); // 임시 한도 금액
+      }
+      if (allLimit){
+        setTotalLimit(allLimit)
+      }
+      console.log('DD')
+      console.log(countLimit)
+      console.log(typeof countLimit)
       /* ★ 한도 정보 요청 보내는 내용 추가하기 ★ */
-      setNowLimit("300000"); // 임시 한도 금액
     } catch (error) {
       console.log(error);
     }
@@ -126,6 +140,22 @@ const careTransfer = () => {
     }
   };
 
+  // 알림 보내기
+  const notifySend = async() =>{
+    try{
+      const data = {
+        senderKey: mymyKey!,
+        receiverKey: youyouKey!,
+        notificationType: "account"
+      }
+      const response = await notifyPost(data);
+      console.log(response)
+    }
+    catch(error){
+      console.log(`에러: ${error}`)
+    }
+  }
+
   const getMoney = async () => {
     try {
       
@@ -168,27 +198,42 @@ const careTransfer = () => {
     if (inputPin == nowPin) {
       // 금액 한도 제한 확인해야 함
       const limitCheck = parseInt(nowLimit); // 한도 기준 숫자 변환
+      const allCheck = parseInt(totalLimit)
       const balanceCheck = parseInt(balance); // 송금 금액 숫자 변환
-      if (balanceCheck > limitCheck) {
-        Toast.show({
-          type: "error",
-          text1: "송금 실패 - 한도 초과!",
-          text2: "기준 금액 초과로 승인 허락 요청이 들어갔습니다",
-        });
-        /* pending history에 보내는 요청 추가 */
-        setStep("4");
-      } else {
+
+        try{
+/* pending history에 보내는 요청 추가 */
         /* 계좌 이체 보내는 요청 추가 */
         moneyGo(balanceCheck);
-        const remainderMoney = await getMoney(); 
-        checkBalanceAndNotify(remainderMoney);
+        if (balanceCheck > limitCheck || balanceCheck > allCheck) {
+          console.log('키확인')
+          console.log(mymyKey)
+          console.log(youyouKey)
+          // notifySend()
+          Toast.show({
+            type: "error",
+            text1: "송금 실패 - 한도 초과!",
+            text2: "기준 금액 초과로 승인 허락 요청이 들어갔습니다",
+          });
+          setStep("4");
+      } else{
+        // const remainderMoney = await getMoney(); 
+        // checkBalanceAndNotify(remainderMoney);
         Toast.show({
           type: "success",
           text1: "송금 성공!",
           text2: "송금에 성공하셨습니다!",
         });
         router.push("/ward/main");
+        }  
+      }catch(error){
+        console.log(`기준 확인 에러${error}`)
       }
+
+
+
+
+
     } else {
       Toast.show({
         type: "error",
@@ -199,18 +244,18 @@ const careTransfer = () => {
   };
 
   // 계좌 잔액 체크
-  const checkBalanceAndNotify = async (accountBalance: number) => {
-    const threshold = 100000; // 예시 임계값
+  // const checkBalanceAndNotify = async (accountBalance: number) => {
+  //   const threshold = 100000; // 예시 임계값
 
-    if (accountBalance < threshold) {
-      try {
-        await notifyLimitRequest();
-      } catch (error) {
-        console.error("Error sending notification request:", error);
+  //   if (accountBalance < threshold) {
+  //     try {
+  //       // await notifyLimitRequest();
+  //     } catch (error) {
+  //       console.error("Error sending notification request:", error);
 
-      }
-    }
-  };
+  //     }
+  //   }
+  // };
 
   // 1차 송금 화면 - 연락처 있는 사람이면 전달받은 계좌 정보 넣기 / 전체 거래 내역에서 송금하면 계좌 정보 직접 입력
   if (step == "1") {

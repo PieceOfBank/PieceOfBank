@@ -7,84 +7,99 @@ import { useRouter } from 'expo-router';
 import Toast from "react-native-toast-message";
 import CancelButton from "../../src/ui/components/CancelButton";
 import Header from "../../src/ui/components/Header";
+import { notifyList } from "../../src/services/api";
+import { useLocalSearchParams } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { transferApproval, transferRefusal, notifyUpdate, notifyDelete } from "../../src/services/api";
 
 const ReqSendMoney = () => {
     const [mainConnect, setMainConnect] = useState('');
 
+    const [updateView, setUpdateView] = useState(false)
+
+    interface notifyItem {
+        created: string, 
+        notificationId: number, 
+        notificationStatus: string, 
+        notificationType: string, 
+        readAt: any, 
+        receiverKey: string, 
+        senderKey: string
+        }
+
+    // 계좌 목록 정보
+    const [noticeList, setNoticeList] = useState<notifyItem[]>([])
     const router = useRouter()
 
-    // 임시 
-    interface ConnectItem {
-        notificationId: number,
-        senderKey: string,
-        receiverKey: string,
-        notificationType: string,
-        created: string,
-        readAt: string,
-        notificationStatus: string
+
+    // 알림 전체 조회
+    const notifyView = async() =>{
+        const keyGet = await AsyncStorage.getItem("myKey");
+
+        const myKey = JSON.parse(keyGet!)
+
+        console.log(myKey)
+        try{
+            const data = {
+                'receiverKey':myKey
+                }
+                const response = await notifyList(data);
+                console.log(response.data)
+                setNoticeList(response.data)
+        }
+        catch(error){
+            console.log(`에러: ${error}`)
+        }
     }
 
-    // 임시 목록
-    const connectList : ConnectItem [] = 
-        [
-            {
-                notificationId: 0,
-                senderKey: "key1",
-                receiverKey: "key",
-                notificationType: "string",
-                created: "2024-10-06T10:03:01.328Z",
-                readAt: "2024-10-06T10:03:01.328Z",
-                notificationStatus: "UNREAD"
-              },
-            {
-                notificationId: 1,
-                senderKey: "key2",
-                receiverKey: "key",
-                notificationType: "string",
-                created: "2024-10-06T10:03:01.328Z",
-                readAt: "2024-10-06T10:03:01.328Z",
-                notificationStatus: "UNREAD"
-              },
-            {
-                notificationId: 2,
-                senderKey: "key3",
-                receiverKey: "key",
-                notificationType: "string",
-                created: "2024-10-06T10:03:01.328Z",
-                readAt: "2024-10-06T10:03:01.328Z",
-                notificationStatus: "UNREAD"
-              },
-]
+    useEffect(() => {
+        notifyView()
+        return () => {}
+    },[updateView])
 
     // 요청 수락
-    const checkAccept = (index:number, name:string) => {
-        for (let i = 0; i < connectList.length; i++){
+    const checkAccept = (index:number) => {
+        for (let i = 0; i < noticeList.length; i++){
         if (i == index){
-            const familyName : string = connectList[i]['senderKey']
+            const numId = noticeList[i]['notificationId']
             // 요청 보내기
+            const checkRequest = async () => {
+                await transferApproval()
+                notifyDelete(numId)
+            }
+            checkRequest()
             Toast.show({
                 type: 'success',
                 text1: `요청을 허가했습니다`,
                 text2: '계좌 이체가 완료되었습니다'
               })
+            setUpdateView(prev => !prev)
             }
         }
         }
 
     // 요청 거절
-    const checkReject = (index:number, name:string) => {
-        for (let i = 0; i < connectList.length; i++){
+    const checkReject = (index:number) => {
+        for (let i = 0; i < noticeList.length; i++){
         if (i == index){
-            const familyName : string = connectList[i]['senderKey']
+            const numId = noticeList[i]['notificationId']
             // 요청 보내기
+            const checkRequest = async () => {
+                await transferRefusal()
+                notifyDelete(numId)
+            }
+            checkRequest()
             Toast.show({
                 type: 'info',
                 text1: `요청을 거부했습니다`,
                 text2: '계좌 이체가 거부되었습니다'
               })
             }
+            setUpdateView(prev => !prev)
         }
         }
+
+
 
 
     return (
@@ -95,7 +110,7 @@ const ReqSendMoney = () => {
             </View>
         <View className='justify-center items-center h-3/4'>
             <ScrollView className='flex-1'>
-            {connectList.map((list, index) => (
+            {noticeList.map((list, index) => (
                 <View key={index} className='w-80 p-2 m-2 flex-row bg-gray-300 rounded-3xl h-24 items-center justify-between'>
                     <View className='mx-2'>
                         <Text className='font-bold'>일자 : {list.created.slice(0,4)}년
@@ -104,18 +119,29 @@ const ReqSendMoney = () => {
                         {list.created.slice(11,13)}시
                         {list.created.slice(14,16)}분
                         </Text>
-                        <Text className='font-bold'>대상 : {list.senderKey}</Text>
+                        <Text className='font-bold mt-2'>알림 내용 : {list.notificationType}</Text>
                         {/* <Text className='font-bold'>금액 : {list.money}</Text> */}
                     </View>
                     <View className=' mx-2'>
-                        <TouchableOpacity className='w-16 h-8 mx-1 rounded-3xl justify-center bg-sky-500'
-                        onPress={()=> checkAccept(index, list.senderKey)} 
-                        >
-                        <Text className='text-white text-center font-bold'>승인</Text></TouchableOpacity>
-                        <TouchableOpacity className='w-16 h-8 mx-1 rounded-3xl justify-center bg-red-400'
-                        onPress={() => checkReject(index, list.senderKey)}
-                        >
-                        <Text className='text-white text-center font-bold'>거부</Text></TouchableOpacity>
+                        {list.notificationType == '한도 초과 알림'
+                        ?(<View>
+                            <TouchableOpacity className='w-16 h-8 mx-1 my-1 rounded-3xl justify-center bg-sky-500'
+                            onPress={() => checkAccept(index)} 
+                            >
+                            <Text className='text-white text-center font-bold'>승인</Text></TouchableOpacity>
+                            <TouchableOpacity className='w-16 h-8 mx-1 rounded-3xl justify-center bg-red-400'
+                            onPress={() => checkReject(index)}
+                            >
+                            <Text className='text-white text-center font-bold'>거부</Text></TouchableOpacity>
+                        </View>)
+                        :(<View>
+                            <TouchableOpacity className='w-16 h-8 mx-1 rounded-3xl justify-center bg-red-400'
+                            onPress={() => checkReject(index)}
+                            >
+                            <Text className='text-white text-center font-bold'>확인</Text></TouchableOpacity>
+                        </View>)
+                        }
+
                     </View>
                 </View>
             ))}        

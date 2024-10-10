@@ -12,3 +12,14 @@ export const axiosClient = axios.create({
   baseURL: BASE_URL,
   headers: HEADERS,
 });
+
+
+export const MEDIAHEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Content-Type": "multipart/form-data",
+};
+
+export const axiosMedia = axios.create({
+  baseURL: BASE_URL,
+  headers: HEADERS,
+});

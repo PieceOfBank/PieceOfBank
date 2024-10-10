@@ -69,7 +69,7 @@ export default function LoginScreen() {
         router.push("/family/familyMain");
       }
       // 구독 관계 2이면 피보호자 페이지 이동
-      else if (response?.data["subscriptionType"] == 2) {
+      else if (response?.data["subscriptionType"] == 0) {
         router.push("/ward/main");
       }
     } catch (error) {
@@ -89,8 +89,8 @@ export default function LoginScreen() {
       const JsonData = {
         file: "Thankyou!",
       };
-      const response = await mediaPost(transNo, type, content, JsonData);
-      console.log(response);
+      // const response = await mediaPost(transNo, type, content, JsonData);
+      // console.log(response);
       Toast.show({
         type: "success",
         text1: "미디어 보내기 성공!",

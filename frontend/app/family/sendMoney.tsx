@@ -54,27 +54,31 @@ const sendMoney = () => {
     const accountMy = await AsyncStorage.getItem("mainAccount");
     console.log('확인')
     console.log(accountMy)
+    console.log(sendBank)
     // console.log(myKey)
     // console.log(accountMy)
     const JsonData = {
-      depositAccountNo: "0016925799438349",  // 임시 - 받는 계좌 정보 *구독 정보에서 가져오기*
-      transactionBalance: 10000,
-      withdrawalAccountNo: "0010688704487044", // 내 계좌
+      depositAccountNo: sendBank,  // 임시 - 받는 계좌 정보 *구독 정보에서 가져오기*
+      transactionBalance: balance,
+      withdrawalAccountNo: accountMy, // 내 계좌
       depositTransactionSummary: "string", // 임시
       withdrawalTransactionSummary: "string" // 임시
     };
 
     console.log("최종 JsonData:", JsonData);
     const response = await accountTransfer(JsonData);
-    console.log(response)
+    console.log(response.data)
 
         Toast.show({
           type: 'success',
           text1: '송금 완료',
           text2: '송금이 완료되었습니다'
         })
-    // const transNo = response.data.REC[0]["transactionUniqueNo"] // 거래번호 맞게 가져오는지 확인해봐야 함
-    // setMediaNo(transNo)
+    const transNo = response.data.REC[0]["transactionUniqueNo"] // 거래번호 맞게 가져오는지 확인해봐야 함
+    console.log(transNo)
+    setMediaNo(transNo)
+    setStep('3')
+
   }
   catch (error) {
     console.log(`에러에러에러에러에러: ${error}`)
@@ -83,7 +87,6 @@ const sendMoney = () => {
       text1: '송금 실패!',
       text2: '입력 정보를 다시 확인해주세요'
     })
-    setStep('3')
 
   }
 } 

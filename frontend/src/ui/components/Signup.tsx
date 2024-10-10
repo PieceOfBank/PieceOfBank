@@ -19,7 +19,7 @@ const SignupForm = () => {
   const [email, setEmail] = useState(''); // 이메일
   const [userId, setUserId] = useState(''); // 아이디
   const [name, setName] = useState(''); // 이름
-  const [relation, setRelation] = useState(0); // 관계 [0:Default, 1:보호자, 2:피보호자]
+  const [relation, setRelation] = useState(2); // 관계 [0:Default, 1:보호자, 2:피보호자]
   const [isChecked, setChecked] = useState(false); // 개인정보 동의 체크
   const [firstPin, setFirstPin] = useState<string>(''); // 비밀번호 6자리
   const [secondPin, setSecondPin] = useState<string>(''); // 비밀번호 재입력 6자리
@@ -76,13 +76,13 @@ const SignupForm = () => {
       }
     }
 
-  // 관계 선택 - 피보호자 반영
+  // 관계 선택 - 부모
   const wardCheck = () => {
-    setRelation(2)
+    setRelation(0)
     setRelationCheck(true)
   }
 
-  // 관계 선택 - 보호자 반영
+  // 관계 선택 - 자식
   const familyCheck = () => {
     setRelation(1)
     setRelationCheck(true)
@@ -242,12 +242,12 @@ const SignupForm = () => {
 
       <Text className='my-2'>관계</Text>
       <View className='flex-row justify-between w-64'>
-        <TouchableOpacity className={`${relation==2 ? 'bg-sky-500' : 'bg-white'} w-28 h-8 rounded-3xl justify-center`} 
+        <TouchableOpacity className={`${relation==0 ? 'bg-sky-500' : 'bg-white'} w-28 h-8 rounded-3xl justify-center`} 
           onPress={wardCheck}>
-          <Text className={`${relation==2 ? 'text-white' : 'text-black'} text-center rounded-3xl font-bold`}>피보호자</Text></TouchableOpacity>
+          <Text className={`${relation==0 ? 'text-white' : 'text-black'} text-center rounded-3xl font-bold`}>부모</Text></TouchableOpacity>
         <TouchableOpacity className={`${relation==1 ? 'bg-sky-500' : 'bg-white'} w-28 h-8 rounded-3xl justify-center`} 
           onPress={familyCheck}>
-          <Text className={`${relation==1 ? 'text-white': 'text-black'} text-center rounded-3xl font-bold`}>보호자</Text></TouchableOpacity>    
+          <Text className={`${relation==1 ? 'text-white': 'text-black'} text-center rounded-3xl font-bold`}>자식</Text></TouchableOpacity>    
       </View>
 
       {(relationAlert) ? <View className='my-1'><Text className='text-red-500 font-bold'>관계를 하나 선택해주세요</Text></View> : null}

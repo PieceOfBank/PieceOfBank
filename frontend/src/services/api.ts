@@ -1,6 +1,6 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { axiosClient } from "./axios";
+import { axiosClient, axiosMedia } from "./axios";
 import { account } from "../types/account";
 import { jwtDecode } from "jwt-decode";
 
@@ -259,7 +259,7 @@ export const accountTransfer = (data: Record<string, unknown>) => {
     console.log(`토큰확인확인 ${accessToken}`)
     return axiosClient.post(`/account/client/updateDemandDepositAccountTransfer`, data, {
         // headers:{userKey:'1bf84ad8-160e-4b31-b6ae-73ea4064cfad'}
-        headers: { "Requires-Auth": true  },
+        headers: { Authorization: `${accessToken}`  },
     } )
 }
 // 5. 거래 내역 조회
@@ -287,26 +287,31 @@ export const addMoney = (data: Record<string, unknown>) => {
 }
 
 // 7. 대표 계좌 등록
-export const accountPatch = async (data: Record<string, string>) => {
-    const accessToken = await AsyncStorage.getItem("accessToken");
+export const accountPatch = (data: Record<string, string>) => {
+    const accessToken = AsyncStorage.getItem("accessToken");
     console.log('??')
     console.log(accessToken)
-    return axiosClient.patch(`/account/client/setPrimaryAccount`, data)
+    return axiosClient.patch(`/users/setPrimaryAccount`, data)
 }
 
 /* Media API */
 // 1. 미디어 등록 - POST
 export const mediaPost = (
-  transNo: number,
-  type: string,
-  content: string,
-  data: Record<string, unknown>
+  // transNo: number,
+  // type: string,
+  // content: string,
+  // data: Record<string, unknown>
 ) => {
-  return axiosClient.post(`/media/upload`, data, {
+  const data = {
+    'transactionUniqueNo': 77565,
+    'type': "TEXT",
+    'content': '배고파요',
+    
+  }
+  const accessToken = AsyncStorage.getItem("accessToken");
+  return axiosMedia.post(`/media/upload`, data, {
     headers: {
-      transactionUniqueNo: 73869,
-      type: "VOICE",
-      content: content,
+      Authorization: `${accessToken}` 
     },
   });
 };
@@ -329,40 +334,46 @@ export const pendingDelete = () => {};
 /* Notification API */
 // 1. 알림 생성 !!
 export const notifyPost = (data: Record<string, string>) => {
-  return axiosClient.post(`/notification/send`, data);
+  const accessToken = AsyncStorage.getItem("accessToken");
+
+  return axiosClient.post(`/notification`, data,
+    {headers:{Authorization : `${accessToken}`}}
+  );
 };
 // 2. 알림 조회(전체) !!
-export const notifyList = (data: Record<string, string>) => {
+export const notifyList = (data: Record<string, unknown>) => {
   return axiosClient.get(`/notification`, { params: data });
 };
 // 3. 알림 조회(단건)
-export const notifyGet = (notificationId: string) => {
-  return axiosClient.get(`api/notification/${notificationId}`);
+export const notifyGet = (notificationId: number) => {
+  return axiosClient.get(`/notification/${notificationId}`);
 };
 // 4. 알림 업데이트 (읽음 처리)
-export const notifyUpdate = (notificationId: string) => {
-  return axiosClient.patch(`api/notification/${notificationId}`);
+export const notifyUpdate = (notificationId: number) => {
+  return axiosClient.patch(`/notification/read/${notificationId}`);
 };
 // 5. 알림 업데이트 (삭제)
-export const notifyDelete = (notificationId: string) => {
-  return axiosClient.patch(`api/notification/${notificationId}`);
+export const notifyDelete = (notificationId: number) => {
+  return axiosClient.patch(`/notification/delete/${notificationId}`);
 };
-// 6. 거래 한도 이상일 때 자식에게 알림 (pending History 저장됐을 때)
-export const notifyLimitRequest = () => {
-  return axiosClient.post(`api/notification/transfers/request`);
-};
+// // 6. 거래 한도 이상일 때 자식에게 알림 (pending History 저장됐을 때)
+// export const notifyLimitRequest = () => {
+//   return axiosClient.post(`api/notification/transfers/request`);
+// };
 // 7. 부모 거래 승인 처리
 export const transferApproval = () => {
-  return axiosClient.patch(`api/notification/transfers/approval`);
+  return axiosClient.patch(`/transfers/approval`);
 };
 // 8. 부모 거래 거부 처리
 export const transferRefusal = () => {
-  return axiosClient.patch(`api/notification/transfers/refusal`);
+  return axiosClient.patch(`/transfers/refusal`);
 };
-// 9. 부모 거래 만료 처리
-export const transferExpiry = () => {
-  return axiosClient.patch(`api/notification/transfers/expiry`);
-};
+// // 9. 부모 거래 만료 처리
+// export const transferExpiry = () => {
+//   return axiosClient.patch(`api/notification/transfers/expiry`);
+// };
+
+
 export const sendExpoNotification = (data: Record<string, string>) => {
   console.log(data)
   return axiosClient.post(`/notification/expoMessage`, data);
@@ -388,7 +399,7 @@ export const subscriptionRefusal= (Id:number) => {
 // 4. 보호 관계 조회 - 보호자
 export const subTargetCheck= () => {
   const accessToken = AsyncStorage.getItem("accessToken");
-    return axiosClient.get(`/subscriptions/findbytarget`,
+    return axiosClient.get(`/subscriptions/findByTarget`,
         {headers:{Authorization : `${accessToken}`, "Requires-Auth": true }}
     )
   }
@@ -396,8 +407,8 @@ export const subTargetCheck= () => {
 // 5. 보호 관계 조회 - 피보호자
 export const subProtectCheck= () => {
     const accessToken = AsyncStorage.getItem("accessToken");
-    return axiosClient.get(`/subscriptions/findbyprotect`,
-        {headers:{ Authorization : `${accessToken}`}}  
+    return axiosClient.get(`/subscriptions/findByProtect`,
+        {headers:{ Authorization : `${accessToken}`, "Requires-Auth": true }}  
     )
   }
 
@@ -411,8 +422,7 @@ export const subscriptionName= (Id:number) => {
 export const subOnce= (data:Record<string,number>) => {
     const accessToken = AsyncStorage.getItem("accessToken");
     return axiosClient.put(`/subscriptions/setOneTime`,
-        { headers:{ Authorization : `Bearer ${accessToken}`}},
-        { params:data}
+        data, {headers:{ Authorization : `${accessToken}`}} 
     )
   }
 
@@ -420,7 +430,7 @@ export const subOnce= (data:Record<string,number>) => {
 export const subDaily= (data:Record<string,number>) => {
   const accessToken = AsyncStorage.getItem("accessToken");
   return axiosClient.put(`/subscriptions/setDaily`,
-      { params: { Authorization : `${accessToken}`}, data }
+    data, { headers:{ Authorization : `${accessToken}`} }
     )
   }
 

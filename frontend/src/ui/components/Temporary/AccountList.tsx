@@ -64,8 +64,8 @@ const FamilyAccountList = () => {
             const myKey = JSON.parse(keyGet!)
 
             const JsonData = {
-                userKey:myKey,
-                accountNo:mainAccount
+                'userKey':myKey,
+                'accountNo':mainAccount
             }
             const requests = await accountPatch(JsonData)
             console.log(requests.data)

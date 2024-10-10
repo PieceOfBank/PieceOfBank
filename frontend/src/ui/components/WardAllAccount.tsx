@@ -34,7 +34,7 @@ const WardAllAccount = () => {
 
     // 처음 접속 시 실행
     useEffect(() => {
-        accountRequest() // 계좌 목록 요청
+        // accountRequest() // 계좌 목록 요청
     }, [])
 
     // 체크박스 표시
@@ -64,12 +64,10 @@ const WardAllAccount = () => {
             const myKey = JSON.parse(keyGet!)
             console.log(myKey)
             console.log(typeof myKey)
-            console.log(mainAccount)
-            console.log(typeof mainAccount)
 
             const JsonData = {
-                userKey:myKey,
-                accountNo:mainAccount
+                'userKey':myKey,
+                'accountNo':mainAccount
             }
             const requests = await accountPatch(JsonData)
             console.log(mainAccount)

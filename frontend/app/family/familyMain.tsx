@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
-import { View, Text, Image, Button, ImageBackground, TouchableOpacity, SafeAreaView } from "react-native";
+import { View, Text, Image, Button, ImageBackground, TouchableOpacity, SafeAreaView, } from "react-native";
 import { Link } from "expo-router";
 import LinkToAddWard from "../../src/ui/components/LinkToAddWard";
 import sendMoney from "./sendMoney";
@@ -8,12 +8,12 @@ import DealHistory from "./dealHistory";
 import smallLogo from "../../src/assets/SmallLogo.png";
 import mail from '../../src/assets/mail.png'
 import Toast from "react-native-toast-message";
-import { logoutUser, subTargetCheck } from "../../src/services/api";
+import { logoutUser, subTargetCheck, subProtectCheck } from "../../src/services/api";
 import { useDispatch } from "react-redux";
 import { logout } from "../../src/store/userSlice";
 import { createAccount } from "../../src/services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { addMoney, getAccountList } from "../../src/services/api";
+import { addMoney, getAccountList, mediaPost } from "../../src/services/api";
 
 const FamilyMain = () => {
 
@@ -21,6 +21,8 @@ const FamilyMain = () => {
 
   /* 내가 보호자인 경우, 피보호자를 가져온다. */
   const [flag, setFlag] = useState(false)
+
+  const [wardBank, setWardBank] = useState('')
 
   const router = useRouter();
 
@@ -66,6 +68,8 @@ const FamilyMain = () => {
     userPassword: string
   }
 
+  const [noticeKey, setNoticeKey] = useState<string>('')
+
   // 피보호자 정보
   const [wardInfo, setWardInfo] = useState<wardState>(
     {
@@ -80,21 +84,36 @@ const FamilyMain = () => {
     }
   )
 
-
+  const mediaGo = async () =>{
+    try{
+      const answer = await mediaPost()
+      console.log(answer)
+    }catch(error){
+      console.log('미디어보내고싶어요')
+      console.log(error)
+    }
+  }
   useEffect(() => {
 
     // 구독 관계 있는지 확인
     const subCheck = async() => {
       try{
-        const response = await subTargetCheck()
-        const checking = response.data
+        const response = await subProtectCheck()
+        console.log('##')
         console.log(response.data)
-        if (checking == null){
+        console.log(response.data['targetUser'].accountNo)
+        const checking = response.data
+        // console.log(checking)
+        // console.log(typeof checking)
+        if (!checking || !checking.targetUser){
           setFlag(false) // 없으면 등록 화면 보여주기
         } else{
-          const Info = response.data.protectUser
+          const Info = response.data.targetUser
+          console.log(Info)
+          setWardBank(response.data['targetUser'].accountNo)
           setWardInfo(Info)
           setFlag(true) // 있으면 관계 보여주기
+          setNoticeKey(response.data['protectUser'].userKey)
         }
       } catch(error){
         console.log(error)
@@ -116,6 +135,7 @@ const FamilyMain = () => {
         }
     }
     mainRequest()
+    console.log(wardInfo)
 
     return () => {}
     },[]);
@@ -194,14 +214,26 @@ const FamilyMain = () => {
         <View className="h-16 my-5 bg-blue-400 dark:bg-blue-100 flex-row justify-between items-center pt-3 px-2">
           <View className="w-12 h-12"></View>
           <Image source={smallLogo} className="w-12 h-12" />
-          <TouchableOpacity
-            className="w-12 h-12 pt-2 pr-16"
-            onPress={() => router.push('/family/reqSendMoney')} >
-            <Image source={mail}  />
-          </TouchableOpacity>
+
+          <Link className='flex-1 items-end' 
+              href={
+                  {pathname:'/family/reqSendMoney' , params:{helloKey:noticeKey}}
+                  }>
+            <TouchableOpacity
+              className="w-12 h-12 pt-2 pr-16"
+              onPress={() => router.push('/family/reqSendMoney')} >
+              <Image source={mail}  />
+            </TouchableOpacity>
+          </Link>
+
         </View>
       </SafeAreaView>
       <View className="bg-gray-200 flex justify-center items-center">
+      <TouchableOpacity 
+            className="w-28 bg-green-800 h-8 rounded-3xl justify-center items-center"
+            onPress={mediaGo}>
+                <Text className='text-white'>미디어</Text>
+            </TouchableOpacity>
       <TouchableOpacity 
             className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
             onPress={accountGo}>
@@ -244,7 +276,7 @@ const FamilyMain = () => {
                 <Link className='w-32 h-8 pt-1 rounded-3xl justify-center items-center bg-teal-100 my-4 text-center rounded-3xl font-bold' 
                   href={
                       {pathname:'/family/dealHistory', 
-                        params:{accounting:wardInfo.accountNo, banking:wardInfo.userKey, naming:wardInfo.userName}}
+                        params:{accounting:wardInfo.accountNo, banking:wardBank, naming:wardInfo.userName}}
                       }>{wardInfo.userName}</Link> 
               </View>
               <TouchableOpacity 

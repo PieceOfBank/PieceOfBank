@@ -100,6 +100,7 @@ const caregiver = () => {
       }
       }
 
+
     // 화면 가로고정
     useEffect(() => {
         const screenChange = async() => {
@@ -145,6 +146,7 @@ const caregiver = () => {
             onPress={() => router.push('/ward/noticeCheck')}>
                 <Text className='text-white'>알림함</Text>
             </TouchableOpacity>
+
             <TouchableOpacity 
             className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
             onPress={accountGo}>

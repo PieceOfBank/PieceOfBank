@@ -3,7 +3,7 @@ import { View, Text, ImageBackground, TextInput, SafeAreaView, TouchableOpacity,
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { subProtectCheck } from "../../services/api";
+import { subTargetCheck, subProtectCheck } from "../../services/api";
 import { directory } from "../../types/directory";
 
 const WardListForm = () => {
@@ -21,18 +21,31 @@ const WardListForm = () => {
     // 보호자 연결 상태 확인 - 1 : 연결 전 (보호자 요청 수락 페이지) / 2 : 연결 후 (기본 메인)
     const [connect, setConnect] = useState(false);
 
+    // 금액 한도 - 1회 / 하루
+    const [countLimit, setCountLimit] = useState(0)
+    const [allLimit, setAllLimit] = useState(0)
+
+    // 부모키, 자식키
+    const [firstKey, setFirstKey] = useState('')
+    const [secondKey, setSecondKey] = useState('')
+
     useEffect(() => {
 
         // 구독 관계 있는지 확인
         const subCheck = async() => {
             try{
-            const response = await subProtectCheck()
-            const checking = response.data
-            console.log(checking)
-            if (checking == null){
+            const response = await subTargetCheck()
+            // const checking = response.data
+            console.log('@')
+            console.log(response.data)
+            if (response.data == null){
                 setConnect(false) // 없으면 등록 화면 보여주기
             } else{
                 setConnect(true) // 있으면 관계 보여주기
+                setCountLimit(response.data.oneTimeTransferLimit)
+                setAllLimit(response.data.dailyTransferLimit)
+                setFirstKey(response.data.targetUser.userKey)
+                setSecondKey(response.data.protectUser.userKey)
             }
             } catch(error){
             console.log(error)
@@ -114,18 +127,22 @@ const WardListForm = () => {
                     ?             
                     <Link className='w-20 h-6 rounded-3xl justify-center bg-sky-200 m-2 text-center rounded-3xl' 
                     href={
-                       {pathname: '/ward/transaction', params:{account:item.accountNo, bank:item.institutionCode, name:item.name}}
+                       {pathname: '/ward/transaction', params:{account:item.accountNo, bank:item.institutionCode, name:item.name,
+                        count:countLimit, allCount:allLimit, firKey:firstKey, secKey:secondKey
+                       }}
                        }>{item.name}</Link>
                     :             
                     <Link className='w-20 h-6 rounded-3xl justify-center bg-sky-200 m-2 text-center rounded-3xl' 
                     href={
-                       {pathname:'/ward/addFamily' , params:{account:item.accountNo, bank:item.institutionCode, name:item.name}}
+                       {pathname:'/ward/addFamily' , params:{account:item.accountNo, bank:item.institutionCode, name:item.name,
+                        count:countLimit, allCount:allLimit, firKey:firstKey, secKey:secondKey}}
                        }>{item.name}</Link>
                  
                 :             
                     <Link className='w-20 h-6 rounded-3xl justify-center bg-sky-200 m-2 text-center rounded-3xl' 
                     href={
-                    {pathname:connectAdd, params:{account:item.accountNo, bank:item.institutionCode, name:item.name}}
+                    {pathname:connectAdd, params:{account:item.accountNo, bank:item.institutionCode, name:item.name,
+                        count:countLimit, allCount:allLimit, firKey:firstKey, secKey:secondKey}}
                     }>{item.name}</Link>
              }
              

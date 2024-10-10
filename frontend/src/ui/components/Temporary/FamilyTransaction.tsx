@@ -37,7 +37,6 @@ const FamilyTransaction = () => {
             const listData = response.data.REC.list
             // console.log(response.data.REC.list)
             setTransferList(listData)
-            console.log('good')
         }
         catch (error) {
             console.log(`에러: ${error}`)
