@@ -52,7 +52,7 @@
 <img src="https://github.com/user-attachments/assets/1a0997e1-31f6-4f2b-8f0f-96acee0d11e4"/>
 
 ## 🔑 ERD
-<img src="https://github.com/user-attachments/assets/10012e4d-30f9-4eac-ac77-63b76791d8bc"/>
+<img src="https://github.com/user-attachments/assets/ad91118d-038f-4d4d-a574-46701a958e2c"/>
 
 ## 📌 개발 환경
 - **Spring Boot**  3.3.3
