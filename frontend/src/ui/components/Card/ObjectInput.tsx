@@ -1,4 +1,4 @@
-import { View, Text, Button, ImageBackground, Alert, TextInput, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView, KeyboardAvoidingView } from 'react-native';
+import { Image, View, Text, Button, ImageBackground, Alert, TextInput, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView, KeyboardAvoidingView } from 'react-native';
 import { useRouter, Link, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import CancelButton from '../CancelButton';
@@ -8,22 +8,13 @@ import * as ImagePicker from 'expo-image-picker';
 import { RootState } from '../../../store/store';
 import { useSelector } from 'react-redux';
 
-
-interface existsInfo {
-    onChange: (inputBalance:string) => void;
-    name?: string
-}
-
 const ObjectInput = () => { 
 
     const [name, setName] = useState('')
     const [phone, setPhone] = useState('')
     const [bank, setBank] = useState('')
     const [account, setAccount] = useState('')
-    
     const [imageUri, setImageUri] = useState<string | null>(null);
-  const [imageName, setImageName] = useState<string | null | undefined>(null);
-  const [imageType, setImageType] = useState<any>(null);
 
     const router = useRouter()
     const myUserKey = useSelector((state: RootState) => state.getUserKey.userKey);
@@ -50,32 +41,27 @@ const ObjectInput = () => {
     // 이미지 선택 완료하면 IamgeUri에 저장됨
     if (!result.canceled) {
       setImageUri(result.assets[0].uri);
-      setImageName(result.assets[0].fileName);
-      setImageType(result.assets[0].type);
     } 
   };
 
     const directoryGo = async() => {
       try{
-        // 나중에 userkey 어떻게 받아와서 넣어야 할까요? authorization 으로 되는지 확인하기
-        /* 아래 정보는 formData에 넣어야 함.. 얻오는 방법? */
-        // userkey
-        // acountNo
-        // Code
-        // name
-        // uri
-
-      const formData = new FormData();
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("phone", phone);
+        formData.append("bank", bank);
+        formData.append("account", account);
         
         // FormData에 이미지 추가
-        formData.append('image', {
+        formData.append('file', {
             uri: imageUri, // 선택된 이미지 URI
-            type: imageType, // MIME 타입 (상황에 따라 조정 가능)
-            name: imageName, // 파일 이름
+            type: 'image/jpeg', // MIME 타입 (상황에 따라 조정 가능)
+            name: 'image.jpg', // 파일 이름
         } as any);
-        
+
         const response = await createDirectory(formData);
         console.log(response)
+        router.back();
         } catch(error){
             console.log(error)
         }
@@ -84,7 +70,20 @@ const ObjectInput = () => {
      return(
         <View className='justify-center items-center p-4'>
           <Text className='mt-12 mb-8 bg-gray-300 px-3 py-2 w-48 rounded-3xl text-xl text-center font-semibold'>대상자 설정</Text>
-        <SafeAreaView className='bg-gray-200 rounded-3xl px-6 py-4'>
+         <SafeAreaView className='bg-gray-200 rounded-3xl px-6 py-4'>
+         <Text className="my-2 ml-2 font-semibold">프로필 이미지</Text>
+                {imageUri && (
+                    <Image 
+                        source={{ uri: imageUri }} 
+                        style={{ width: 100, height: 100, borderRadius: 50 }}
+                    />
+                )}
+                <TouchableOpacity 
+                    className='m-2 py-2 px-4 bg-gray-300 rounded-3xl'
+                    onPress={selectImage}
+                >
+                    <Text className='text-center'>이미지 선택</Text>
+                </TouchableOpacity>
           <Text className="my-2 ml-2 font-semibold">이름</Text>
           <View className='flex-row'>
             <TextInput className="my-1 w-56 bg-white rounded-3xl py-1" onChangeText={(name) => setName(name)}></TextInput>
@@ -126,8 +125,6 @@ const ObjectInput = () => {
       </View>
 
     )
-
-
 
 }
 

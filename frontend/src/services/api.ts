@@ -1,8 +1,8 @@
-import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { axiosClient, axiosMedia } from "./axios";
 import { account } from "../types/account";
 import { jwtDecode } from "jwt-decode";
+
 
 /* Interface 명시 */
 
@@ -65,7 +65,7 @@ export const createUser = async (email: Record<string, string>) => {
     const response = await axiosClient.post(`/users/create`, email);
 
     const userKey = response.data.split(":")[1].trim();
-    await AsyncStorage.setItem("userKey", userKey);
+    await AsyncStorage.setItem("myKey", userKey);
     return response;
   } catch (error) {
     console.error(error);
@@ -75,9 +75,9 @@ export const createUser = async (email: Record<string, string>) => {
 // regist - userKey 추가 입력 후 회원가입
 export const registUser = async (newMember: Record<string, unknown>) => {
     try {
-        const userKey = await AsyncStorage.getItem('userKey');
+        const userKey = await AsyncStorage.getItem('myKey');
         console.log("my userKey : --> " + userKey)
-        newMember = { ...newMember, 'userKey': userKey };
+        newMember = { ...newMember, 'myKey': userKey };
         console.log(newMember)
         return axiosClient.post(`/users/regist`, newMember);
     } catch (error) {
@@ -88,28 +88,9 @@ export const registUser = async (newMember: Record<string, unknown>) => {
 // 3. login
 export const loginUser = async (email: Record<string, string>) => {
   try {
-    const response = await axiosClient.post(`/auth/login`, email);
-
-
-    // 로그인 후 서버에서 받은 accessToken을 저장
-    const accessToken = response.data.accessToken;
-    console.log("### --- ###");
-    console.log(accessToken)
-    await AsyncStorage.setItem("accessToken", accessToken);
-
-    // 만약 refreshToken도 받는다면 저장
-    const refreshToken = response.data.refreshToken;
-    await AsyncStorage.setItem("refreshToken", refreshToken);
-    /* 유저정보 받아오기 */
-    const decoded = jwtDecode(accessToken);
-    const myKey = decoded.sub;
-    console.log("DDD");
-    // console.log(decoded)
-    await AsyncStorage.setItem("myKey", JSON.stringify(myKey));
-
-    return response;
+    return await axiosClient.post(`/auth/login`, email);
   } catch (error) {
-    console.error(error);
+    console.error("로그인 에러 : " + error);
   }
 };
 
@@ -131,7 +112,7 @@ export const getUserInfo = (userId: string) => {
 // Interceptor - JWT 로직 (AccessToken & RefreshToken)
 axiosClient.interceptors.request.use(
   async (config) => {
-    const userKey = await AsyncStorage.getItem("userKey");
+    const userKey = await AsyncStorage.getItem("myKey");
 
     if (!userKey) return config;
 
@@ -175,7 +156,7 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (error) {
         // 에러 발생 시 저장된 정보 삭제
-        await AsyncStorage.removeItem("userKey");
+        await AsyncStorage.removeItem("myKey");
         await AsyncStorage.removeItem("accessToken");
         await AsyncStorage.removeItem("refreshToken");
       }
@@ -220,7 +201,7 @@ export const getDirectory = () => {
   });
 };
 // 4. 연락처 삭제 - DELETE
-export const deleteDirectory = (accountNo: number) => {
+export const deleteDirectory = (accountNo: string) => {
     return axiosClient.delete(`/directory/delete/${accountNo}`);
 };
 

@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../src/store/store";
 import { setUserKey } from "../src/store/userKeySlice";
 import { login, setID, setPWD } from "../src/store/userSlice";
+import { jwtDecode } from "jwt-decode";
 // MainPage
 
 export default function LoginScreen() {
@@ -46,18 +47,32 @@ export default function LoginScreen() {
         password: password,
       };
       
-      const response = await loginUser(JsonData);
+    const response = await loginUser(JsonData);
+    // 로그인 후 서버에서 받은 accessToken을 저장
+    const accessToken = response!.data.accessToken;
+    await AsyncStorage.setItem("accessToken", accessToken);
 
-      dispatch(setID(id));
-      dispatch(setPWD(password));
-      dispatch(login());
+    // 만약 refreshToken도 받는다면 저장
+    const refreshToken = response!.data.refreshToken;
+    await AsyncStorage.setItem("refreshToken", refreshToken);
+    /* 유저정보 받아오기 */
+    const decoded = jwtDecode(accessToken);
+    const myKey = decoded.sub;
+    // console.log(decoded)
+    await AsyncStorage.setItem("myKey", JSON.stringify(myKey));
+
+    dispatch(setID(id));
+    dispatch(setPWD(password));
+    dispatch(login());
       
       const keyGet = await AsyncStorage.getItem("myKey");
-      const myKey = JSON.parse(keyGet!)
+      const myUserKey = JSON.parse(keyGet!)
       dispatch(setUserKey(myKey));
+      console.log("당신의 키는 : " + myKey)
       
-      await sendToken(myKey, myExpoToken!);
-
+      await sendToken(myUserKey, myExpoToken!);
+      console.log(" 당신의 엑세스 키는 : " + (await AsyncStorage.getItem("accessToken")));
+      console.log("리프레시 키는 : " + (await AsyncStorage.getItem("refreshToken")));
 
       Toast.show({
         type: "success",
@@ -151,7 +166,7 @@ const moneyCheck = async() => {
           text1: '실패',
         })
   }
-}
+  }
 
   return (
     <ImageBackground source={require("../src/assets/POBbackGround.png")} className="flex-1">
@@ -207,7 +222,7 @@ const moneyCheck = async() => {
           onPress={textPost}
         >
           <Text className="text-white">회원가입</Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
         </TouchableOpacity>
       </View>
     </ImageBackground>

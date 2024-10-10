@@ -27,6 +27,7 @@ const AddWard = () => {
       // const ProtectUserTokenKeyRes = await getToken(protectUserKey);
       // const ProtectUserExpoToken = ProtectUserTokenKeyRes.data;
 
+
       // console.log("부모 Expo 토큰 : " + ProtectUserExpoToken)
       // const notificationMsg = {
       //   to: ProtectUserExpoToken,
@@ -46,8 +47,6 @@ const AddWard = () => {
         receiverId: wardId
       }
       const response = await subscriptionPost(JsonData);
-      console.log("부모추가하기.. gogo")
-      console.log(response.data)
 
       Toast.show({
         type: 'success',
