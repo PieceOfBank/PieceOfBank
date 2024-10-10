@@ -1,11 +1,13 @@
 package com.fintech.pob.domain.subscription.service;
 
+import com.fintech.pob.domain.notification.service.NotificationService;
 import com.fintech.pob.domain.subscription.dto.SubscriptionRequestDto;
 import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscription.repository.SubscriptionRepository;
 import com.fintech.pob.domain.user.entity.User;
 import com.fintech.pob.domain.user.repository.UserRepository;
 import com.fintech.pob.domain.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     private final UserService userService;
     private final UserRepository userRepository;
     private final SubscriptionRepository subscriptionRepository;
+    private final NotificationService notificationService;
+
     @Override
     public Subscription create(SubscriptionRequestDto dto) {
 
@@ -59,41 +63,48 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     }
 
     @Override
+    @Transactional
     public void setOneTimeTransferLimit(UUID userKey,Long limit) {
 
-        Subscription subscription  = subscriptionRepository.findByTargetUser_UserKey(userKey).orElse(null);
+        Subscription subscription  = subscriptionRepository.findByProtectUserUserKey(userKey);
         subscription.setOneTimeTransferLimit(limit);
 
         subscriptionRepository.save(subscription);
 
+       // notificationService.sendNotification(userKey, subscription.getProtectUser().getUserKey(), "한도 변경 알림");
     }
 
     @Override
+    @Transactional
     public void setDailyTransferLimit(UUID userKey,Long limit) {
 
-        Subscription subscription  = subscriptionRepository.findByTargetUser_UserKey(userKey).orElse(null);
+        Subscription subscription  =subscriptionRepository.findByProtectUserUserKey(userKey);
         subscription.setDailyTransferLimit(limit);
         subscriptionRepository.save(subscription);
 
+      //  notificationService.sendNotification(userKey, subscription.getProtectUser().getUserKey(), "한도 변경 알림");
     }
 
 @Override
     public Long getOneTimeTransferLimit(UUID userKey) {
-        Subscription subscription = subscriptionRepository.findByTargetUser_UserKey(userKey)
-                .orElseThrow(() -> new IllegalArgumentException("Subscription not found for userKey: " + userKey));
+        Subscription subscription = subscriptionRepository.findByTargetUserUserKey(userKey);
         return subscription.getOneTimeTransferLimit();
     }
 
     @Override
     public Long getDailyTransferLimit(UUID userKey) {
-        Subscription subscription = subscriptionRepository.findByTargetUser_UserKey(userKey)
-                .orElseThrow(() -> new IllegalArgumentException("Subscription not found for userKey: " + userKey));
+        Subscription subscription = subscriptionRepository.findByTargetUserUserKey(userKey);
         return subscription.getDailyTransferLimit();
     }
 
     @Override
     public Subscription getSubscriptionByProtectUserKey(UUID userKey) {
         return subscriptionRepository.findByProtectUserUserKey(userKey);
+    }
+
+    @Override
+    public Subscription getSubscriptionByTargetUserKey(UUID userKey) {
+        return subscriptionRepository.findByTargetUserUserKey(userKey);
     }
 
 }

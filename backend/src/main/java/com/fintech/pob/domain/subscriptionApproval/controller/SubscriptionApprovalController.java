@@ -1,5 +1,6 @@
 package com.fintech.pob.domain.subscriptionApproval.controller;
 
+import com.fintech.pob.domain.subscription.entity.Subscription;
 import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalKeyDto;
 import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalRequestDto;
 import com.fintech.pob.domain.subscriptionApproval.dto.SubscriptionApprovalResponseDto;
@@ -31,9 +32,9 @@ public class SubscriptionApprovalController {
     }
 
     @PatchMapping("/approval/{subscriptionApprovalId}")
-    public ResponseEntity<SubscriptionApprovalKeyDto> approveSubscriptionRequest(@PathVariable("subscriptionApprovalId") Long subscriptionApprovalId) {
-        SubscriptionApprovalKeyDto subscriptionApprovalKeyDto = subscriptionApprovalService.approveSubscriptionRequest(subscriptionApprovalId);
-        return ResponseEntity.ok(subscriptionApprovalKeyDto);
+    public ResponseEntity<Subscription> approveSubscriptionRequest(@PathVariable("subscriptionApprovalId") Long subscriptionApprovalId) {
+        Subscription subscription = subscriptionApprovalService.approveSubscriptionRequest(subscriptionApprovalId);
+        return ResponseEntity.ok(subscription);
     }
 
     @PatchMapping("/refusal/{subscriptionApprovalId}")

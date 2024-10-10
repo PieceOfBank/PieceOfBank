@@ -1,10 +1,12 @@
 package com.fintech.pob.domain.user.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -39,18 +41,18 @@ public class UserServiceImpl implements UserService {
                 // 응답에서 userName 추출
                 JSONObject responseBody = new JSONObject(response.getBody());
                 String userKey = responseBody.getString("userKey");
-                System.out.println("@@@@ 계정 생성 성공: " + userKey);
+                log.info("@@@@ 계정 생성 성공: {}", userKey);
                 return userKey;
 
             } else {
-                System.out.println("@@@@ 실패 :" + response.getStatusCode());
+                log.info("@@@@ 실패 :{}", response.getStatusCode());
                 throw new RuntimeException("계정 생성 실패: " + response.getStatusCode());
 
             }
 
 
         } catch (Exception e) {
-            System.out.println("@@@@@@@ 오류 발생 @@@@@ : " + e.getMessage());
+            log.info("@@@@@@@ 오류 발생 @@@@@ : {}", e.getMessage());
             throw new RuntimeException("API 요청 중 오류 발생: " + e.getMessage());
 
         }

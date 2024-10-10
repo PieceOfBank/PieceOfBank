@@ -42,28 +42,28 @@ public class TransferLimitChecker implements TransferChecker {
                 return Mono.just(TransferCheckResult.LIMIT);
             }
 
-            // 일일 이체 한도 체크
-            AccountHistoryListRequestDTO historyRequest = new AccountHistoryListRequestDTO(
-                    requestPayload.getWithdrawalAccountNo(),
-                    LocalDate.now().toString(),
-                    LocalDate.now().toString(),
-                    "A",
-                    "DESC"
-            );
-
-            HeaderRequestDTO header = headerService.createCommonHeader("inquireTransactionHistoryList", userKey);
-
-            return accountService.getAccountHistoryList(historyRequest, header)
-                    .map(response -> {
-                        Long totalAmountToday = response.getRec().getHistory().stream()
-                                .mapToLong(ClientAccountHistoryListResponseDTO.Record.HistoryInfo::getTransactionBalance)
-                                .sum();
-
-                        if (totalAmountToday + requestPayload.getTransactionBalance() > dailyTransferLimit) {
-                            return TransferCheckResult.LIMIT;
-                        }
-                        return TransferCheckResult.SUCCESS;
-                    });
+//            // 일일 이체 한도 체크
+//            AccountHistoryListRequestDTO historyRequest = new AccountHistoryListRequestDTO(
+//                    requestPayload.getWithdrawalAccountNo(),
+//                    LocalDate.now().toString(),
+//                    LocalDate.now().toString(),
+//                    "A",
+//                    "DESC"
+//            );
+//
+//            HeaderRequestDTO header = headerService.createCommonHeader("inquireTransactionHistoryList", userKey);
+//
+//            return accountService.getAccountHistoryList(historyRequest, header)
+//                    .map(response -> {
+//                        Long totalAmountToday = response.getRec().getHistory().stream()
+//                                .mapToLong(ClientAccountHistoryListResponseDTO.Record.HistoryInfo::getTransactionBalance)
+//                                .sum();
+//
+//                        if (totalAmountToday + requestPayload.getTransactionBalance() > dailyTransferLimit) {
+//                            return TransferCheckResult.LIMIT;
+//                        }
+//                        return TransferCheckResult.SUCCESS;
+//                    });
         }
 
         return Mono.just(TransferCheckResult.SUCCESS);

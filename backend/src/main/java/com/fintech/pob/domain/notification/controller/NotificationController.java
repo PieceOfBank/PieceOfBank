@@ -1,5 +1,6 @@
 package com.fintech.pob.domain.notification.controller;
 
+import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
 import com.fintech.pob.domain.notification.dto.expo.ExpoNotificationRequestDto;
 import com.fintech.pob.domain.notification.dto.fcm.FCMRequestDto;
 import com.fintech.pob.domain.notification.dto.NotificationResponseDto;
@@ -60,10 +61,10 @@ public class NotificationController {
     }
 
     @PostMapping()
-    public ResponseEntity<Long> sendNotification(
-            @RequestParam("senderKey") UUID senderKey,
-            @RequestParam("receiverKey") UUID receiverKey,
-            @RequestParam("typeName") String typeName) {
+    public ResponseEntity<Long> sendNotification(NotificationRequestDto notificationRequestDto) {
+        UUID senderKey = notificationRequestDto.getSenderKey();
+        UUID receiverKey = notificationRequestDto.getReceiverKey();
+        String typeName = notificationRequestDto.getNotificationType();
         Long notificationId = notificationService.sendNotification(senderKey, receiverKey, typeName);
         return ResponseEntity.ok(notificationId);
     }
