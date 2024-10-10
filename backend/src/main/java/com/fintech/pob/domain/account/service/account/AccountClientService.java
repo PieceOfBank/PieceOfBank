@@ -14,15 +14,12 @@ import org.springframework.stereotype.Service;
 public class AccountClientService {
 
     private final AccountRepository accountRepository;
-    private final LocalUserService localUserService;
 
     public void saveAccount(User user, String accountNo) {
         Account account = new Account();
         account.setUser(user);
         account.setAccountNo(accountNo);
         accountRepository.save(account);
-        localUserService.updateAccountNo(user.getUserKey(), accountNo);
-        System.out.println("---------end ---- saveAccount");
     }
 
     public Account findByUser(User user) {

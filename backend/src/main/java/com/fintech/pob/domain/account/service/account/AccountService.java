@@ -63,7 +63,6 @@ public class AccountService {
     public Mono<ClientAccountCreationResponseDTO> createAccount(AccountCreationRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
 
-        System.out.println("createAccount------------------");
         ClientAccountCreationRequestDTO requestDTO = new ClientAccountCreationRequestDTO();
         requestDTO.setHeader(header);
         requestDTO.setAccountTypeUniqueNo(requestPayload.getAccountTypeUniqueNo());
@@ -75,17 +74,13 @@ public class AccountService {
                 .retrieve()
                 .bodyToMono(ClientAccountCreationResponseDTO.class)
                 .flatMap(response -> {
-                    log.info("Response received: {}", response);
                     String userKey = header.getUserKey();
                     User user = localUserService.findByUserKey(userKey);
-                    log.info("User found: {}", user);
                     String accountNo = response.getRec().getAccountNo();
                     accountClientService.saveAccount(user, accountNo);
-                    log.info("Account saved: {}", accountNo);
-                    log.info("Account number updated");
+                    localUserService.updateAccountNo(user.getUserKey(), accountNo);
                     return Mono.just(response);
-                })
-                .doOnError(e -> log.error("Error during processing", e));
+                });
     }
 
     public Mono<ClientAccountListResponseDTO> getAccountList() {
