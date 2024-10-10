@@ -63,6 +63,7 @@ public class AccountService {
     public Mono<ClientAccountCreationResponseDTO> createAccount(AccountCreationRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
 
+        log.info("createAccount------------------");
         ClientAccountCreationRequestDTO requestDTO = new ClientAccountCreationRequestDTO();
         requestDTO.setHeader(header);
         requestDTO.setAccountTypeUniqueNo(requestPayload.getAccountTypeUniqueNo());
@@ -77,8 +78,9 @@ public class AccountService {
                     String userKey = header.getUserKey();
                     User user = localUserService.findByUserKey(userKey);
                     String accountNo = response.getRec().getAccountNo();
+                    log.info("--------------1111111111{}", accountNo);
                     accountClientService.saveAccount(user, accountNo);
-                    log.info("--------------{}", accountNo);
+                    log.info("--------------2222222222{}", accountNo);
                     localUserService.updateAccountNo(user.getUserKey(), accountNo);
                     return Mono.just(response);
                 });
