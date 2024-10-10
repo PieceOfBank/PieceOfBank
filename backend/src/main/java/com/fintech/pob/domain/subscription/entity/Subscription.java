@@ -25,8 +25,8 @@ public class Subscription {
     private User protectUser;
 
     @Column(name = "one_time_transfer_limit")
-    private Long oneTimeTransferLimit;  // 1회 이체한도
+    private Long oneTimeTransferLimit= 100000000L; // 1회 이체한도
 
     @Column(name = "daily_transfer_limit")
-    private Long dailyTransferLimit;  // 1일 이체한도
+    private Long dailyTransferLimit=500000000L;    // 1일 이체한도
 }

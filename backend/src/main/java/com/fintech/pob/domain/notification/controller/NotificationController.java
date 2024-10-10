@@ -1,15 +1,12 @@
 package com.fintech.pob.domain.notification.controller;
 
+import com.fintech.pob.domain.notification.dto.NotificationRequestDto;
 import com.fintech.pob.domain.notification.dto.expo.ExpoNotificationRequestDto;
 import com.fintech.pob.domain.notification.dto.fcm.FCMRequestDto;
-import com.fintech.pob.domain.notification.dto.notification.NotificationResponseDto;
-import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalRequestDto;
-import com.fintech.pob.domain.notification.dto.subscription.SubscriptionApprovalResponseDto;
-import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalRequestDto;
-import com.fintech.pob.domain.notification.dto.transaction.TransactionApprovalResponseDto;
+import com.fintech.pob.domain.notification.dto.NotificationResponseDto;
 import com.fintech.pob.domain.notification.service.expo.ExpoService;
 import com.fintech.pob.domain.notification.service.fcm.FCMService;
-import com.fintech.pob.domain.notification.service.notification.NotificationService;
+import com.fintech.pob.domain.notification.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,53 +60,11 @@ public class NotificationController {
         return ResponseEntity.ok(updatedNotification);
     }
 
-    @PostMapping("/transfers/request")
-    public ResponseEntity<Long> requestTransfer(@RequestBody TransactionApprovalRequestDto transactionApprovalRequestDto, @RequestParam("typeName") String typeName) {
-        Long transactionApprovalId = notificationService.requestTransfer(transactionApprovalRequestDto, typeName);
-        return ResponseEntity.ok(transactionApprovalId);
-    }
-
-    @PatchMapping("/transfers/approval")
-    public ResponseEntity<TransactionApprovalResponseDto> approveTransferRequest(@RequestBody Long transactionApprovalId) {
-        TransactionApprovalResponseDto transactionApprovalResponseDto = notificationService.approveTransferRequest(transactionApprovalId);
-        return ResponseEntity.ok(transactionApprovalResponseDto);
-    }
-
-    @PatchMapping("/transfers/refusal")
-    public ResponseEntity<TransactionApprovalResponseDto> refuseTransferRequest(@RequestBody Long transactionApprovalId) {
-        TransactionApprovalResponseDto transactionApprovalResponseDto = notificationService.refuseTransferRequest(transactionApprovalId);
-        return ResponseEntity.ok(transactionApprovalResponseDto);
-    }
-
-    @PatchMapping("/transfers/expiry")
-    public ResponseEntity<TransactionApprovalResponseDto> expireTransferRequest(@RequestBody Long transactionApprovalId) {
-        TransactionApprovalResponseDto transactionApprovalResponseDto = notificationService.expireTransferRequest(transactionApprovalId);
-        return ResponseEntity.ok(transactionApprovalResponseDto);
-    }
-
-    @PostMapping("/subscriptions/request")
-    public ResponseEntity<Long> requestSubscription(@RequestBody SubscriptionApprovalRequestDto subscriptionApprovalRequestDto) {
-        Long subscriptionApprovalId = notificationService.requestSubscription(subscriptionApprovalRequestDto);
-        return ResponseEntity.ok(subscriptionApprovalId);
-    }
-
-    @PatchMapping("/subscriptions/approval")
-    public ResponseEntity<SubscriptionApprovalResponseDto> approveSubscriptionRequest(@RequestBody Long subscriptionApprovalId) {
-        SubscriptionApprovalResponseDto subscriptionApprovalResponseDto = notificationService.approveSubscriptionRequest(subscriptionApprovalId);
-        return ResponseEntity.ok(subscriptionApprovalResponseDto);
-    }
-
-    @PatchMapping("/subscriptions/refusal")
-    public ResponseEntity<SubscriptionApprovalResponseDto> refuseSubscriptionRequest(@RequestBody Long subscriptionApprovalId) {
-        SubscriptionApprovalResponseDto subscriptionApprovalResponseDto = notificationService.refuseSubscriptionRequest(subscriptionApprovalId);
-        return ResponseEntity.ok(subscriptionApprovalResponseDto);
-    }
-
     @PostMapping()
-    public ResponseEntity<Long> sendNotification(
-            @RequestParam("senderKey") UUID senderKey,
-            @RequestParam("receiverKey") UUID receiverKey,
-            @RequestParam("typeName") String typeName) {
+    public ResponseEntity<Long> sendNotification(NotificationRequestDto notificationRequestDto) {
+        UUID senderKey = notificationRequestDto.getSenderKey();
+        UUID receiverKey = notificationRequestDto.getReceiverKey();
+        String typeName = notificationRequestDto.getNotificationType();
         Long notificationId = notificationService.sendNotification(senderKey, receiverKey, typeName);
         return ResponseEntity.ok(notificationId);
     }
