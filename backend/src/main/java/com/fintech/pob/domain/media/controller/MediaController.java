@@ -79,6 +79,10 @@ public class MediaController {
     public ResponseEntity<Resource> findMedia(
             @RequestParam("transactionUniqueNo") Long transactionUniqueNo) {
 
+        System.out.println("--------------------[Find Media]---------------------");
+        System.out.println(transactionUniqueNo);
+        System.out.println("-----------------------------------------------------");
+
         Optional<Media> media = mediaService.findMedia(transactionUniqueNo);
 
         if (media.isPresent()) {
