@@ -28,6 +28,11 @@ public class DirectoryServiceImpl implements  DirectoryService{
         directory.setInstitutionCode(Integer.parseInt(directoryDTO.getBank()));
         directory.setName(directoryDTO.getName());
         directory.setUrl("");
+        System.out.println();
+        System.out.println();
+        System.out.println("account Number " +directoryDTO.getAccount());
+        System.out.println();
+        System.out.println();
         directory.setUser(userRepository.findByUserKey(userKey).orElse(null));
 
         Directory savedDirectory = directoryRepository.save(directory);
