@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,28 +43,29 @@ public class TransferLimitChecker implements TransferChecker {
                 return Mono.just(TransferCheckResult.LIMIT);
             }
 
-//            // 일일 이체 한도 체크
-//            AccountHistoryListRequestDTO historyRequest = new AccountHistoryListRequestDTO(
-//                    requestPayload.getWithdrawalAccountNo(),
-//                    LocalDate.now().toString(),
-//                    LocalDate.now().toString(),
-//                    "A",
-//                    "DESC"
-//            );
-//
-//            HeaderRequestDTO header = headerService.createCommonHeader("inquireTransactionHistoryList", userKey);
-//
-//            return accountService.getAccountHistoryList(historyRequest, header)
-//                    .map(response -> {
-//                        Long totalAmountToday = response.getRec().getHistory().stream()
-//                                .mapToLong(ClientAccountHistoryListResponseDTO.Record.HistoryInfo::getTransactionBalance)
-//                                .sum();
-//
-//                        if (totalAmountToday + requestPayload.getTransactionBalance() > dailyTransferLimit) {
-//                            return TransferCheckResult.LIMIT;
-//                        }
-//                        return TransferCheckResult.SUCCESS;
-//                    });
+            // 1일 이체 한도 체크
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            AccountHistoryListRequestDTO historyRequest = new AccountHistoryListRequestDTO(
+                    requestPayload.getWithdrawalAccountNo(),
+                    LocalDate.now().format(formatter),
+                    LocalDate.now().format(formatter),
+                    "A",
+                    "DESC"
+            );
+
+            HeaderRequestDTO header = headerService.createCommonHeader("inquireTransactionHistoryList", userKey);
+
+            return accountService.getAccountHistoryList(historyRequest, header)
+                    .map(response -> {
+                        Long totalAmountToday = response.getRec().getHistory().stream()
+                                .mapToLong(ClientAccountHistoryListResponseDTO.Record.HistoryInfo::getTransactionBalance)
+                                .sum();
+
+                        if (totalAmountToday + requestPayload.getTransactionBalance() > dailyTransferLimit) {
+                            return TransferCheckResult.LIMIT;
+                        }
+                        return TransferCheckResult.SUCCESS;
+                    });
         }
 
         return Mono.just(TransferCheckResult.SUCCESS);
