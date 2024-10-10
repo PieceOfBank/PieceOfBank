@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -28,6 +29,7 @@ public class LocalUserServiceImpl implements LocalUserService {
         user.setUserId(userId);
         user.setUserPassword(userPassword);
         user.setSubscriptionType(userSubscriptionType);
+        user.setAccountNo(null);
 
 
         userRepository.save(user);
@@ -50,6 +52,11 @@ public class LocalUserServiceImpl implements LocalUserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setAccountNo(accountNo);
         userRepository.save(user);
+    }
+
+    @Override
+    public Optional<User> getUserByUserId(String userId) {
+        return userRepository.findByUserId(userId);
     }
 
 

@@ -66,42 +66,45 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     @Transactional
     public void setOneTimeTransferLimit(UUID userKey,Long limit) {
 
-        Subscription subscription  = subscriptionRepository.findByTargetUser_UserKey(userKey).orElse(null);
+        Subscription subscription  = subscriptionRepository.findByProtectUserUserKey(userKey);
         subscription.setOneTimeTransferLimit(limit);
 
         subscriptionRepository.save(subscription);
 
-        notificationService.sendNotification(userKey, subscription.getProtectUser().getUserKey(), "한도 변경 알림");
+       // notificationService.sendNotification(userKey, subscription.getProtectUser().getUserKey(), "한도 변경 알림");
     }
 
     @Override
     @Transactional
     public void setDailyTransferLimit(UUID userKey,Long limit) {
 
-        Subscription subscription  = subscriptionRepository.findByTargetUser_UserKey(userKey).orElse(null);
+        Subscription subscription  =subscriptionRepository.findByProtectUserUserKey(userKey);
         subscription.setDailyTransferLimit(limit);
         subscriptionRepository.save(subscription);
 
-        notificationService.sendNotification(userKey, subscription.getProtectUser().getUserKey(), "한도 변경 알림");
+      //  notificationService.sendNotification(userKey, subscription.getProtectUser().getUserKey(), "한도 변경 알림");
     }
 
 @Override
     public Long getOneTimeTransferLimit(UUID userKey) {
-        Subscription subscription = subscriptionRepository.findByTargetUser_UserKey(userKey)
-                .orElseThrow(() -> new IllegalArgumentException("Subscription not found for userKey: " + userKey));
+        Subscription subscription = subscriptionRepository.findByTargetUserUserKey(userKey);
         return subscription.getOneTimeTransferLimit();
     }
 
     @Override
     public Long getDailyTransferLimit(UUID userKey) {
-        Subscription subscription = subscriptionRepository.findByTargetUser_UserKey(userKey)
-                .orElseThrow(() -> new IllegalArgumentException("Subscription not found for userKey: " + userKey));
+        Subscription subscription = subscriptionRepository.findByTargetUserUserKey(userKey);
         return subscription.getDailyTransferLimit();
     }
 
     @Override
     public Subscription getSubscriptionByProtectUserKey(UUID userKey) {
         return subscriptionRepository.findByProtectUserUserKey(userKey);
+    }
+
+    @Override
+    public Subscription getSubscriptionByTargetUserKey(UUID userKey) {
+        return subscriptionRepository.findByTargetUserUserKey(userKey);
     }
 
 }

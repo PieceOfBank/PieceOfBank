@@ -33,8 +33,10 @@ public class UserTokenServiceImpl implements UserTokenService {
     }
 
     @Override
-    public Optional<UserToken> getUserTokenByUserKey(UUID userKey) {
-        return userTokenRepository.findByUserKey(userKey);
+    public String getUserTokenByUserKey(UUID userKey) {
+        return userTokenRepository.findByUserKey(userKey)
+                .map(UserToken::getToken)
+                .orElseThrow(() -> new IllegalArgumentException("유저의 푸시 토큰을 찾을 수 없습니다: " + userKey));
     }
 
     @Override

@@ -47,7 +47,7 @@ public class PendingHistoryService {
     }
 
     public void showPendingData() {
-        String pattern = "PendingHistory:*"; // 검색할 키의 패턴
+        String pattern = "PendingHistory:*";
 
         try {
             Set<String> keys = redisTemplate.keys(pattern);
@@ -57,24 +57,24 @@ public class PendingHistoryService {
                     List<String> pendingHistoryList = redisTemplate.opsForList().range(redisKey, 0, -1);
 
                     if (pendingHistoryList != null && !pendingHistoryList.isEmpty()) {
-                        System.out.println("Data for key: " + redisKey);
+                        log.info("Data for key: ", redisKey);
                         for (String redisValue : pendingHistoryList) {
 
                             Map<String, String> pendingHistoryData = objectMapper.readValue(redisValue, Map.class);
 
-                            System.out.println("Deposit Account No: " + pendingHistoryData.get("depositAccountNo"));
-                            System.out.println("Transaction Balance: " + pendingHistoryData.get("transactionBalance"));
-                            System.out.println("Withdrawal Account No: " + pendingHistoryData.get("withdrawalAccountNo"));
-                            System.out.println("Deposit Transaction Summary: " + pendingHistoryData.get("depositTransactionSummary"));
-                            System.out.println("Withdrawal Transaction Summary: " + pendingHistoryData.get("withdrawalTransactionSummary"));
-                            System.out.println("--------------------------------------------");
+                            log.info("Deposit Account No: ", pendingHistoryData.get("depositAccountNo"));
+                            log.info("Transaction Balance: ", pendingHistoryData.get("transactionBalance"));
+                            log.info("Withdrawal Account No: ", pendingHistoryData.get("withdrawalAccountNo"));
+                            log.info("Deposit Transaction Summary: ", pendingHistoryData.get("depositTransactionSummary"));
+                            log.info("Withdrawal Transaction Summary: ", pendingHistoryData.get("withdrawalTransactionSummary"));
+                            log.info("--------------------------------------------");
                         }
                     } else {
-                        System.out.println("No data found for key: " + redisKey);
+                        log.info("No data found for key: ", redisKey);
                     }
                 }
             } else {
-                System.out.println("No pending history data found.");
+                log.info("No pending history data found.");
             }
         } catch (Exception e) {
             log.error("[PendingHistory 조회] 직렬화 오류", e);
@@ -93,10 +93,10 @@ public class PendingHistoryService {
 
                 deletePendingHistory(redisKey);
             } else {
-                log.info("[PendingHistory 승인] Notfound notificationId: " + notificationId);
+                log.info("[PendingHistory 승인] Notfound notificationId: ", notificationId);
             }
         } catch (Exception e) {
-            log.error("[PendingHistory 승인] 데이터 처리 오류: " + notificationId, e);
+            log.error("[PendingHistory 승인] 데이터 처리 오류: ", notificationId, e);
         }
     }
 
@@ -108,9 +108,9 @@ public class PendingHistoryService {
     public void deletePendingHistory(String redisKey) {
         try {
             redisTemplate.delete(redisKey);
-            log.info("[PendingHistory 삭제] 데이터 삭제 완료: " + redisKey);
+            log.info("[PendingHistory 삭제] 데이터 삭제 완료: ", redisKey);
         } catch (Exception e) {
-            log.error("[PendingHistory 삭제] Redis 데이터 삭제 오류: " + redisKey, e);
+            log.error("[PendingHistory 삭제] Redis 데이터 삭제 오류: ", redisKey, e);
         }
     }
 

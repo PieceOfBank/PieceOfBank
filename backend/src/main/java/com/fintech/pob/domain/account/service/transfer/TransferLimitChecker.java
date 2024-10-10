@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,11 +43,12 @@ public class TransferLimitChecker implements TransferChecker {
                 return Mono.just(TransferCheckResult.LIMIT);
             }
 
-            // 일일 이체 한도 체크
+            // 1일 이체 한도 체크
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             AccountHistoryListRequestDTO historyRequest = new AccountHistoryListRequestDTO(
                     requestPayload.getWithdrawalAccountNo(),
-                    LocalDate.now().toString(),
-                    LocalDate.now().toString(),
+                    LocalDate.now().format(formatter),
+                    LocalDate.now().format(formatter),
                     "A",
                     "DESC"
             );
