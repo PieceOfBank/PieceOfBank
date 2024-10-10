@@ -50,7 +50,7 @@ const caregiver = () => {
     const moneyAdd = async() => {
         try{
             const myMoney = await AsyncStorage.getItem("mainAccount");
-
+            console.log(myMoney)
             // const myAcc = myAc.toSring()
             // console.log(typeof myAc)
             // console.log(typeof myAcc)

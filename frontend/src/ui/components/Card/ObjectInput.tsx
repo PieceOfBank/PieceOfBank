@@ -5,8 +5,8 @@ import CancelButton from '../CancelButton';
 import { createDirectory } from '../../../services/api';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
-import { useSelector } from "react-redux";
-import { RootState } from "../../../store/store";
+import { RootState } from '../../../store/store';
+import { useSelector } from 'react-redux';
 
 const ObjectInput = () => { 
 

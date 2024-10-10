@@ -45,26 +45,29 @@ const sendMoney = () => {
   const [mediaNo, setMediaNo] = useState(0)
 
   /* 이체 */
-  const moneyGo = async(balance:number) => {
+  const moneyGo = async (balance:number) => {
   try {
-    // const keyGet = await AsyncStorage.getItem("myKey");
-    // const myKey = JSON.parse(keyGet!)
-
+    const keyGet = await AsyncStorage.getItem("myKey");
+    const myKey = JSON.parse(keyGet!)
+    console.log('~~~')
+    console.log(balance)
     const accountMy = await AsyncStorage.getItem("mainAccount");
-
+    console.log('확인')
+    console.log(accountMy)
     // console.log(myKey)
     // console.log(accountMy)
     const JsonData = {
-      depositAccountNo: "0019002625083250",  // 임시 - 받는 계좌 정보 *구독 정보에서 가져오기*
+      depositAccountNo: "0016925799438349",  // 임시 - 받는 계좌 정보 *구독 정보에서 가져오기*
       transactionBalance: 10000,
-      withdrawalAccountNo: accountMy, // 내 계좌
+      withdrawalAccountNo: "0010688704487044", // 내 계좌
       depositTransactionSummary: "string", // 임시
       withdrawalTransactionSummary: "string" // 임시
-    }
+    };
 
-      const response = await accountTransfer(JsonData);
-        console.log(response)
-        setStep('3')
+    console.log("최종 JsonData:", JsonData);
+    const response = await accountTransfer(JsonData);
+    console.log(response)
+
         Toast.show({
           type: 'success',
           text1: '송금 완료',
@@ -74,12 +77,14 @@ const sendMoney = () => {
     // setMediaNo(transNo)
   }
   catch (error) {
-    console.log(`에러: ${error}`)
+    console.log(`에러에러에러에러에러: ${error}`)
     Toast.show({
       type: 'error',
       text1: '송금 실패!',
       text2: '입력 정보를 다시 확인해주세요'
     })
+    setStep('3')
+
   }
 } 
 const router = useRouter();
@@ -108,7 +113,6 @@ useEffect(() => {
   
           const balanceCheck = parseInt(balance) // 송금 금액 숫자 변환
           moneyGo(balanceCheck)
-
       
           }
 
