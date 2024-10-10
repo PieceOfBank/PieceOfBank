@@ -57,6 +57,7 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("대표 계좌 업데이트 실패: " + e.getMessage());
         }
+
     }
 
     @GetMapping("/{userId}")
