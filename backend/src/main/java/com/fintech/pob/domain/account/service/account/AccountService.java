@@ -18,6 +18,7 @@ import com.fintech.pob.global.auth.jwt.JwtUtil;
 import com.fintech.pob.global.header.dto.HeaderRequestDTO;
 import com.fintech.pob.global.header.service.HeaderService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -58,6 +59,7 @@ public class AccountService {
                 .subscribe();
     }
 
+    @Transactional
     public Mono<ClientAccountCreationResponseDTO> createAccount(AccountCreationRequestDTO requestPayload) {
         HeaderRequestDTO header = (HeaderRequestDTO) request.getAttribute("header");
 
