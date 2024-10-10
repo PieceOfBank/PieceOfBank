@@ -43,7 +43,7 @@ public class MediaController {
             if (file == null || file.isEmpty()) {
 
 
-                url = "파일이 제공되지 않았습니다.!!!";
+                url = "no file !!!";
             } else {
                 System.out.println(file.getOriginalFilename());
                 System.out.println(file);
