@@ -20,8 +20,8 @@ public class DirectoryServiceImpl implements  DirectoryService{
     public DirectoryRequestDto createDirectory(DirectoryRequestDto directoryDTO,UUID userKey ) {
 
         Directory directory = new Directory();
-        directory.setAccountNo(directoryDTO.getAccountNo());
-        directory.setInstitutionCode(directoryDTO.getInstitutionCode());
+        directory.setAccountNo(directoryDTO.getAccount());
+        directory.setInstitutionCode(Integer.parseInt(directoryDTO.getBank()));
         directory.setName(directoryDTO.getName());
         directory.setUrl("");
         directory.setUser(userRepository.findByUserKey(userKey).orElse(null));

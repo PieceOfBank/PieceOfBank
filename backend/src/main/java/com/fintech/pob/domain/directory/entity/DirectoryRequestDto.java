@@ -8,8 +8,9 @@ import java.util.UUID;
 public class DirectoryRequestDto {
   //  private Long directoryId;
     private UUID userKey;
-    private String accountNo;
+    private String account;
     private String name;
+    private String bank;
     private String phone;
 
 }
