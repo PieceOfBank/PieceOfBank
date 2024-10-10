@@ -34,9 +34,7 @@ const AddWard = () => {
         content: "안전한 금융 거래를 보장할 수 있어요!"
       }
       await sendExpoNotification(notificationMsg);
-      console.log("알림 보낸ㅆ슴다...")
-      // ##########################################
-
+  
       const keyGet = await AsyncStorage.getItem("myKey");
       const myKey = JSON.parse(keyGet!)
     
@@ -45,8 +43,6 @@ const AddWard = () => {
         receiverId: wardId
       }
       const response = await subscriptionPost(JsonData);
-      console.log("부모추가하기.. gogo")
-      console.log(response.data)
 
       Toast.show({
         type: 'success',

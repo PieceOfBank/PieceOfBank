@@ -114,7 +114,8 @@ const caregiver = () => {
                 await AsyncStorage.setItem("mainAccount", mainGo);
                 setMainAc('1')
             }
-            catch(error){
+            catch (error) {
+                console.log("Error야?")
                 console.log(error)
                 setMainAc('2')
             }

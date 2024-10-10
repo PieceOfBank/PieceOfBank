@@ -9,6 +9,14 @@ import { registerForPushNotificationsAsync } from "../src/utils/NotificationToke
 import * as Notifications from 'expo-notifications';
 import store from "../src/store/store";
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
 const LayoutContent = () => {
 
   const dispatch = useDispatch();
