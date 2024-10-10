@@ -55,6 +55,7 @@ public class DirectoryController {
         String key = (String) jwtUtil.extractUserKey(token);
 
 
+        System.out.println("url: "+url);
         UUID userKey = UUID.fromString(key);
         directoryDTO.setUserKey(userKey);
         DirectoryRequestDto createdDirectory = directoryService.createDirectory(directoryDTO, userKey, url);
