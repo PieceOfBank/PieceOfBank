@@ -3,13 +3,14 @@ package com.fintech.pob.domain.user.service;
 import com.fintech.pob.domain.user.entity.User;
 import com.fintech.pob.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
 
-
+@Slf4j
 @Service
 @Transactional
 public class LocalUserServiceImpl implements LocalUserService {
@@ -48,10 +49,12 @@ public class LocalUserServiceImpl implements LocalUserService {
 
     @Override
     public void updateAccountNo(UUID userKey, String accountNo) {
+        log.info("----------{}------>{}", userKey.toString(), accountNo);
         User user = userRepository.findByUserKey(userKey)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setAccountNo(accountNo);
         userRepository.save(user);
+        log.info("---------{}", user.toString());
     }
 
     @Override
