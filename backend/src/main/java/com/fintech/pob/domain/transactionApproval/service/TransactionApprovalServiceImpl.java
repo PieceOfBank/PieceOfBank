@@ -79,14 +79,13 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
         TransactionApproval savedApproval = transactionApprovalRepository.save(transactionApproval);
 
         // 푸시 알림 보내기
-        sendPushMessage(receiver.getUserKey(), typeName);
+        sendPushMessage(receiver.getUserKey(), typeName, "거래 승인 알림이 도착했습니다!");
 
         return savedApproval.getTransactionApprovalId();
     }
 
-    private void sendPushMessage(UUID receiverKey, String typeName) {
-        String to = userTokenService.getUserTokenByUserKey(receiverKey);
-        String content = "거래 승인 알림이 도착했습니다!";
+    private void sendPushMessage(UUID userKey, String typeName, String content) {
+        String to = userTokenService.getUserTokenByUserKey(userKey);
 
         ExpoNotificationRequestDto expoNotificationRequestDto = ExpoNotificationRequestDto.builder()
                 .to(to)
@@ -111,6 +110,11 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
 
         pendingHistoryService.approvePendingHistory(notification.getNotificationId());
 
+        // 거래 완료 푸시 알림 전송(자식 -> 부모)
+        User target = userRepository.findByUserKey(notification.getSenderUser().getUserKey())
+                .orElseThrow(() -> new IllegalArgumentException("TargetKey(parent) not found"));
+        sendPushMessage(target.getUserKey(), "거래 승인 알림", "보호자가 거래를 승인했습니다.");
+
         return TransactionApprovalResponseDto.builder()
                 .senderKey(notification.getSenderUser().getUserKey())
                 .receiverKey(notification.getReceiverUser().getUserKey())
@@ -131,6 +135,11 @@ public class TransactionApprovalServiceImpl implements TransactionApprovalServic
         Notification notification = transactionApproval.getNotification();
 
         pendingHistoryService.refusePendingHistory(notification.getNotificationId());
+
+        // 거래 완료 푸시 알림 전송(자식 -> 부모)
+        User target = userRepository.findByUserKey(notification.getSenderUser().getUserKey())
+                .orElseThrow(() -> new IllegalArgumentException("TargetKey(parent) not found"));
+        sendPushMessage(target.getUserKey(), "거래 거절 알림", "보호자가 거래를 거절했습니다.");
 
         return TransactionApprovalResponseDto.builder()
                 .senderKey(notification.getSenderUser().getUserKey())
