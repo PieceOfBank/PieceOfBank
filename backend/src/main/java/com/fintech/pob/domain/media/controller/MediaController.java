@@ -85,36 +85,32 @@ public class MediaController {
 
         Optional<Media> media = mediaService.findMedia(transactionUniqueNo);
 
-        if (media.isPresent()) {
-            try {
-                String mediaUrl = media.get().getUrl();
-                Path filePath = Paths.get(mediaUrl);
-
-                Resource resource = (Resource) new UrlResource(filePath.toUri());
-                if (resource.exists() || resource.isReadable()) {
-
-                    String contentType = Files.probeContentType(filePath);
-                    if (contentType == null) {
-                        contentType = "application/octet-stream"; // 기본 MIME 타입 설정
-                    }
-
-                    return ResponseEntity.ok()
-                            .contentType(MediaType.parseMediaType(contentType))
-                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                            .body(resource);
-
-                } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-                }
-
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-            }
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        // Media 객체가 존재하지 않는 경우
+        if (!media.isPresent()) {
+            return ResponseEntity.ok().body(null); // Media가 없을 때 null 반환
         }
 
+        try {
+            String mediaUrl = media.get().getUrl();
+            Path filePath = Paths.get(mediaUrl);
 
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists() && resource.isReadable()) {
+                String contentType = Files.probeContentType(filePath);
+                if (contentType == null) {
+                    contentType = "application/octet-stream"; // 기본 MIME 타입 설정
+                }
+
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(contentType))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);
+            } else {
+                return ResponseEntity.ok().body(null); // 파일이 없거나 읽을 수 없는 경우 null 반환
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // 예외 발생 시 null 반환
+        }
     }
 
 
