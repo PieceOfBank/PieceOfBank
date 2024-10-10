@@ -1,6 +1,7 @@
 package com.fintech.pob.global.filter;
 
 import com.fintech.pob.global.auth.jwt.JwtUtil;
+import com.fintech.pob.global.auth.service.UserAuthenticationService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,9 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,15 +18,16 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
+    private final UserAuthenticationService userAuthenticationService; // UserAuthenticationService 사용
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserAuthenticationService userAuthenticationService) {
         this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
+        this.userAuthenticationService = userAuthenticationService;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
 
         String userKey = null;
@@ -46,16 +45,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (userKey != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userKey);
-
-            if (jwtUtil.isTokenValid(jwtToken, userKey)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            // UserAuthenticationService를 통해 유저 인증 정보 설정
+            UsernamePasswordAuthenticationToken authentication = userAuthenticationService.getAuthentication(userKey, request);
+            if (authentication != null) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                logger.info("SecurityContext에 인증 정보 설정됨: " + authentication);
             }
         }
-        filterChain.doFilter(request, response);
 
+        filterChain.doFilter(request, response);
     }
 }

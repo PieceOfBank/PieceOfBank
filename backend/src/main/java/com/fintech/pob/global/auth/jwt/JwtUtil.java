@@ -40,7 +40,6 @@ public class JwtUtil {
         return createToken(userKey, null, REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
-
     // JWT 토큰 생성
     public String createToken(String userKey, Integer subscriptionType, long expirationTime) {
         Claims claims = Jwts.claims().setSubject(userKey);
