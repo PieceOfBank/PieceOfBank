@@ -15,7 +15,7 @@
 
 
 ## 📢 프로젝트 소개
-![POB 중간 발표](https://github.com/user-attachments/assets/cb3602b4-4048-4c5f-8ce2-e90c54375f65)
+<img src="https://github.com/user-attachments/assets/cb3602b4-4048-4c5f-8ce2-e90c54375f65" height="300"/>
 <br><br>
 
 ### ➕ 시연 영상 및 프로젝트 화면
