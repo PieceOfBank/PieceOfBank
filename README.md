@@ -1,5 +1,5 @@
 <a href="https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21A703/">
-    <img src="https://github.com/user-attachments/assets/17efb099-2121-4ef5-beae-49ea84f7b278" align="right" height="90" />
+    <img src="https://github.com/user-attachments/assets/38816e33-65b8-4c30-ab39-3f88450fca3d" align="right" height="90" />
 </a>
 
 
