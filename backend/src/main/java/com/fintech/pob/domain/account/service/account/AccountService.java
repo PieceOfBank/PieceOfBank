@@ -215,9 +215,9 @@ public class AccountService {
         log.info(header.toString());
         log.info("[REQUEST]");
         log.info(requestPayload.toString());
-        log.info("[USER]");
-        log.info(accountClientService.findByAccountNo(requestPayload.getDepositAccountNo()).getUser().getUserName());
-        log.info(accountClientService.findByAccountNo(requestPayload.getWithdrawalAccountNo()).getUser().getUserName());
+//        log.info("[USER]");
+//        log.info(accountClientService.findByAccountNo(requestPayload.getDepositAccountNo()).getUser().getUserName());
+//        log.info(accountClientService.findByAccountNo(requestPayload.getWithdrawalAccountNo()).getUser().getUserName());
         log.info("---------------------------------------------------------------");
 
 
