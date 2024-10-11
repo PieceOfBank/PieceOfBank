@@ -34,7 +34,7 @@ const WardAllAccount = () => {
 
     // 처음 접속 시 실행
     useEffect(() => {
-        // accountRequest() // 계좌 목록 요청
+        accountRequest() // 계좌 목록 요청
     }, [])
 
     // 체크박스 표시

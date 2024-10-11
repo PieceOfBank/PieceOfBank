@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import smallLogo from "../../src/assets/SmallLogo.png";
 import FamilyTransaction from "../../src/ui/components/Temporary/FamilyTransaction";
 import CancelButton from "../../src/ui/components/CancelButton";
-import Header from "../../src/ui/components/Header";
 
 
 const DealHistory = () => {
@@ -15,7 +14,6 @@ const DealHistory = () => {
 
     return(
       <View className='flex-1'>
-        <Header />
         <View className='flex-1 justify-center items-center'>
         <Text className='text-lg bg-gray-300 p-2 m-3 w-60 rounded-2xl text-center font-bold'>{naming}와의 기록</Text>
         <FamilyTransaction />

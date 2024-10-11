@@ -37,8 +37,8 @@ const WardListForm = () => {
             try{
             const response = await subTargetCheck()
             // const checking = response.data
-            console.log('@')
-            console.log(response.data)
+            // console.log('@')
+            // console.log(response.data)
             if (response.data == null){
                 setConnect(false) // 없으면 등록 화면 보여주기
             } else{

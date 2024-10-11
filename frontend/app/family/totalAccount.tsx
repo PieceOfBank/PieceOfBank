@@ -3,13 +3,11 @@ import { View, Text, ImageBackground, TextInput, SafeAreaView, TouchableOpacity 
 import React, { useState, useEffect } from 'react';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import FamilyAccountList from "../../src/ui/components/Temporary/AccountList";
-import Header
- from "../../src/ui/components/Header";
+
 const TotalAccount = () => {
 
     return (
         <View className='flex-1'>
-        <Header />
         <View className='flex-1 justify-center items-center'>
             <Text className="w-60 p-2 bg-gray-300 rounded-3xl text-center justfiy-center items-center m-5 text-lg font-bold">전체 계좌 목록</Text>
             <FamilyAccountList />

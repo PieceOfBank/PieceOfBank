@@ -322,8 +322,16 @@ export const mediaPost = (
 };
 
 // 2. 미디어 조회 - GET
-export const mediaGet = () => {
-  return axiosClient.get(`/media/find`);
+export const mediaGet = async (data:Record<string, unknown>) => {
+  const accessToken = await AsyncStorage.getItem("accessToken");
+  return axiosClient.get(`/media/find/`, 
+   { headers: {
+          Authorization: `${accessToken}`, 
+      'Content-Type': 'multipart/form-data',
+      
+    }, 
+}
+  );
 };
 
 /* Pending API */
