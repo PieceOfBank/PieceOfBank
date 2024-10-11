@@ -6,7 +6,6 @@ import Checkbox from 'expo-checkbox';
 import { useRouter } from 'expo-router';
 import Toast from "react-native-toast-message";
 import CancelButton from "../../src/ui/components/CancelButton";
-import Header from "../../src/ui/components/Header";
 import { notifyList } from "../../src/services/api";
 import { useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,6 +13,7 @@ import { transferApproval, transferRefusal, notifyUpdate, notifyDelete } from ".
 
 const ReqSendMoney = () => {
     const [mainConnect, setMainConnect] = useState('');
+    const [mainAccount, setMainAccount] = useState('');
 
     const [updateView, setUpdateView] = useState(false)
 
@@ -39,7 +39,9 @@ const ReqSendMoney = () => {
         const keyGet = await AsyncStorage.getItem("myKey");
 
         const myKey = JSON.parse(keyGet!)
-
+        // const bankGet = await AsyncStorage.getItem("mainAccount");
+        // const myBank = JSON.parse(bankGet!)
+        // setMainAccount(myBank)
         console.log(myKey)
         try{
             const data = {
@@ -47,6 +49,7 @@ const ReqSendMoney = () => {
                 }
                 const response = await notifyList(data);
                 console.log(response.data)
+                 setNoticeList(response.data || [])
                 setNoticeList(response.data)
         }
         catch(error){
@@ -55,21 +58,29 @@ const ReqSendMoney = () => {
     }
 
     useEffect(() => {
-        notifyView()
-        return () => {}
-    },[updateView])
-
+        const fetchData = async () => {
+            try {
+                console.log('화면')
+                await notifyView();
+            } catch (error) {
+                console.error("컴포넌트 마운트 중 오류 발생: ", error);
+            }
+        };
+    
+        fetchData();
+    }, [updateView]);
     // 요청 수락
     const checkAccept = (index:number) => {
         for (let i = 0; i < noticeList.length; i++){
         if (i == index){
             const numId = noticeList[i]['notificationId']
             // 요청 보내기
+            
             const checkRequest = async () => {
                 const JsonData = {
                     senderKey: noticeList[i]['senderKey'],
                     receiverKey: noticeList[i]['receiverKey'],
-                    accountNo:2039420348,
+                    accountNo:accounting,
                 }
 
                 const response = await transferApproval(JsonData)
@@ -77,7 +88,7 @@ const ReqSendMoney = () => {
 
                 console.log('##')
                 console.log(response)
-                const answer = notifyDelete(numId)
+                const answer =await notifyDelete(numId)
                 console.log('%%')
                 console.log(answer)
             }
@@ -121,7 +132,6 @@ const ReqSendMoney = () => {
 
     return (
         <View className='flex-1'>
-            <Header />
             <View className='justify-center items-center bg-gray-300 rounded-3xl mt-12 p-2 mx-20 mb-5'>
                 <Text className='text-xl text-center font-semibold'>알림 내역</Text>
             </View>

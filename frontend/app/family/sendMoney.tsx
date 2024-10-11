@@ -5,7 +5,6 @@ import Toast from "react-native-toast-message";
 import TransferInput from "../../src/ui/components/Temporary/TransferInput";
 import PinInfo from "../../src/ui/components/Temporary/PinCheck";
 import MediaConfirm from "../../src/ui/components/Temporary/MediaConfirm";
-import Header from "../../src/ui/components/Header";
 import { useSelector } from "react-redux";
 import { RootState } from "../../src/store/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -49,14 +48,7 @@ const sendMoney = () => {
   try {
     const keyGet = await AsyncStorage.getItem("myKey");
     const myKey = JSON.parse(keyGet!)
-    console.log('~~~')
-    console.log(balance)
     const accountMy = await AsyncStorage.getItem("mainAccount");
-    console.log('확인')
-    console.log(accountMy)
-    console.log(sendBank)
-    // console.log(myKey)
-    // console.log(accountMy)
     const JsonData = {
       depositAccountNo: sendBank,  // 임시 - 받는 계좌 정보 *구독 정보에서 가져오기*
       transactionBalance: balance,
@@ -74,6 +66,7 @@ const sendMoney = () => {
           text1: '송금 완료',
           text2: '송금이 완료되었습니다'
         })
+
     const transNo = response.data.REC[0]["transactionUniqueNo"] // 거래번호 맞게 가져오는지 확인해봐야 함
     console.log(transNo)
     setMediaNo(transNo)
@@ -87,7 +80,7 @@ const sendMoney = () => {
       text1: '송금 실패!',
       text2: '입력 정보를 다시 확인해주세요'
     })
-
+router.push('family/familyMain')
   }
 } 
 const router = useRouter();
@@ -132,7 +125,6 @@ useEffect(() => {
 
     return(
       <View className='flex-1'>
-        <Header />
         {step == '1' && (
           <View className='flex-row justify-center items-center'>
               {/* <TransferObject onChange={firstChange} />  */}

@@ -130,6 +130,7 @@ const careTransfer = () => {
       console.log("최종 JsonData:", JsonData);
       const response = await accountTransfer(JsonData);
       console.log(response);
+      
     } catch (error) {
       console.log(`에러: ${error}`);
       Toast.show({
@@ -137,6 +138,8 @@ const careTransfer = () => {
         text1: "송금 실패!",
         text2: "입력 정보를 다시 확인해주세요",
       });
+      router.push('ward/main')
+
     }
   };
 
@@ -215,7 +218,7 @@ const careTransfer = () => {
             text1: "송금 실패 - 한도 초과!",
             text2: "기준 금액 초과로 승인 허락 요청이 들어갔습니다",
           });
-          setStep("4");
+          router.push("/ward/main");
       } else{
         // const remainderMoney = await getMoney(); 
         // checkBalanceAndNotify(remainderMoney);
@@ -340,26 +343,26 @@ const careTransfer = () => {
   // 4차 송금 화면
   // 금액 한도 초과일 경우 보호자에게 알림
   // 금액 한도 이하일 경우 송금 완료
-  else if (step == "4") {
-    return (
-      <ImageBackground source={require("../../src/assets/POBbackGround.png")} className="flex-1">
-        <View className="h-16 bg-blue-400 dark:bg-blue-100 flex flex-row justify-start items-center">
-          <Image source={smallLogo} className="w-12 h-12" />
-          <View className="flex-1 justify-start items-center">
-            <Text className="text-2xl text-white font-bold">송금하기</Text>
-          </View>
-        </View>
-        <View>
-          <View className="flex-1 justify-center items-center">
-            <View className="flex-1 flex-row justify-center items-center">
-              <Text>{}</Text>
-              {/* <TransferOk /> */}
-            </View>
-          </View>
-        </View>
-      </ImageBackground>
-    );
-  }
+  // else if (step == "4") {
+  //   return (
+  //     <ImageBackground source={require("../../src/assets/POBbackGround.png")} className="flex-1">
+  //       <View className="h-16 bg-blue-400 dark:bg-blue-100 flex flex-row justify-start items-center">
+  //         <Image source={smallLogo} className="w-12 h-12" />
+  //         <View className="flex-1 justify-start items-center">
+  //           <Text className="text-2xl text-white font-bold">송금하기</Text>
+  //         </View>
+  //       </View>
+  //       <View>
+  //         <View className="flex-1 justify-center items-center">
+  //           <View className="flex-1 flex-row justify-center items-center">
+  //             <Text>{}</Text>
+  //             {/* <TransferOk /> */}
+  //           </View>
+  //         </View>
+  //       </View>
+  //     </ImageBackground>
+  //   );
+  // }
 };
 
 export default careTransfer;

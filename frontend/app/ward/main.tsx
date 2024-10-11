@@ -112,9 +112,9 @@ const caregiver = () => {
         const mainRequest = async() => {
             try{
                 const response = await getAccountList();
-                console.log(response.data.REC[0].accountNo)
-                const mainGo = response.data.REC[0].accountNo
-                await AsyncStorage.setItem("mainAccount", mainGo);
+                console.log(response.data)
+                // const mainGo = response.data.REC[0]
+                // await AsyncStorage.setItem("mainAccount", mainGo);
                 setMainAc('1')
             }
             catch (error) {

@@ -77,7 +77,7 @@ export const registUser = async (newMember: Record<string, unknown>) => {
     try {
         const userKey = await AsyncStorage.getItem('myKey');
         console.log("my userKey : --> " + userKey)
-        newMember = { ...newMember, 'myKey': userKey };
+        newMember = { ...newMember, 'userKey': userKey };
         console.log(newMember)
         return axiosClient.post(`/users/regist`, newMember);
     } catch (error) {
@@ -315,8 +315,16 @@ export const mediaPost = (
 };
 
 // 2. 미디어 조회 - GET
-export const mediaGet = () => {
-  return axiosClient.get(`/media/find`);
+export const mediaGet = async (data:Record<string, unknown>) => {
+  const accessToken = await AsyncStorage.getItem("accessToken");
+  return axiosClient.get(`/media/find/`, 
+   { headers: {
+          Authorization: `${accessToken}`, 
+      'Content-Type': 'multipart/form-data',
+      
+    }, 
+}
+  );
 };
 
 /* Pending API */

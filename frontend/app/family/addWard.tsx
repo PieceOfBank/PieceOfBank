@@ -46,6 +46,7 @@ const AddWard = () => {
         senderKey: myKey, 
         receiverId: wardId
       }
+      console.log(JsonData)
       const response = await subscriptionPost(JsonData);
 
       Toast.show({

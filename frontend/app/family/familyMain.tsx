@@ -85,6 +85,8 @@ const FamilyMain = () => {
     }
   )
 
+  const [myAc, setMyAc] = useState('')
+
   const mediaGo = async () =>{
     try{
       const transNo = 78164
@@ -94,8 +96,8 @@ const FamilyMain = () => {
           file:null
         }
       console.log('요청')
-      const answer = await mediaPost(transNo, type, content, data)
-      console.log(answer)
+      // const answer = await mediaPost(transNo, type, content, data)
+      // console.log(answer)
     }catch(error){
       console.log('미디어보내고싶어요')
       console.log(error)
@@ -136,11 +138,12 @@ const FamilyMain = () => {
             console.log(response.data.REC[0].accountNo)
             const mainGo = response.data.REC[0].accountNo
             await AsyncStorage.setItem("mainAccount", mainGo);
-            // setMainAc('1')
+            setMainAccount('1')
+            setMyAc(mainGo)
         }
         catch(error){
             console.log(error)
-            // setMainAc('2')
+            setMainAccount('2')
         }
     }
     mainRequest()
@@ -214,7 +217,7 @@ const FamilyMain = () => {
   // const wardInfo= { directoryId : 1, userKey: '1', accountNo: '123456789', institutionCode: 1, name: '엄마' }
 
   // 대표 계좌 보여줄 지 확인하기
-  const [mainAccount, setMainAccount] = useState('1')
+  const [mainAccount, setMainAccount] = useState('2')
 
   return (
     <SafeAreaView>
@@ -237,10 +240,27 @@ const FamilyMain = () => {
 
         </View>
       </SafeAreaView>
+
       <View className="bg-gray-200 flex justify-center items-center">
+        {(mainAccount=='1')? (        
+          <Link className='h-6 rounded-3xl justify-center m-4 text-center font-bold' 
+             href={
+                {pathname:'/family/totalAccount'}
+                }>한국은행 {myAc}</Link>) 
+                :<Link className='h-6 rounded-3xl justify-center m-4 text-center font-bold' 
+                href={
+                   {pathname:'/family/totalAccount'}
+                   }>계좌 등록하기</Link>}
+
+        {/* <TouchableOpacity 
+          className='w-48 h-8 mx-1 rounded justify-center bg-gray-500'
+          onPress={() => router.push('/family copy/reqSendMoney')} 
+          >
+          <Text className='text-white text-center font-bold'>알림함</Text></TouchableOpacity> */}
+      </View>
       <View className="flex-1">
-        <View className="items-between">
-          <TouchableOpacity 
+        <View className=" flex-row">
+        <TouchableOpacity 
                 className="w-28 bg-green-800 h-8 rounded-3xl justify-center items-center"
                 onPress={mediaGo}>
                     <Text className='text-white'>미디어</Text>
@@ -258,24 +278,6 @@ const FamilyMain = () => {
         </View>
 
       </View>
-      
-        {(mainAccount=='1')? (        
-          <Link className='h-6 rounded-3xl justify-center m-4 text-center font-bold' 
-             href={
-                {pathname:'/family/totalAccount'}
-                }>{}</Link>) 
-                :<Link className='h-6 rounded-3xl justify-center m-4 text-center font-bold' 
-                href={
-                   {pathname:'/family/totalAccount'}
-                   }>계좌 등록하기</Link>}
-
-        {/* <TouchableOpacity 
-          className='w-48 h-8 mx-1 rounded justify-center bg-gray-500'
-          onPress={() => router.push('/family copy/reqSendMoney')} 
-          >
-          <Text className='text-white text-center font-bold'>알림함</Text></TouchableOpacity> */}
-      </View>
-
       {/* 피보호자 존재 - 메인 레이아웃 / 아니면 추가할 수 있는 레이아웃 구성 */}
       {(flag==true) ? (
         <View>
