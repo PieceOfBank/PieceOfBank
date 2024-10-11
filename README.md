@@ -22,32 +22,33 @@
 <a href=""> <img src="" height="300"/> </a> <br>
 🔺 위 이미지를 클릭하면 프로젝트 시연 영상으로 이동합니다.
 <br><br>
+
 <details> 
-<summary> 하단을 클릭하면 프로젝트 화면 캡쳐 이미지를 확인할 수 있습니다.
-    
- **POB 화면 보기**
+<summary>  
+<h4> 📱 POB 화면 보기</h4>
 </summary>
 
-[가로 모드]
+#### [가로 모드]
 ![가로모드](https://github.com/user-attachments/assets/c3bbab03-11fb-47c0-939b-ca2f9b032c42)
 
-[미디어 이체]
+#### [미디어 이체]
 ![미디어 이체](https://github.com/user-attachments/assets/10748ea1-ce7e-47a5-9f45-c34b69f58735)
 ![미디어 이체 -1](https://github.com/user-attachments/assets/6cedfcab-7ac4-4f6e-82d5-7321041644d7)
 ![미디어 이체 -2](https://github.com/user-attachments/assets/b6c137c0-dd8d-4048-9d6c-1f44ad06579e)
 ![미디어 이체 -3](https://github.com/user-attachments/assets/08c15b05-9ff8-45b9-9967-73ea9eec1e4a)
 
-[알림 기능]
+#### [알림 기능]
 ![거래 내역 없음 알림](https://github.com/user-attachments/assets/8f1a0151-1703-4e40-9176-3e1db3853248)
 ![잔액 부족 알림](https://github.com/user-attachments/assets/5f40abab-bb09-41d1-b62f-da70ad4e0cbd)
 ![한도 초과 알림](https://github.com/user-attachments/assets/c97d4ad2-b3a4-49e6-8495-90bb821e74c0)
 ![계좌 비활성 알림](https://github.com/user-attachments/assets/942ee729-210b-41a5-a912-9f8480a2d83f)
 ![알림 이미지](https://github.com/user-attachments/assets/354a8426-85d2-4a36-a039-c778a4c7d1bd)
 
-[계좌 거래 내역]
+#### [계좌 거래 내역]
 ![계좌 거래 내역](https://github.com/user-attachments/assets/85710282-3bd9-492b-9e0b-de6b44cf5cd3)
 
 </details>
+🔺 위 토글을 클릭하면 프로젝트 화면 캡쳐 이미지를 확인할 수 있습니다.
 
 ## 🛠 핵심 기능
 ### 구독 기능
