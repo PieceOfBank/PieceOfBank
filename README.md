@@ -15,18 +15,8 @@
 
 
 ## 📢 프로젝트 소개
-- **FOR SENIORS**
-    - 가로 모드
-    - 빠른 이체
-
-- **FOR SIBLINGS**
-    - 미디어 이체
-    - 거래 내역 없음 알림
-    - 잔액 부족 알림
-
-- **FOR SAFETY**
-    - 상대 계좌 비활성 알림
-    - 한도 초과 알림
+![POB 중간 발표](https://github.com/user-attachments/assets/cb3602b4-4048-4c5f-8ce2-e90c54375f65)
+<br><br>
 
 ### ➕ 시연 영상 및 프로젝트 화면
 <a href=""> <img src="" height="300"/> </a> <br>
