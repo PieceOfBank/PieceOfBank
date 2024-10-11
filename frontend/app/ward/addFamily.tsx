@@ -160,6 +160,7 @@ const familyAdd = () => {
             console.log("알림 보낸ㅆ슴다...")
               
             console.log(response.data);
+            router.replace('/ward/main')
           } catch (error) {
             console.log(error);
           }

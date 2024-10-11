@@ -8,9 +8,10 @@ import NowAccount from "../../src/ui/components/NowAccount";
 import SmallLogo from "../../src/assets/SmallLogo.png";
 import { mediaPost, createAccount, logoutUser, getAccountList, addMoney, accountPatch } from "../../src/services/api";
 import Toast from "react-native-toast-message";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout, setID, setNickName } from "../../src/store/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RootState } from "../../src/store/store";
 
 
 
@@ -22,7 +23,8 @@ interface CareItem {
 const caregiver = () => {
 
     const router = useRouter()
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const logFlag = useSelector((state: RootState) => state.getUser.isLogged);
 
     const [mainAc, setMainAc] = useState('')
     const accountGo = async() => {
@@ -49,7 +51,7 @@ const caregiver = () => {
                 type: 'success',
                 text1: '계좌 생성 성공!',
               })
-            router.push('/ward/main')
+        router.replace('/ward/main')
         }
         catch(error){
             console.log(error)
@@ -135,7 +137,8 @@ const caregiver = () => {
                 setMainAc('2')
             }
         }
-        mainRequest()
+      mainRequest()
+      console.log("loging check : " + logFlag)
         
         return () => {
             ScreenOrientation.unlockAsync()

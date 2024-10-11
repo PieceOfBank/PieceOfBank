@@ -8,7 +8,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "nativewind";
 import { loginUser, sendExpoNotification, sendToken } from "../src/services/api";
 import Toast from "react-native-toast-message";
@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../src/store/store";
 import { setUserKey } from "../src/store/userKeySlice";
-import { login, setID, setPWD } from "../src/store/userSlice";
+import { login, setID, setPWD, setSubType } from "../src/store/userSlice";
 import { jwtDecode } from "jwt-decode";
 // MainPage
 
@@ -30,6 +30,8 @@ export default function LoginScreen() {
   
   const myUserID = useSelector((state: RootState) => state.getUser.ID);
   const myUserPWD = useSelector((state: RootState) => state.getUser.password);
+  const subType = useSelector((state: RootState) => state.getUser.subscribeType);
+    const logFlag = useSelector((state: RootState) => state.getUser.isLogged);
   
 
   // 로그인 요청 보낼 정보
@@ -63,7 +65,8 @@ export default function LoginScreen() {
 
     dispatch(setID(id));
     dispatch(setPWD(password));
-    dispatch(login());
+      dispatch(login());
+      console.log("login check : " + logFlag)
       
       const keyGet = await AsyncStorage.getItem("myKey");
       const myUserKey = JSON.parse(keyGet!)
@@ -81,10 +84,12 @@ export default function LoginScreen() {
       });
       // 구독 관계 1이면 보호자 페이지로 이동
       if (response?.data["subscriptionType"] == 1) {
+        dispatch(setSubType(1))
         router.push("/family/familyMain");
       }
       // 구독 관계 2이면 피보호자 페이지 이동
       else if (response?.data["subscriptionType"] == 0) {
+        dispatch(setSubType(2))
         router.push("/ward/main");
       }
     } catch (error) {
@@ -168,6 +173,13 @@ const moneyCheck = async() => {
   }
   }
 
+  useEffect(() => {
+    if (subType === 1 && logFlag)
+      router.replace('/family/familyMain')
+    else if(subType === 2 && logFlag)
+      router.replace('/ward/main')
+  }, [])
+
   return (
     <ImageBackground source={require("../src/assets/POBbackGround.png")} className="flex-1">
       <View className="flex-1 justify-center items-center">
@@ -197,32 +209,6 @@ const moneyCheck = async() => {
           onPress={() => router.push("/signup/page1")}
         >
           <Text className="text-white">회원가입</Text>
-        </TouchableOpacity>
-        <View className="flex-row">
-          <Link className="my-2 text-xl" href={"/ward/main"}>
-            피보호자
-          </Link>
-          <Text className="my-2 text-xl"> | </Text>
-          <Link className="my-2 text-xl" href={`/family/familyMain`}>
-            보호자
-          </Link>
-        </View>
-        <TouchableOpacity 
-            className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
-            onPress={accountGo}>
-                <Text className='text-white'>계좌생성</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-            className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
-            onPress={moneyCheck}>
-                <Text className='text-white'>계좌확인</Text>
-
-        <TouchableOpacity
-          className="mb-4 w-28 bg-blue-500 h-8 rounded-3xl justify-center items-center"
-          onPress={textPost}
-        >
-          <Text className="text-white">회원가입</Text>
-          </TouchableOpacity>
         </TouchableOpacity>
       </View>
     </ImageBackground>

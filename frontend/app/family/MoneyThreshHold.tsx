@@ -1,15 +1,15 @@
 import { View, Text, SafeAreaView, TextInput, Button, TouchableOpacity } from "react-native";
 import { Link, useRouter } from "expo-router";
 // import { Header } from "react-native/Libraries/NewAppScreen";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Toast from 'react-native-toast-message';
 import CancelButton from "../../src/ui/components/CancelButton";
 import Header from "../../src/ui/components/Header";
 import { subOnce, subDaily } from "../../src/services/api";
 
 const MoneyTrheshHold = () => {
-  const [oneLimit, setOneLimit] = useState<string>('');
-  const [todayLimit, setTodayLimit] = useState<string>('');
+  const [oneLimit, setOneLimit] = useState<number>(100000000);
+  const [todayLimit, setTodayLimit] = useState<number>(500000000);
   const router = useRouter()
 
   /*
@@ -57,9 +57,11 @@ const MoneyTrheshHold = () => {
     }catch(error){
       console.log(error)
     }
-
-
   }
+
+  useEffect(() => {
+
+  }, [])
 
   return (
     <View className='flex-1'>
@@ -69,7 +71,8 @@ const MoneyTrheshHold = () => {
         <SafeAreaView className='bg-gray-300 rounded-3xl p-5'>
           <Text className="my-2 text-center font-bold text-2xl">1회</Text>
           <View className='flex-row'>
-            <TextInput className="mx-2 py-2 w-60 bg-white rounded-3xl" keyboardType="numeric" onChangeText={(limit) => setOneLimit(limit)}></TextInput>
+            <TextInput className="mx-2 py-2 w-60 bg-white rounded-3xl"
+              keyboardType="numeric" onChangeText={(limit) => setOneLimit(limit)}></TextInput>
             <Text className='text-xl font-bold py-2'>원</Text>
           </View>
           <Text className="my-2 text-center font-bold text-2xl mt-3">하루 총</Text>

@@ -9,15 +9,17 @@ import smallLogo from "../../src/assets/SmallLogo.png";
 import mail from '../../src/assets/mail.png'
 import Toast from "react-native-toast-message";
 import { logoutUser, subTargetCheck, subProtectCheck, accountPatch } from "../../src/services/api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../src/store/userSlice";
 import { createAccount } from "../../src/services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { addMoney, getAccountList, mediaPost } from "../../src/services/api";
+import { RootState } from "../../src/store/store";
 
 const FamilyMain = () => {
 
   const dispatch = useDispatch();
+  const logFlag = useSelector((state: RootState) => state.getUser.isLogged);
 
   /* 내가 보호자인 경우, 피보호자를 가져온다. */
   const [flag, setFlag] = useState(false)
@@ -147,6 +149,7 @@ const FamilyMain = () => {
     }
     mainRequest()
     console.log(wardInfo)
+    console.log("loging check : " + logFlag)
 
     return () => {}
     },[]);
@@ -179,7 +182,7 @@ const FamilyMain = () => {
               type: 'success',
               text1: '계좌 생성 성공!',
             })
-          //router.push('/family/familyMain')
+        router.replace('/family/familyMain')
       }
       catch(error){
           console.log(error)
@@ -349,6 +352,7 @@ const FamilyMain = () => {
                   >
               <Text className='text-center'>로그아웃</Text>
               </TouchableOpacity>
+
           </View>
         </View>
           )}

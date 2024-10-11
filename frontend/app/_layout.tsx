@@ -1,13 +1,13 @@
 
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useEffect } from "react";
-import { Provider, useDispatch } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { setToken } from '../src/store/tokenSlice';
 
 import Toast from "react-native-toast-message";
 import { registerForPushNotificationsAsync } from "../src/utils/NotificationToken";
 import * as Notifications from 'expo-notifications';
-import store from "../src/store/store";
+import store, { RootState } from "../src/store/store";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -33,6 +33,7 @@ const LayoutContent = () => {
     // 알림 수신 리스너 설정
     const subscription = Notifications.addNotificationReceivedListener(notification => {
       console.log('푸시 알림 수신:', notification);
+      router.replace('/')
     });
 
     // 컴포넌트 언마운트 시 리스너 제거

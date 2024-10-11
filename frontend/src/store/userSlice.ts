@@ -4,7 +4,8 @@ interface AuthState {
     ID: string;
     password: string;
     nickName: string;
-    isLogged: boolean;
+  isLogged: boolean;
+  subscribeType: number;
 }
 
 // 초기 상태 설정
@@ -12,7 +13,8 @@ const initialState: AuthState = {
     ID: '',
     password: '',
     nickName: '',
-    isLogged: false,
+  isLogged: false,
+    subscribeType : 0
 };
 
 // Slice 생성
@@ -37,11 +39,14 @@ const authSlice = createSlice({
       state.ID = ''; // 로그아웃 시 ID와 password 초기화
       state.password = '';
     },
+    setSubType: (state, action :  PayloadAction<number>) => {
+      state.subscribeType = action.payload; // ID 설정
+    },
   },
 });
 
 // 액션 내보내기
-export const { setID, setPWD, setNickName, login, logout } = authSlice.actions;
+export const { setID, setPWD, setNickName, login, logout, setSubType } = authSlice.actions;
 
 // 리듀서 내보내기
 export default authSlice.reducer;

@@ -54,16 +54,10 @@ const ObjectInput = () => {
 
         console.log(formData)
         
-        console.log("######################################")
-        formData.forEach((value, key) => {
-          console.log(`${key}: ${value}`);
-        });
-        console.log("######################################")
-
         const response = await createDirectory(formData);
         console.log("디렉토리 성공")
         console.log(response.data)
-        router.back();
+        router.replace('/family/familyMain')
         } catch(error){
             console.log("디렉토리 생성 오류 : " + error)
         }
